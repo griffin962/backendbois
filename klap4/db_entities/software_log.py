@@ -1,9 +1,9 @@
+import datetime
 from inspect import getframeinfo, stack
+import logging
 from os.path import basename
 
-from bidict import bidict
-
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime
 
 from klap4.db import SQLBase
 
@@ -11,18 +11,11 @@ from klap4.db import SQLBase
 class SoftwareLog(SQLBase):
     __tablename__ = "software_logs"
 
-    LEVEL = bidict(enumerate([
-        "CRITICAL",
-        "ERROR",
-        "WARNING",
-        "INFO",
-        "VERBOSE",
-        "DEBUG"
-    ])).inverse  # Key = 'string', LEVELS.inverse key = integer
-
     id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime)
     tag = Column(String)
-    level = Column(Integer)
+    level_num = Column(Integer)
+    level = Column(String)
     filename = Column(String)
     line_num = Column(Integer)
     message = Column(String)
@@ -35,17 +28,23 @@ class SoftwareLog(SQLBase):
             kwargs["filename"] = basename(caller.filename)
             kwargs["line_num"] = caller.lineno
 
-        if "level" not in kwargs:
-            kwargs["level"] = SoftwareLog.LEVEL["DEBUG"]
+        if "level_num" not in kwargs:
+            kwargs["level_num"] = logging.DEBUG
+
+        kwargs["level"] = logging.getLevelName(kwargs["level_num"])
 
         if "tag" not in kwargs:
             kwargs["tag"] = "UNTAGGED"
+
+        if "timestamp" not in kwargs:
+            kwargs["timestamp"] = datetime.datetime.now()
 
         super().__init__(**kwargs)
 
     def __repr__(self):
         return f"<SoftwareLog(id={self.id}, " \
+                            f"timestamp={self.timestamp}" \
                             f"tag={self.tag}, " \
-                            f"level={SoftwareLog.LEVEL.inverse[self.level]}, " \
+                            f"level={self.level}, " \
                             f"location={self.filename}:{self.line_num} " \
                             f"message={self.message[:20] + '...' if len(self.message) > 20 else self.message})>"

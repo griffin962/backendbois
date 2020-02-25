@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
 
+import logging
+import logging.handlers
+
 from klap4 import db
-from klap4.db_entities.software_log import SoftwareLog
 
 
 def main():
     db.connect("test.db")
 
-    session = db.Session()
+    logger = logging.getLogger("main")
+    logger.addHandler(logging.StreamHandler())
+    logger.addHandler(db.DBHandler())
+    logger.setLevel(logging.DEBUG)
 
-    log = SoftwareLog("This is the first message test.")
+    logger.debug("Looping")
 
-    session.add(log)
-    session.commit()
+    logger.critical("REALLY BAD")
 
 
 if __name__ == '__main__':

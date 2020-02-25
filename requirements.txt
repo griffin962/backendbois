@@ -3,7 +3,7 @@ Click==7.0
 Flask==1.1.1
 itsdangerous==1.1.0
 Jinja2==2.11.1
--e git+git@github.com:griffin962/backendbois.git@bd5f1e87efe9dd62b53803e2d40e702eca3b6267#egg=KLAP_4&subdirectory=klap4
+-e git+git@github.com:griffin962/backendbois.git@c9a7f51cad67dfa5a7da461b04de9ff06f314393#egg=KLAP_4&subdirectory=klap4
 ldap3==2.6.1
 MarkupSafe==1.1.1
 pyasn1==0.4.8
