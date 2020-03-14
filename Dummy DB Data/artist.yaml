@@ -1,0 +1,18 @@
+---
+- model: klap4.db_entities.artist.Artist
+  fields:
+    genre_abbr: "AL"
+    number: 1
+    name: "Poppy"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    genre_abbr: "AL"
+    number: 2
+    name: "Kero Kero Bonito"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    genre_abbr: "PP"
+    number: 1
+    name: "Carly Rae Jepsen"

@@ -62,12 +62,12 @@ db_logger.setLevel(env_log_level)
 db_logger.addHandler(DBHandler())
 
 
-def connect(file_path: Union[Path, str], *, create: bool = False, sql_echo: bool = False) -> None:
+def connect(file_path: Union[Path, str], *, reset: bool = False, sql_echo: bool = False) -> None:
     """Connects to a database.
 
     Args:
         file_path: The path to the database file.
-        create: If we should create/reset the database file.
+        reset: If we should create/reset the database file.
         sql_echo: If we should instruct SQLAlchemy to echo out SQL statements when it reads/writes to the database.
 
     """
@@ -82,16 +82,16 @@ def connect(file_path: Union[Path, str], *, create: bool = False, sql_echo: bool
         file_path = Path(file_path)
 
     if not file_path.exists():
-        create = True
+        reset = True
 
     db_engine = sqlalchemy.create_engine(f"sqlite:///{file_path}", echo=sql_echo)
 
-    if create:
+    if reset:
         db_logger.info("Creating database.")
         file_path.unlink(missing_ok=True)
         klap4.db_entities.SQLBase.metadata.create_all(db_engine)
 
-    Session = sqlalchemy.orm.sessionmaker(bind=db_engine)
+    Session = sqlalchemy.orm.scoped_session(sqlalchemy.orm.sessionmaker(bind=db_engine))
 
     # Loop over every logger, check if it IS a logger (there's some placeholder types in there, and check if it has a
     # DBHandler in one of its handlers. If so, then let it catchup if it is backed up.
@@ -106,4 +106,4 @@ def connect(file_path: Union[Path, str], *, create: bool = False, sql_echo: bool
 
 # Auto-connect to database if KLAP4_DB_FILE is set.
 if os.environ.get("KLAP4_DB_FILE", None) is not None:
-    connect(os.environ["KLAP4_DB_FILE"], create=env_reset, sql_echo=env_log_level == "sql")
+    connect(os.environ["KLAP4_DB_FILE"], reset=env_reset, sql_echo=env_log_level == "sql")
