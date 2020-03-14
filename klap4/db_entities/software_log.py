@@ -9,7 +9,7 @@ from klap4.db_entities import SQLBase
 
 
 class SoftwareLog(SQLBase):
-    __tablename__ = "software_logs"
+    __tablename__ = "software_log"
 
     id = Column(Integer, primary_key=True)
     timestamp = Column(DateTime)
@@ -43,8 +43,8 @@ class SoftwareLog(SQLBase):
 
     def __repr__(self):
         return f"<SoftwareLog(id={self.id}, " \
-                            f"timestamp={self.timestamp}" \
-                            f"tag={self.tag}, " \
-                            f"level={self.level}, " \
+                            f"{self.timestamp=}" \
+                            f"{self.tag=}, " \
+                            f"{self.level=}, " \
                             f"location={self.filename}:{self.line_num} " \
                             f"message={self.message[:20] + '...' if len(self.message) > 20 else self.message})>"
