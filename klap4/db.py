@@ -6,10 +6,6 @@ import os
 
 import sqlalchemy
 import sqlalchemy.orm
-from sqlalchemy.ext.declarative import declarative_base
-
-# Base SQLAlchemy ORM class.
-SQLBase = declarative_base()
 
 import klap4.db_entities
 
@@ -89,12 +85,13 @@ def connect(file_path: Union[Path, str], *, create: bool = False, sql_echo: bool
         create = True
 
     db_engine = sqlalchemy.create_engine(f"sqlite:///{file_path}", echo=sql_echo)
-    Session = sqlalchemy.orm.sessionmaker(bind=db_engine)
 
     if create:
         db_logger.info("Creating database.")
-        file_path.unlink()
-        SQLBase.metadata.create_all(db_engine)
+        file_path.unlink(missing_ok=True)
+        klap4.db_entities.SQLBase.metadata.create_all(db_engine)
+
+    Session = sqlalchemy.orm.sessionmaker(bind=db_engine)
 
     # Loop over every logger, check if it IS a logger (there's some placeholder types in there, and check if it has a
     # DBHandler in one of its handlers. If so, then let it catchup if it is backed up.

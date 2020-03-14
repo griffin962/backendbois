@@ -5,7 +5,7 @@ from os.path import basename
 
 from sqlalchemy import Column, Integer, String, DateTime
 
-from klap4.db import SQLBase
+from klap4.db_entities import SQLBase
 
 
 class SoftwareLog(SQLBase):
