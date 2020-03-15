@@ -25,8 +25,11 @@ class Album(SQLBase):
     missing = Column(Boolean, nullable=False)
     is_new = Column(Boolean, nullable=False)
     format_bitfield = Column(Integer, nullable=False)
-    label_id = Column(Integer, nullable=True)  # TODO: Link FK once 'label' table is created.
-    promoter_id = Column(Integer, nullable=True)  # TODO: See above but for 'promoter' table.
+    label_id = Column(Integer, ForeignKey("label.id"), nullable=True)
+    promoter_id = Column(Integer, ForeignKey("promoter.id"), nullable=True)
+
+    label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="artists")
+    promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists")
 
     def __init__(self, **kwargs):
         if "letter" not in kwargs:
@@ -47,4 +50,11 @@ class Album(SQLBase):
         super().__init__(**kwargs)
 
     def __repr__(self):
-        pass
+        return f"<Album(id={self.genre_abbr + str(self.artist_num) + self.letter}, " \
+                      f"{self.name=}, " \
+                      f"{self.date_added=}, " \
+                      f"{self.missing=}, " \
+                      f"{self.is_new=}, " \
+                      f"format={self.format_bitfield}, " \
+                      f"{self.label_id=}, " \
+                      f"{self.promoter_id=})>"
