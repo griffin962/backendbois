@@ -32,6 +32,18 @@ class Album(SQLBase):
     promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists")
 
     def __init__(self, **kwargs):
+        if "id" in kwargs:
+            kwargs["genre_abbr"] = kwargs["id"][:2]
+            kwargs["artist_num"] = int(kwargs["id"][2:-1])
+
+            if kwargs["id"][-1].isdigit():
+                try:
+                    kwargs.pop("letter")
+                except KeyError:
+                    pass
+            else:
+                kwargs["letter"] = kwargs["id"][-1]
+
         if "letter" not in kwargs:
             from klap4.db_entities import Artist
             kwargs["letter"] = klap4.db.Session().query(Artist) \
