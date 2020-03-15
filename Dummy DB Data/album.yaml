@@ -1,0 +1,88 @@
+---
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "AL"
+    artist_num: 1
+    letter: A
+    name: "Poppy.Computer"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "AL"
+    artist_num: 1
+    letter: B
+    name: "Am I A Girl?"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "AL"
+    artist_num: 1
+    letter: C
+    name: "Choke"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "AL"
+    artist_num: 1
+    letter: D
+    name: "I Disagree"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "AL"
+    artist_num: 2
+    letter: A
+    name: "Intro Bonito"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "AL"
+    artist_num: 2
+    letter: B
+    name: "Bonito Generation"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "AL"
+    artist_num: 2
+    letter: C
+    name: "Time 'n' Place"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "PP"
+    artist_num: 1
+    letter: A
+    name: "Kiss"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "PP"
+    artist_num: 1
+    letter: B
+    name: "Emotion"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "PP"
+    artist_num: 1
+    letter: C
+    name: "Emotion Side B"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    genre_abbr: "PP"
+    artist_num: 2
+    letter: D
+    name: "Dedicated"
+    format_bitfield: 1

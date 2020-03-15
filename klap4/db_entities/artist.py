@@ -30,8 +30,9 @@ class Artist(SQLBase):
 
     @property
     def next_album_letter(self):
-        # TODO: Determine next letter based off of count of albums.
-        pass
+        from klap4.db_entities import Album
+        count = klap4.db.Session().query(Album).filter_by(genre_abbr=self.genre_abbr, artist_num=self.number).count()
+        return chr(ord('A') + count)  # TODO: Handle letter wrap around ('Z' -> 'AA')
 
     def __repr__(self):
         return f"<Artist(id={self.genre_abbr + str(self.number)}, " \
