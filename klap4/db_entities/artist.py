@@ -18,6 +18,16 @@ class Artist(SQLBase):
     genre = relationship("klap4.db_entities.genre.Genre", back_populates="artists")
 
     def __init__(self, **kwargs):
+        if "id" in kwargs:
+            kwargs["genre_abbr"] = kwargs["id"][:2]
+            if len(kwargs["id"]) == 2:
+                try:
+                    kwargs.pop("number")
+                except KeyError:
+                    pass
+            else:
+                kwargs["number"] = int(kwargs["id"][2:])
+
         if "number" not in kwargs:
             from klap4.db_entities import Genre
             try:
