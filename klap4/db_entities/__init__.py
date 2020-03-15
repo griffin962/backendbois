@@ -7,3 +7,4 @@ SQLBase = declarative_base()
 from klap4.db_entities.software_log import *
 from klap4.db_entities.artist import *
 from klap4.db_entities.genre import *
+from klap4.db_entities.album import *
