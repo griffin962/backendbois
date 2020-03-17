@@ -70,3 +70,26 @@ class Album(SQLBase):
                       f"format={self.format_bitfield}, " \
                       f"{self.label_id=}, " \
                       f"{self.promoter_id=})>"
+
+
+class AlbumReview(SQLBase):
+    __tablename__ = "album_review"
+
+    genre_abbr = Column(String(2), ForeignKey("album.genre_abbr"), primary_key=True)
+    artist_num = Column(Integer, ForeignKey("album.artist_num"), primary_key=True)
+    album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
+    dj_id = Column(Integer, primary_key=True)
+    date_entered = Column(DateTime, nullable=False)
+    is_recent = Column(Boolean, nullable=False)  # TODO: Is this a derived attribute?
+    content = Column(String, nullable=False)
+
+    def __init__(self, **kwargs):
+        if "date_entered" in kwargs:
+            kwargs["date_entered"] = datetime.now()
+        super().__init__(**kwargs)
+
+    def __repr__(self):
+        return f"<AlbumReview(id={self.genre_abbr + str(self.artist_num) + self.album_letter + self.dj_id}, " \
+                            f"{self.date_entered=}, " \
+                            f"{self.is_recent=}, " \
+                            f"content={self.content[:20] + '...' if len(self.content) > 20 else self.message})>"
