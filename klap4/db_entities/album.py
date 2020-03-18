@@ -6,7 +6,7 @@ from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer
 from sqlalchemy.orm import relationship
 
 import klap4.db
-from klap4.db_entities import SQLBase
+from klap4.db_entities import decompose_tag, SQLBase
 
 
 class Album(SQLBase):
@@ -38,16 +38,12 @@ class Album(SQLBase):
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
-            kwargs["genre_abbr"] = kwargs["id"][:2]
-            kwargs["artist_num"] = int(kwargs["id"][2:-1])
+            decomposed_tag = decompose_tag(kwargs["id"])
+            kwargs["genre_abbr"] = decomposed_tag.genre_abbr
+            kwargs["artist_num"] = decomposed_tag.artist_num
 
-            if kwargs["id"][-1].isdigit():
-                try:
-                    kwargs.pop("letter")
-                except KeyError:
-                    pass
-            else:
-                kwargs["letter"] = kwargs["id"][-1]
+            if decomposed_tag.album_letter is not None:
+                kwargs["letter"] = decomposed_tag.album_letter
 
         if "letter" not in kwargs:
             kwargs["letter"] = self.artist.next_album_letter
