@@ -17,14 +17,15 @@ class Genre(SQLBase):
     id = None
 
     artists = relationship("klap4.db_entities.artist.Artist", back_populates="genre")
+    albums = relationship("klap4.db_entities.album.Album", back_populates="genre")
+    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="genre")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     @property
     def next_artist_num(self):
-        from klap4.db_entities import Artist
-        return klap4.db.Session().query(Artist).filter_by(genre_abbr=self.abbreviation).count() + 1
+        return len(self.artists) + 1
 
     @property
     def id(self):

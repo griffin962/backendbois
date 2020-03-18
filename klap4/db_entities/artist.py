@@ -17,6 +17,8 @@ class Artist(SQLBase):
     id = None
 
     genre = relationship("klap4.db_entities.genre.Genre", back_populates="artists")
+    albums = relationship("klap4.db_entities.album.Album", back_populates="artist")
+    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="artist")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
@@ -30,24 +32,16 @@ class Artist(SQLBase):
                 kwargs["number"] = int(kwargs["id"][2:])
 
         if "number" not in kwargs:
-            from klap4.db_entities import Genre
-            try:
-                kwargs["number"] = klap4.db.Session().query(Genre) \
-                    .filter_by(abbreviation=kwargs["genre_abbr"]) \
-                    .first().next_artist_num
-            except AttributeError as e:
-                raise AttributeError(f"Genre '{kwargs['genre_abbr']}' does not exist.") from e
+            kwargs["number"] = self.genre.next_artist_num
         super().__init__(**kwargs)
 
     @property
     def next_album_letter(self):
-        from klap4.db_entities import Album
-        count = klap4.db.Session().query(Album).filter_by(genre_abbr=self.genre_abbr, artist_num=self.number).count()
-        return chr(ord('A') + count)  # TODO: Handle letter wrap around ('Z' -> 'AA')
+        return chr(ord('A') + len(self.albums))  # TODO: Handle letter wrap around ('Z' -> 'AA')
 
     @property
     def id(self):
-        return self.genre_abbr + str(self.number)
+        return self.genre.id + str(self.number)
 
     def __repr__(self):
         return f"<Artist(id={self.id}, " \
