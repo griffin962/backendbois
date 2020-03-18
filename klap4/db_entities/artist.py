@@ -4,7 +4,7 @@ from sqlalchemy import Column, ForeignKey, String, Integer
 from sqlalchemy.orm import relationship
 
 import klap4.db
-from klap4.db_entities import SQLBase
+from klap4.db_entities import decompose_tag, SQLBase
 
 
 class Artist(SQLBase):
@@ -22,14 +22,11 @@ class Artist(SQLBase):
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
-            kwargs["genre_abbr"] = kwargs["id"][:2]
-            if len(kwargs["id"]) == 2:
-                try:
-                    kwargs.pop("number")
-                except KeyError:
-                    pass
-            else:
-                kwargs["number"] = int(kwargs["id"][2:])
+            decomposed_tag = decompose_tag(kwargs["id"])
+            kwargs["genre_abbr"] = decomposed_tag.genre_abbr
+
+            if decomposed_tag.artist_num is not None:
+                kwargs["number"] = decomposed_tag.artist_num
 
         if "number" not in kwargs:
             kwargs["number"] = self.genre.next_artist_num
