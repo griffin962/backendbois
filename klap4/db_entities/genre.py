@@ -14,6 +14,7 @@ class Genre(SQLBase):
     name = Column(String, nullable=False)
     color = Column(String, nullable=False)
     next_artist_num = 0
+    id = None
 
     artists = relationship("klap4.db_entities.artist.Artist", back_populates="genre")
 
@@ -25,8 +26,12 @@ class Genre(SQLBase):
         from klap4.db_entities import Artist
         return klap4.db.Session().query(Artist).filter_by(genre_abbr=self.abbreviation).count() + 1
 
+    @property
+    def id(self):
+        return self.abbreviation
+
     def __repr__(self):
-        return f"<Genre(id={self.abbreviation}, " \
+        return f"<Genre(id={self.id}, " \
                       f"{self.name=}, " \
                       f"{self.color=}, " \
                       f"{self.next_artist_num=})>"

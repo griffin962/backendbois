@@ -14,6 +14,7 @@ class Artist(SQLBase):
     number = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     next_album_letter = None
+    id = None
 
     genre = relationship("klap4.db_entities.genre.Genre", back_populates="artists")
 
@@ -44,7 +45,11 @@ class Artist(SQLBase):
         count = klap4.db.Session().query(Album).filter_by(genre_abbr=self.genre_abbr, artist_num=self.number).count()
         return chr(ord('A') + count)  # TODO: Handle letter wrap around ('Z' -> 'AA')
 
+    @property
+    def id(self):
+        return self.genre_abbr + str(self.number)
+
     def __repr__(self):
-        return f"<Artist(id={self.genre_abbr + str(self.number)}, " \
+        return f"<Artist(id={self.id}, " \
                        f"{self.name=}, " \
                        f"{self.next_album_letter=})>"
