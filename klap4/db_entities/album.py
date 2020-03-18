@@ -23,13 +23,15 @@ class Album(SQLBase):
     name = Column(String, nullable=False)
     date_added = Column(DateTime, nullable=False)
     missing = Column(Boolean, nullable=False)
-    is_new = Column(Boolean, nullable=False)
     format_bitfield = Column(Integer, nullable=False)
     label_id = Column(Integer, ForeignKey("label.id"), nullable=True)
     promoter_id = Column(Integer, ForeignKey("promoter.id"), nullable=True)
 
     label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="artists")
     promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists")
+
+    is_new = False
+    id = None
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
@@ -53,7 +55,6 @@ class Album(SQLBase):
         defaults = {
             "date_added": datetime.now(),
             "missing": False,
-            "is_new": False
         }
         for key, default in defaults.items():
             if key not in kwargs:
@@ -61,8 +62,17 @@ class Album(SQLBase):
 
         super().__init__(**kwargs)
 
+    @property
+    def is_new(self):
+        # TODO: Determine thresh hold to determine if an album is new.
+        return False
+
+    @property
+    def id(self):
+        return self.genre_abbr + str(self.artist_num) + self.letter
+
     def __repr__(self):
-        return f"<Album(id={self.genre_abbr + str(self.artist_num) + self.letter}, " \
+        return f"<Album(id={self.id}, " \
                       f"{self.name=}, " \
                       f"{self.date_added=}, " \
                       f"{self.missing=}, " \
@@ -80,16 +90,27 @@ class AlbumReview(SQLBase):
     album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
     dj_id = Column(Integer, primary_key=True)
     date_entered = Column(DateTime, nullable=False)
-    is_recent = Column(Boolean, nullable=False)  # TODO: Is this a derived attribute?
     content = Column(String, nullable=False)
+
+    is_recent = False
+    id = False
 
     def __init__(self, **kwargs):
         if "date_entered" in kwargs:
             kwargs["date_entered"] = datetime.now()
         super().__init__(**kwargs)
 
+    @property
+    def is_recent(self):
+        # TODO: Determine thresh hold to determine if a review is recent.
+        return False
+
+    @property
+    def id(self):
+        return self.genre_abbr + str(self.artist_num) + self.album_letter + str(self.dj_id)
+
     def __repr__(self):
-        return f"<AlbumReview(id={self.genre_abbr + str(self.artist_num) + self.album_letter + self.dj_id}, " \
+        return f"<AlbumReview(id={self.id}, " \
                             f"{self.date_entered=}, " \
                             f"{self.is_recent=}, " \
                             f"content={self.content[:20] + '...' if len(self.content) > 20 else self.message})>"
