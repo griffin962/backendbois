@@ -58,7 +58,6 @@ class DBHandler(logging.Handler):
 
 # db module's logger instance.
 db_logger = logging.getLogger("db_logger")
-print(env_log_level)
 db_logger.setLevel(env_log_level)
 db_logger.addHandler(DBHandler())
 
