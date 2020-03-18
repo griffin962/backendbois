@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from sqlalchemy import Column, ForeignKey, String
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
 import klap4.db
