@@ -12,13 +12,12 @@ class SoftwareLog(SQLBase):
     __tablename__ = "software_log"
 
     id = Column(Integer, primary_key=True)
-    timestamp = Column(DateTime)
-    tag = Column(String)
-    level_num = Column(Integer)
-    level = Column(String)
-    filename = Column(String)
-    line_num = Column(Integer)
-    message = Column(String)
+    timestamp = Column(DateTime, nullable=False)
+    tag = Column(String, nullable=False)
+    level = Column(String, nullable=False)
+    filename = Column(String, nullable=False)
+    line_num = Column(Integer, nullable=False)
+    message = Column(String, nullable=False)
 
     def __init__(self, message: str, **kwargs):
         kwargs["message"] = message
@@ -28,10 +27,8 @@ class SoftwareLog(SQLBase):
             kwargs["filename"] = basename(caller.filename)
             kwargs["line_num"] = caller.lineno
 
-        if "level_num" not in kwargs:
-            kwargs["level_num"] = logging.DEBUG
-
-        kwargs["level"] = logging.getLevelName(kwargs["level_num"])
+        if "level" not in kwargs:
+            kwargs["level"] = logging.getLevelName("debug")
 
         if "tag" not in kwargs:
             kwargs["tag"] = "UNTAGGED"

@@ -46,7 +46,7 @@ class DBHandler(logging.Handler):
         log = SoftwareLog(
             timestamp=datetime.fromtimestamp(record.created),
             tag=record.name,
-            level_num=record.levelno,
+            level=record.levelname,
             filename=record.filename,
             line_num=record.lineno,
             message=record.getMessage()
@@ -58,6 +58,7 @@ class DBHandler(logging.Handler):
 
 # db module's logger instance.
 db_logger = logging.getLogger("db_logger")
+print(env_log_level)
 db_logger.setLevel(env_log_level)
 db_logger.addHandler(DBHandler())
 
