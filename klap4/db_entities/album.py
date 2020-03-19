@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer
 from sqlalchemy.orm import relationship
@@ -58,8 +58,7 @@ class Album(SQLBase):
 
     @property
     def is_new(self):
-        # TODO: Determine thresh hold to determine if an album is new.
-        return False
+        return datetime.now() - self.date_added < timedelta(days=30 * 6)
 
     @property
     def id(self):
@@ -100,8 +99,7 @@ class AlbumReview(SQLBase):
 
     @property
     def is_recent(self):
-        # TODO: Determine thresh hold to determine if a review is recent.
-        return False
+        return datetime.now() - self.date_added < timedelta(days=30 * 6)
 
     @property
     def id(self):
