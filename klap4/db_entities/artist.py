@@ -19,6 +19,7 @@ class Artist(SQLBase):
     genre = relationship("klap4.db_entities.genre.Genre", back_populates="artists")
     albums = relationship("klap4.db_entities.album.Album", back_populates="artist")
     album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="artist")
+    songs = relationship("klap4.db_entities.song.Song", back_populates="artist")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:

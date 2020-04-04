@@ -1,0 +1,12 @@
+---
+- model: klap4.db_entities.song.Song
+  fields:
+    genre_abbr: "AL"
+    artist_num: 1
+    album_letter: C
+    number: 1
+    name: "Concrete"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 1
+    recommended: True

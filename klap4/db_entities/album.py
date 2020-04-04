@@ -29,6 +29,7 @@ class Album(SQLBase):
 
     genre = relationship("klap4.db_entities.genre.Genre", back_populates="albums")
     artist = relationship("klap4.db_entities.artist.Artist", back_populates="albums")
+    songs = relationship("klap4.db_entities.song.Song", back_populates="album")
     label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="artists")
     promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists")
     album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="album")
@@ -81,7 +82,7 @@ class AlbumReview(SQLBase):
     genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
     artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
     album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
-    dj_id = Column(Integer, primary_key=True)
+    dj_id = Column(String, primary_key=True)
     date_entered = Column(DateTime, nullable=False)
     content = Column(String, nullable=False)
 
