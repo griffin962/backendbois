@@ -88,7 +88,11 @@ def connect(file_path: Union[Path, str], *, create: bool = False, sql_echo: bool
 
     if create:
         db_logger.info("Creating database.")
-        file_path.unlink(missing_ok=True)
+        try:
+            file_path.unlink()
+        except FileNotFoundError:
+            pass
+
         klap4.db_entities.SQLBase.metadata.create_all(db_engine)
 
     Session = sqlalchemy.orm.sessionmaker(bind=db_engine)
