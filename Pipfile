@@ -9,6 +9,10 @@ verify_ssl = true
 ldap3 = "*"
 sqlalchemy = "*"
 flask = "*"
+pylint = "*"
+flask-cors = "*"
+spotipy = "*"
+flask-restful = "*"
 
 [requires]
 python_version = "3.7"
