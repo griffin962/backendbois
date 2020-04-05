@@ -6,7 +6,7 @@ from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer
 from sqlalchemy.orm import relationship
 
 import klap4.db
-from klap4.db_entities import decompose_tag, SQLBase
+from klap4.db_entities import decompose_tag, full_module_name, SQLBase
 
 
 class Album(SQLBase):

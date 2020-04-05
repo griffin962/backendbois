@@ -7,12 +7,13 @@ from sqlalchemy.sql.expression import and_
 
 # Base SQLAlchemy ORM class.
 SQLBase = declarative_base()
+
 KLAP4_TAG = namedtuple("KLAP4_TAG", ["genre_abbr",
                                      "artist_num",
                                      "album_letter",
                                      "song_num",
                                      "album_review_dj_id"],
-                       defaults=[None] * 4)
+                       defaults=[None] * 5)
 
 
 def decompose_tag(tag: str) -> KLAP4_TAG:
@@ -43,7 +44,7 @@ def decompose_tag(tag: str) -> KLAP4_TAG:
     if len(tag) == 0:
         raise ValueError("id must not be empty")
 
-    matched = re.findall(r"([a-zA-Z]+)(\d+)?([a-zA-Z]+)?(\-?\d+)?", tag, re.IGNORECASE)[0]
+    matched = re.findall(r"([a-zA-Z]+)(\d+)?([a-zA-Z]+)?(\d+|\-[a-zA-Z0-9]+)?", tag, re.IGNORECASE)[0]
     matched = [match if len(match) > 0 else None for match in matched]
 
     is_review = False
@@ -51,16 +52,28 @@ def decompose_tag(tag: str) -> KLAP4_TAG:
         matched[1] = int(matched[1])
         if matched[3][0] == '-':
             matched[3] = matched[3][1:]
-            is_review = True
-        matched[3] = int(matched[3])
+            matched.append(matched[3])
+            matched[3] = None
+        else:
+            matched[3] = int(matched[3])
     except (TypeError, ValueError):
         pass
 
-    if is_review:
-        matched.append(matched[3])
-        matched[3] = None
-
     return KLAP4_TAG(*matched)
+
+
+def full_module_name(name: str, *, module_name: str = "") -> str:
+    """Expands an SQLAlchemy ORM mapped class to it's full module name
+
+    Examples:
+        ``full_module_name("Artist") == "klap4.db_entities.artist.Artist"``
+        ``full_module_name("AlbumReview", module_name="Album") == "klap4.db_entities.album.AlbumReview"``
+
+    """
+    template = "klap4.db_entities"
+    if module_name == "":
+        module_name = name.lower()
+    return f"{template}.{module_name}.{name}"
 
 
 # Need to append new modules as we add them in this file.
@@ -82,7 +95,7 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
         from klap4.db import Session
         session = Session()
 
-        entity = session.query(Genre).filter(Genre.abbreviation == tag.genre_abbr).all()
+        entity = session.query(Genre).filter(Genre.abbreviation == tag.genre_abbr).one()
 
         if tag.artist_num is not None and entity is not None:
             entity = session.query(Artist) \
@@ -92,7 +105,7 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
                         Artist.number == tag.artist_num
                     )
                 ) \
-                .all()
+                .one()
 
             if entity is not None and tag.album_letter is not None:
                 entity = session.query(Album) \
@@ -103,9 +116,7 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
                             Album.letter == tag.album_letter
                         )
                     ) \
-                    .all()
-                print(f"got {entity}")
-                entity = entity[0]
+                    .one()
 
                 if entity is not None and tag.song_num is not None:
                     entity = session.query(Song) \
@@ -117,7 +128,7 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
                                 Song.number == tag.song_num
                             )
                         ) \
-                        .first()
+                        .one()
                 elif entity is not None and tag.album_review_dj_id is not None:
                     entity = session.query(AlbumReview) \
                         .filter(
@@ -128,6 +139,6 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
                                 AlbumReview.dj_id == tag.album_review_dj_id
                             )
                         ) \
-                        .first()
+                        .one()
 
     return entity

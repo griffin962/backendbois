@@ -51,7 +51,7 @@ class Song(SQLBase):
 
     @property
     def id(self):
-        return self.album.id + self.song_num
+        return self.album.id + str(self.number)
 
     def __repr__(self):
         return f"<Song(id={self.id}, " \

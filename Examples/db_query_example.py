@@ -12,18 +12,9 @@ def main():
     script_path = Path(__file__).absolute().parent
     db.connect(script_path/".."/"test.db")
 
-    session = db.Session()
+    artist = get_entity_from_tag("AL2")
 
-    artist = session.query(Artist) \
-        .filter(
-            and_(
-                Artist.genre_abbr == "AL",
-                Artist.number == 2
-            )
-        ) \
-        .first()
-
-    print(artist)
+    print(artist.album)
 
 
 if __name__ == '__main__':

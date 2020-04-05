@@ -4,7 +4,7 @@ from sqlalchemy import Column, ForeignKey, String, Integer
 from sqlalchemy.orm import relationship
 
 import klap4.db
-from klap4.db_entities import decompose_tag, SQLBase
+from klap4.db_entities import decompose_tag, full_module_name, SQLBase
 
 
 class Artist(SQLBase):
@@ -31,11 +31,13 @@ class Artist(SQLBase):
 
         if "number" not in kwargs:
             kwargs["number"] = self.genre.next_artist_num
+
         super().__init__(**kwargs)
 
     @property
     def next_album_letter(self):
         return chr(ord('A') + len(self.albums))  # TODO: Handle letter wrap around ('Z' -> 'AA')
+        # 'A' + 3 == 'D'
 
     @property
     def id(self):
