@@ -67,13 +67,13 @@ class Album(SQLBase):
 
     def __repr__(self):
         return f"<Album(id={self.id}, " \
-                      f"{self.name=}, " \
-                      f"{self.date_added=}, " \
-                      f"{self.missing=}, " \
-                      f"{self.is_new=}, " \
+                      f"name={self.name}, " \
+                      f"date_added={self.date_added}, " \
+                      f"missing={self.missing}, " \
+                      f"is_new={self.is_new}, " \
                       f"format={self.format_bitfield}, " \
-                      f"{self.label_id=}, " \
-                      f"{self.promoter_id=})>"
+                      f"label_id={self.label_id}, " \
+                      f"promoter_id={self.promoter_id})>"
 
 
 class AlbumReview(SQLBase):
@@ -108,6 +108,6 @@ class AlbumReview(SQLBase):
 
     def __repr__(self):
         return f"<AlbumReview(id={self.id}, " \
-                            f"{self.date_entered=}, " \
-                            f"{self.is_recent=}, " \
+                            f"date_entered={self.date_entered}, " \
+                            f"is_recent={self.is_recent}, " \
                             f"content={self.content[:20] + '...' if len(self.content) > 20 else self.message})>"

@@ -55,8 +55,8 @@ class Song(SQLBase):
 
     def __repr__(self):
         return f"<Song(id={self.id}, " \
-                     f"{self.name=}, " \
-                     f"{self.fcc_status=}, " \
-                     f"{self.last_played=}, " \
-                     f"{self.times_played=}, " \
-                     f"{self.recommended=})>"
+                     f"name={self.name}, " \
+                     f"fcc_status={self.fcc_status}, " \
+                     f"last_played={self.last_played}, " \
+                     f"times_played={self.times_played}, " \
+                     f"recommended={self.recommended})>"

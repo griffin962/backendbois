@@ -14,7 +14,7 @@ def main():
 
     artist = get_entity_from_tag("AL2")
 
-    print(artist.album)
+    print(artist.albums)
 
 
 if __name__ == '__main__':

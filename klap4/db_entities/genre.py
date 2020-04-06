@@ -34,6 +34,6 @@ class Genre(SQLBase):
 
     def __repr__(self):
         return f"<Genre(id={self.id}, " \
-                      f"{self.name=}, " \
-                      f"{self.color=}, " \
-                      f"{self.next_artist_num=})>"
+                      f"name={self.name}, " \
+                      f"color={self.color}, " \
+                      f"next_artist_num={self.next_artist_num})>"

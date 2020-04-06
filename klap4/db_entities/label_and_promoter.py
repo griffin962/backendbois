@@ -20,8 +20,8 @@ class Label(SQLBase):
 
     def __repr__(self):
         return f"<Label(id={self.id}, " \
-                      f"{self.name=}, " \
-                      f"{self.url=})>"
+                      f"name={self.name}, " \
+                      f"url={self.url})>"
 
 
 class Promoter(SQLBase):
@@ -34,4 +34,4 @@ class Promoter(SQLBase):
 
     def __repr__(self):
         return f"<Promoter(id={self.id}, " \
-                         f"{self.name=})>"
+                         f"name={self.name})>"

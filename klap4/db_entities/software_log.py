@@ -40,8 +40,8 @@ class SoftwareLog(SQLBase):
 
     def __repr__(self):
         return f"<SoftwareLog(id={self.id}, " \
-                            f"{self.timestamp=}" \
-                            f"{self.tag=}, " \
-                            f"{self.level=}, " \
+                            f"timestamp={self.timestamp}" \
+                            f"tag={self.tag}, " \
+                            f"level={self.level}, " \
                             f"location={self.filename}:{self.line_num} " \
                             f"message={self.message[:20] + '...' if len(self.message) > 20 else self.message})>"

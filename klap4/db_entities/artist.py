@@ -45,5 +45,5 @@ class Artist(SQLBase):
 
     def __repr__(self):
         return f"<Artist(id={self.id}, " \
-                       f"{self.name=}, " \
-                       f"{self.next_album_letter=})>"
+                       f"name={self.name}, " \
+                       f"next_album_letter={self.next_album_letter})>"

@@ -14,6 +14,7 @@ flask-cors = "*"
 spotipy = "*"
 flask-restful = "*"
 klap-4 = {editable = true,path = "."}
+sqlalchemy-seed = "*"
 
 [requires]
 python_version = "3.7"
