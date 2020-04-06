@@ -12,4 +12,4 @@ Trello board can be found [here](https://trello.com/b/X7n73A1F/kmnr-ctrlf).
 1. Clone this repo: `git clone https://github.com/vganesh1798/backendbois.git`
 2. Make sure you have the python 3 `pipenv` package installed
 3. run `pipenv shell` in the directory to set up pipenv and then run `pipenv install` to install all dependencies
-
+4. Run `./run.py` to run the webserver, or you can find any of the example scripts in `Examples/`.

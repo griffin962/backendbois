@@ -65,8 +65,3 @@ def album_page(id):
 
         return jsonify(record)
 
-
-if __name__ == "__main__":
-    db.connect("test.db")
-    app.run(debug=True)
-

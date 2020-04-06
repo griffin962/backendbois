@@ -17,7 +17,7 @@ env_reset = os.environ.get("KLAP4_DB_RESET", "0").lower() in ["1", "true", "yes"
 
 # Environmental variable to set the DB module's log level.
 logging.addLevelName(9, "SQL")  # So it doesn't complain.
-env_log_level = logging.getLevelName(os.environ.get("KLAP4_DB_DEBUG", "error").upper())
+env_log_level = os.environ.get("KLAP4_DB_LOG_LEVEL", "error").upper()
 
 
 from klap4.db_entities.software_log import SoftwareLog
@@ -58,25 +58,33 @@ class DBHandler(logging.Handler):
 
 # db module's logger instance.
 db_logger = logging.getLogger("db_logger")
-db_logger.setLevel(env_log_level)
 db_logger.addHandler(DBHandler())
 
 
-def connect(file_path: Union[Path, str], *, reset: bool = False, sql_echo: bool = False) -> None:
+def connect(file_path: Union[Path, str], *, reset: bool = False, db_log_level: Union[str, int] = "ERROR") -> None:
     """Connects to a database.
 
     Args:
         file_path: The path to the database file.
         reset: If we should create/reset the database file.
-        sql_echo: If we should instruct SQLAlchemy to echo out SQL statements when it reads/writes to the database.
+        db_log_level: The log level for the internal database logger. Uses the python log levels, but can also be
+                      set to 'sql' if we should instruct SQLAlchemy to echo out SQL statements when it reads/writes to
+                      the database (otherwise equivalent to 'debug').
 
     """
     global Session
-    db_logger.debug("Initializing DB connection.")
 
     if Session is not None:
         db_logger.debug("DB already connected to.")
         return
+
+    if not isinstance(db_log_level, str):
+        db_log_level = logging.getLevelName(db_log_level)
+    else:
+        db_log_level = db_log_level.upper()
+
+    db_logger.setLevel(db_log_level)
+    db_logger.debug(f"Initializing DB connection (log level = {db_log_level}).")
 
     if not isinstance(file_path, Path):
         file_path = Path(file_path)
@@ -84,7 +92,7 @@ def connect(file_path: Union[Path, str], *, reset: bool = False, sql_echo: bool 
     if not file_path.exists():
         reset = True
 
-    db_engine = sqlalchemy.create_engine(f"sqlite:///{file_path}", echo=sql_echo)
+    db_engine = sqlalchemy.create_engine(f"sqlite:///{file_path}", echo=db_log_level.lower() == "sql")
 
     if reset:
         db_logger.info("Creating database.")
@@ -110,4 +118,4 @@ def connect(file_path: Union[Path, str], *, reset: bool = False, sql_echo: bool 
 
 # Auto-connect to database if KLAP4_DB_FILE is set.
 if os.environ.get("KLAP4_DB_FILE", None) is not None:
-    connect(os.environ["KLAP4_DB_FILE"], reset=env_reset, sql_echo=env_log_level == "sql")
+    connect(os.environ["KLAP4_DB_FILE"], reset=env_reset, db_log_level=env_log_level)
