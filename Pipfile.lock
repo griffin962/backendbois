@@ -137,6 +137,10 @@
             ],
             "version": "==1.4.3"
         },
+        "klap-4": {
+            "editable": true,
+            "path": "."
+        },
         "ldap3": {
             "hashes": [
                 "sha256:17f04298b70bf7ecaa5db8a7d8622b5a962ef7fc2b245b2eea705ac1c24338c0",
