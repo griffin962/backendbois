@@ -9,8 +9,8 @@ from klap4.db_entities import *
 
 
 def main():
-    klap4.db.connect("test.db", reset=True)
     script_dir = Path(__file__).absolute().parent
+    klap4.db.connect(script_dir/".."/"test.db", reset=True)
     yaml_files = [path.name for path in script_dir.glob('*.yaml')]
     print(f"Loaded files: {yaml_files}")
     fixtures = load_fixture_files(script_dir, yaml_files)
