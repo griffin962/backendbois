@@ -12,9 +12,9 @@ def main():
     script_path = Path(__file__).absolute().parent
     db.connect(script_path/".."/"test.db")
 
-    artist = get_entity_from_tag("AL2")
+    artist = get_entity_from_tag("AL1")
 
-    print(artist.albums)
+    print(get_json(artist))
 
 
 if __name__ == '__main__':

@@ -46,6 +46,8 @@ class Album(SQLBase):
             if decomposed_tag.album_letter is not None:
                 kwargs["letter"] = decomposed_tag.album_letter
 
+            kwargs.pop("id")
+
         if "letter" not in kwargs:
             kwargs["letter"] = self.artist.next_album_letter
 

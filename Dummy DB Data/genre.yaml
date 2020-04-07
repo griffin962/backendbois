@@ -1,24 +1,24 @@
 ---
 - model: klap4.db_entities.genre.Genre
   fields:
-    abbreviation: "RK"
+    id: "RK"
     name: "Rock"
     color: "Red"
 
 - model: klap4.db_entities.genre.Genre
   fields:
-    abbreviation: "EM"
+    id: "EM"
     name: "Electronic"
     color: "Yellow"
 
 - model: klap4.db_entities.genre.Genre
   fields:
-    abbreviation: "PP"
+    id: "PP"
     name: "Pop"
     color: "Pink"
 
 - model: klap4.db_entities.genre.Genre
   fields:
-    abbreviation: "AL"
+    id: "AL"
     name: "Alternative"
     color: "Brown"

@@ -1,88 +1,66 @@
 ---
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "AL"
-    artist_num: 1
-    letter: A
+    id: "AL1A"
     name: "Poppy.Computer"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "AL"
-    artist_num: 1
-    letter: B
+    id: "AL1B"
     name: "Am I A Girl?"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "AL"
-    artist_num: 1
-    letter: C
+    id: "AL1C"
     name: "Choke"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "AL"
-    artist_num: 1
-    letter: D
+    id: "AL1D"
     name: "I Disagree"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "AL"
-    artist_num: 2
-    letter: A
+    id: "AL2A"
     name: "Intro Bonito"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "AL"
-    artist_num: 2
-    letter: B
+    id: "AL2B"
     name: "Bonito Generation"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "AL"
-    artist_num: 2
-    letter: C
+    id: "AL2C"
     name: "Time 'n' Place"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "PP"
-    artist_num: 1
-    letter: A
+    id: "PP1A"
     name: "Kiss"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "PP"
-    artist_num: 1
-    letter: B
+    id: "PP1B"
     name: "Emotion"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "PP"
-    artist_num: 1
-    letter: C
+    id: "PP1C"
     name: "Emotion Side B"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    genre_abbr: "PP"
-    artist_num: 2
-    letter: D
+    id: "PP1D"
     name: "Dedicated"
     format_bitfield: 1

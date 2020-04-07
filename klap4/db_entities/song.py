@@ -44,6 +44,8 @@ class Song(SQLBase):
             if decomposed_tag.song_num is not None:
                 kwargs["number"] = decomposed_tag.song_num
 
+            kwargs.pop("id")
+
         if "number" not in kwargs:
             kwargs["number"] = len(self.album.songs) + 1
 
