@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from flask_cors import CORS, cross_origin
 from flask_restful import Resource, Api
 
@@ -7,6 +7,17 @@ from klap4 import db
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
+
+
+@app.before_request
+def initialize_request():
+    g.db = db.Session()
+
+
+@app.after_request
+def cleanup_request():
+    if "db" in g:
+        g.db.close()
 
 
 # Login route will authenticate using LDAP server to see if user's login is correct
