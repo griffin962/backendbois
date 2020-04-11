@@ -15,6 +15,11 @@ def main():
     artist = get_entity_from_tag("AL1")
 
     print(get_json(artist))
+    print(artist.genre.name)
+    print(type(artist))
+
+    artist_list = search_artists("Al", "K")
+    print(artist_list)
 
 
 if __name__ == '__main__':

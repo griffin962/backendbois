@@ -102,6 +102,8 @@ from klap4.db_entities.label_and_promoter import *
 
 
 def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
+
+    # If tag is a string, turn it into a KLAP4_TAG
     if not isinstance(tag, KLAP4_TAG):
         tag = decompose_tag(tag)
 
@@ -157,4 +159,41 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
                         ) \
                         .one()
 
+    return entity
+
+
+def search_artists(genre, name) -> SQLBase:
+    entity = None
+
+    from klap4.db import Session
+    session = Session()
+
+    entity = session.query(Artist) \
+        .join(
+            Genre, and_(Genre.name.like(genre+'%'), Genre.abbreviation == Artist.genre_abbr)
+        ) \
+        .filter(
+            Artist.name.like(name+'%')
+        ) \
+        .all()
+    
+    return entity
+
+def search_albums(genre, artist_name, name) -> SQLBase:
+    entity = None
+
+    from klap4.db import Session
+    session = Session()
+
+    entity = session.query(Album) \
+        .join(
+            Genre, and_(Genre.name.like(genre+'%'), Genre.abbreviation == Album.genre_abbr)
+        ) \
+        .join(Artist, and_(Artist.name.like(artist_name+'%'), Artist.number == Album.artist_num)
+        ) \
+        .filter(
+            Album.name.like(name+'%'),
+        ) \
+        .all()
+    
     return entity
