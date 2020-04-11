@@ -29,6 +29,8 @@ class Artist(SQLBase):
             if decomposed_tag.artist_num is not None:
                 kwargs["number"] = decomposed_tag.artist_num
 
+            kwargs.pop("id")
+
         if "number" not in kwargs:
             kwargs["number"] = self.genre.next_artist_num
 

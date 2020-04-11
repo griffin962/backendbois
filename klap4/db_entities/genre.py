@@ -22,6 +22,11 @@ class Genre(SQLBase):
     songs = relationship("klap4.db_entities.song.Song", back_populates="genre")
 
     def __init__(self, **kwargs):
+        if "id" in kwargs:
+            kwargs["abbreviation"] = kwargs["id"]
+
+            kwargs.pop("id")
+
         super().__init__(**kwargs)
 
     @property

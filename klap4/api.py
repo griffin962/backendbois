@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from flask_cors import CORS, cross_origin
 from flask_restful import Resource, Api
 
@@ -10,6 +10,18 @@ from klap4.db_entities import *
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
+
+
+@app.before_request
+def initialize_request():
+    g.db = db.Session()
+
+
+@app.after_request
+def cleanup_request():
+    if "db" in g:
+        g.db.close()
+
 
 # Search route returns different lists based on what the user wants to search.
 @app.route('/search/<category>', methods=['GET', 'POST'])
