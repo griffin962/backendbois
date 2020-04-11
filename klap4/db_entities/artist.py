@@ -47,3 +47,9 @@ class Artist(SQLBase):
         return f"<Artist(id={self.id}, " \
                        f"name={self.name}, " \
                        f"next_album_letter={self.next_album_letter})>"
+    
+    def format(self):
+        id = self.id
+        name = self.name
+        genre = self.genre.name
+        return dict(id=id, name=name, genre=genre)
