@@ -9,8 +9,19 @@ import sqlalchemy.orm
 
 import klap4.db_entities
 
+
+class DBNotConnectedError:
+    def __call__(self):
+        raise RuntimeError("Database has not been connected to. Please call klap4.db.connect()")
+
+
 # Session factory that we assign when we call connect(), used as a constructor down the road.
-Session = None
+Session = DBNotConnectedError()
+
+
+def is_connected() -> bool:
+    return not isinstance(Session, DBNotConnectedError)
+
 
 # Environmental variable to dictate if we reset the database or not.
 env_reset = os.environ.get("KLAP4_DB_RESET", "0").lower() in ["1", "true", "yes"]
@@ -35,7 +46,7 @@ class DBHandler(logging.Handler):
 
     def emit(self, record, *, recursing: bool = False) -> None:
         """Actually records the log entry to the database, if not connected yet then append to the end of a backlog."""
-        if Session is None:
+        if not is_connected():
             if not recursing:
                 self.backlog.append(record)
             return
@@ -74,7 +85,7 @@ def connect(file_path: Union[Path, str], *, reset: bool = False, db_log_level: U
     """
     global Session
 
-    if Session is not None:
+    if is_connected():
         db_logger.debug("DB already connected to.")
         return
 

@@ -11,8 +11,8 @@ from klap4.db_entities import *
 
 
 def main():
-    script_dir = Path(__file__).absolute().parent
-    data_dir = script_dir/".."/"Dummy DB Data"
+    script_dir = Path(__file__).absolute().parent.resolve(strict=True)
+    data_dir = (script_dir/".."/"Dummy DB Data").resolve(strict=True)
     print(f"Searching for seed data in directory '{data_dir}' ...")
 
     klap4.db.connect(script_dir/".."/"test.db", reset=True)
