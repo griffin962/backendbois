@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from natsort import natsorted
+
 from sqlalchemy_seed import load_fixture_files, load_fixtures
 
 import klap4.db
@@ -14,7 +16,7 @@ def main():
     print(f"Searching for seed data in directory '{data_dir}' ...")
 
     klap4.db.connect(script_dir/".."/"test.db", reset=True)
-    yaml_files = sorted([path.name for path in data_dir.glob('*.yaml')])
+    yaml_files = natsorted([path.name for path in data_dir.glob('*.yaml')])
 
     for yaml_file in yaml_files:
         print(f"Loading file: {yaml_file}")
