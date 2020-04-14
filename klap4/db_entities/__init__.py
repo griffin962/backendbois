@@ -4,6 +4,7 @@ from typing import Union
 
 from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql.expression import and_
 
 # Base SQLAlchemy ORM class.
@@ -103,6 +104,7 @@ from klap4.db_entities.label_and_promoter import *
 #from klap4.db_entities.playlist import *
 #from klap4.db_entities.user import *
 
+
 def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
 
     # If tag is a string, turn it into a KLAP4_TAG
@@ -111,55 +113,59 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
 
     entity = None
 
-    if tag.genre_abbr is not None:
-        from klap4.db import Session
-        session = Session()
+    try:
+        if tag.genre_abbr is not None:
+            from klap4.db import Session
+            session = Session()
 
-        entity = session.query(Genre).filter(Genre.abbreviation == tag.genre_abbr).one()
+            entity = session.query(Genre).filter(Genre.abbreviation == tag.genre_abbr).all()
 
-        if tag.artist_num is not None and entity is not None:
-            entity = session.query(Artist) \
-                .filter(
-                    and_(
-                        Artist.genre_abbr == tag.genre_abbr,
-                        Artist.number == tag.artist_num
-                    )
-                ) \
-                .one()
-
-            if entity is not None and tag.album_letter is not None:
-                entity = session.query(Album) \
+            if tag.artist_num is not None and entity is not None:
+                entity = session.query(Artist) \
                     .filter(
                         and_(
-                            Album.genre_abbr == tag.genre_abbr,
-                            Album.artist_num == tag.artist_num,
-                            Album.letter == tag.album_letter
+                            Artist.genre_abbr == tag.genre_abbr,
+                            Artist.number == tag.artist_num
                         )
                     ) \
                     .one()
 
-                if entity is not None and tag.song_num is not None:
-                    entity = session.query(Song) \
+                if entity is not None and tag.album_letter is not None:
+                    entity = session.query(Album) \
                         .filter(
                             and_(
-                                Song.genre_abbr == tag.genre_abbr,
-                                Song.artist_num == tag.artist_num,
-                                Song.album_letter == tag.album_letter,
-                                Song.number == tag.song_num
+                                Album.genre_abbr == tag.genre_abbr,
+                                Album.artist_num == tag.artist_num,
+                                Album.letter == tag.album_letter
                             )
                         ) \
                         .one()
-                elif entity is not None and tag.album_review_dj_id is not None:
-                    entity = session.query(AlbumReview) \
-                        .filter(
-                            and_(
-                                AlbumReview.genre_abbr == tag.genre_abbr,
-                                AlbumReview.artist_num == tag.artist_num,
-                                AlbumReview.album_letter == tag.album_letter,
-                                AlbumReview.dj_id == tag.album_review_dj_id
-                            )
-                        ) \
-                        .one()
+
+                    if entity is not None and tag.song_num is not None:
+                        entity = session.query(Song) \
+                            .filter(
+                                and_(
+                                    Song.genre_abbr == tag.genre_abbr,
+                                    Song.artist_num == tag.artist_num,
+                                    Song.album_letter == tag.album_letter,
+                                    Song.number == tag.song_num
+                                )
+                            ) \
+                            .one()
+                    elif entity is not None and tag.album_review_dj_id is not None:
+                        entity = session.query(AlbumReview) \
+                            .filter(
+                                and_(
+                                    AlbumReview.genre_abbr == tag.genre_abbr,
+                                    AlbumReview.artist_num == tag.artist_num,
+                                    AlbumReview.album_letter == tag.album_letter,
+                                    AlbumReview.dj_id == tag.album_review_dj_id
+                                )
+                            ) \
+                            .one()
+    except NoResultFound as e:
+        tag_str = ''.join([str(d) if d is not None else '' for d in tag])
+        raise NoResultFound(f"No tag found: '{tag_str}'") from e
 
     return entity
 
@@ -181,6 +187,7 @@ def search_artists(genre: str, name: str) -> SQLBase:
     
     return entity
 
+
 def search_albums(genre: str, artist_name: str, name: str) -> SQLBase:
     entity = None
 
@@ -199,6 +206,7 @@ def search_albums(genre: str, artist_name: str, name: str) -> SQLBase:
         .all()
     
     return entity
+
 
 def create_artist(genre_abbr, name):
     entity = None
@@ -252,6 +260,7 @@ def create_album(genre_abbr, artist_num, format_bitfield, label_id, promoter_id,
 
     return new_album
 
+
 def delete_artist(artist):
     genre_abbr = artist.genre_abbr
     number = artist.number
@@ -262,6 +271,7 @@ def delete_artist(artist):
     session.query(Artist).filter(and_(Artist.genre_abbr == genre_abbr, Artist.number == number)).delete()
 
     return
+
 
 def delete_album(album):
     genre_abbr = album.genre_abbr

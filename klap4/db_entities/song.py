@@ -47,7 +47,9 @@ class Song(SQLBase):
             kwargs.pop("id")
 
         if "number" not in kwargs:
-            kwargs["number"] = len(self.album.songs) + 1
+            from klap4.db_entities import get_entity_from_tag
+            album = get_entity_from_tag(f"{kwargs['genre_abbr']}{kwargs['artist_num']}{kwargs['album_letter']}")
+            kwargs["number"] = len(album.songs) + 1
 
         super().__init__(**kwargs)
 

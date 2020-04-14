@@ -32,7 +32,9 @@ class Artist(SQLBase):
             kwargs.pop("id")
 
         if "number" not in kwargs:
-            kwargs["number"] = self.genre.next_artist_num
+            from klap4.db_entities import get_entity_from_tag
+            genre = get_entity_from_tag(kwargs["genre"])
+            kwargs["number"] = genre.next_artist_num
 
         super().__init__(**kwargs)
 

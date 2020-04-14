@@ -49,7 +49,9 @@ class Album(SQLBase):
             kwargs.pop("id")
 
         if "letter" not in kwargs:
-            kwargs["letter"] = self.artist.next_album_letter
+            from klap4.db_entities import get_entity_from_tag
+            artist = get_entity_from_tag(f"{kwargs['genre_abbr']}{kwargs['artist_num']}")
+            kwargs["letter"] = artist.next_album_letter
 
         defaults = {
             "date_added": datetime.now(),
