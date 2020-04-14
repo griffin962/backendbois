@@ -13,3 +13,58 @@
   fields:
     id: "PP1"
     name: "Carly Rae Jepsen"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "RK1"
+    name: "The Strokes"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "AL3"
+    name: "Boy Pablo"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "AL4"
+    name: "Beach Bunny"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "RK2"
+    name: "White Reaper"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "EM1"
+    name: "Elohim"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "AL5"
+    name: "The Marias"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "AL6"
+    name: "Men I Trust"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "PP2"
+    name: "Tennis"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "PP3"
+    name: "L'Imperatrice"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "AL7"
+    name: "Last Dinosaurs"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "AL8"
+    name: "The Beths"

@@ -21,6 +21,10 @@ def main():
     artist_list = search_artists("Al", "K")
     print(artist_list)
 
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    max_num = create_artist("AL", "Test")
+    print(max_num)
+
 
 if __name__ == '__main__':
     main()

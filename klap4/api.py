@@ -29,6 +29,7 @@ def search(category):
     if request.method == 'GET':
         if category == "artist":
             artist_list = search_artists("", "")
+
             formatted_list = []
             for item in artist_list:
                 obj = get_json(item)
@@ -37,6 +38,7 @@ def search(category):
 
         elif category == "album":
             album_list = search_albums("", "", "")
+
             formatted_list = []
             for item in album_list:
                 obj = get_json(item)
@@ -76,29 +78,58 @@ def display(category, id):
         if category == "artist":
             artist = get_entity_from_tag(id)
             return jsonify(get_json(artist))
+            #TODO: Get an album list
 
         elif category == "album":
             album = get_entity_from_tag(id)
-            song_list = album.songs
             return jsonify(get_json(album))
-        else:
-            pass
+            #TODO: Get a song list, album review list, and a list of problems
     
 
     elif request.method == 'POST':
         if category == "artist":
+            genre_abbr = request.get_json()['genre']
+            name = request.get_json()['name']
+            create_artist(genre_abbr, name)
+        
+        elif category == "album":
+            genre_abbr = request.get_json()['genre']
+            artist_num = request.get_json()['artist_num']
+            format_bitfield = request.get_json()['format']
+            label_id = request.get_json()['label']
+            promoter_id = request.get_json()['[promoter']
+            name = request.get_json()['name']
+            create_album(genre_abbr, artist_num, format_bitfield, label_id, promoter_id, name)
+    
+
+    #TODO: PUT request should figure out what is not null and update accordingly
+    elif request.method == 'PUT':
+        if category == "artist":
             pass
         elif category == "album":
             pass
-        else:
-            pass
-    
 
-    elif request.method == 'PUT':
-        pass
 
 
     elif request.method == 'DELETE':
+        if category == "artist":
+            artist = get_entity_from_tag(id)
+            delete_artist(artist)
+        
+        elif category == "album":
+            album = get_entity_from_tag(id)
+            delete_album(album)
+
+        return "Deleted"
+
+@app.route('/post/<category>', methods=['GET', 'POST'])
+def post(category):
+    if request.method == 'GET':
         pass
 
+
+    elif request.method == 'POST':
+        if category == "review":
+            pass
+    
     return 'a'

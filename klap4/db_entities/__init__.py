@@ -2,6 +2,7 @@ from collections import namedtuple
 import re
 from typing import Union
 
+from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.expression import and_
 
@@ -99,7 +100,8 @@ from klap4.db_entities.genre import *
 from klap4.db_entities.album import *
 from klap4.db_entities.song import *
 from klap4.db_entities.label_and_promoter import *
-
+from klap4.db_entities.playlist import*
+from klap4.db_entities.user import*
 
 def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
 
@@ -162,7 +164,7 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
     return entity
 
 
-def search_artists(genre, name) -> SQLBase:
+def search_artists(genre: str, name: str) -> SQLBase:
     entity = None
 
     from klap4.db import Session
@@ -179,7 +181,7 @@ def search_artists(genre, name) -> SQLBase:
     
     return entity
 
-def search_albums(genre, artist_name, name) -> SQLBase:
+def search_albums(genre: str, artist_name: str, name: str) -> SQLBase:
     entity = None
 
     from klap4.db import Session
@@ -197,3 +199,78 @@ def search_albums(genre, artist_name, name) -> SQLBase:
         .all()
     
     return entity
+
+def create_artist(genre_abbr, name):
+    entity = None
+
+    from klap4.db import Session
+    session = Session()
+
+    # Get the max number for artists in this genre category, then add 1 to it for the new artist
+    entity = session.query(Artist, func.max(Artist.number)).one()
+    next_num = entity.number + 1
+
+    # Create a new artist object for the table, insert it and commit
+    new_artist = Artist(genre_abbr=genre_abbr, 
+                        number=int(next_num), 
+                        name=name)
+
+    session.add(new_artist)
+    session.commit()
+
+    return new_artist
+
+
+def create_album(genre_abbr, artist_num, format_bitfield, label_id, promoter_id, name):
+    entity = None
+
+    from datetime import date
+    from klap4.db import Session
+    session = Session()
+
+    # Get the next letter for this artist
+    entity = session.query(Artist) \
+        .filter(
+            and_(Artist.genre_abbr == genre_abbr, Artist.number == artist_num)
+        ) \
+        .one()
+    
+    next_letter = entity.next_album_letter()
+
+    new_album = Album(genre_abbr=genre_abbr, 
+                        artist_num=int(artist_num), 
+                        letter=next_letter, 
+                        name=name, 
+                        date_added=date.today(), 
+                        missing=False, 
+                        format_bitfield=format_bitfield, 
+                        label_id=label_id, 
+                        promoter_id=promoter_id)
+    
+    session.add(new_album)
+    session.commit()
+
+    return new_album
+
+def delete_artist(artist):
+    genre_abbr = artist.genre_abbr
+    number = artist.number
+
+    from klap4.db import Session
+    session = Session()
+
+    session.query(Artist).filter(and_(Artist.genre_abbr == genre_abbr, Artist.number == number)).delete()
+
+    return
+
+def delete_album(album):
+    genre_abbr = album.genre_abbr
+    artist_num = album.artist_num
+    letter = album.letter
+
+    from klap4.db import Session
+    session = Session()
+
+    session.query(Album).filter(and_(Album.genre_abbr == genre_abbr, Album.artist_num == artist_num, Album.letter == letter)).delete()
+
+    return
