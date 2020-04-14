@@ -118,7 +118,7 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
             from klap4.db import Session
             session = Session()
 
-            entity = session.query(Genre).filter(Genre.abbreviation == tag.genre_abbr).all()
+            entity = session.query(Genre).filter(Genre.abbreviation == tag.genre_abbr).one()
 
             if tag.artist_num is not None and entity is not None:
                 entity = session.query(Artist) \
@@ -206,27 +206,6 @@ def search_albums(genre: str, artist_name: str, name: str) -> SQLBase:
         .all()
     
     return entity
-
-
-def create_artist(genre_abbr, name):
-    entity = None
-
-    from klap4.db import Session
-    session = Session()
-
-    # Get the max number for artists in this genre category, then add 1 to it for the new artist
-    entity = session.query(Artist, func.max(Artist.number)).one()
-    next_num = entity.number + 1
-
-    # Create a new artist object for the table, insert it and commit
-    new_artist = Artist(genre_abbr=genre_abbr, 
-                        number=int(next_num), 
-                        name=name)
-
-    session.add(new_artist)
-    session.commit()
-
-    return new_artist
 
 
 def create_album(genre_abbr, artist_num, format_bitfield, label_id, promoter_id, name):
