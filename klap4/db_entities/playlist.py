@@ -11,14 +11,14 @@ class Playlist(SQLBase):
     __tablename__ = "playlist"
 
     #initialize playlist variables
-    username = column(String, ForeignKey("user.name"), primary_key=True)
-    show = column(string, nullable=True)
-    playlist_name = column(String, username + show, primary_key = True)
+    username = Column(String, ForeignKey("user.name"), primary_key=True)
+    show = Column(String, nullable=True)
+    playlist_name = Column(String, username + show, primary_key = True)
     #id= None
 
 
     #table relations
-    username = column("klap4.db_entities.user.User", back_populates="playlist")
+    username = relationship("klap4.db_entities.user.User", back_populates="playlist")
 
 
     def __init__(self, **kwargs):

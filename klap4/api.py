@@ -21,7 +21,11 @@ CORS(app)
 api = Api(app)
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 admin = Admin(app, name='KLAP4', template_mode='bootstrap3')
+
+admin.add_view(ModelView(Genre, session))
 admin.add_view(ModelView(Artist, session))
+admin.add_view(ModelView(Album, session))
+admin.add_view(ModelView(Song, session))
 
 
 '''@app.before_request
