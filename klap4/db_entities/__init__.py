@@ -100,8 +100,8 @@ from klap4.db_entities.genre import *
 from klap4.db_entities.album import *
 from klap4.db_entities.song import *
 from klap4.db_entities.label_and_promoter import *
-from klap4.db_entities.playlist import*
-from klap4.db_entities.user import*
+#from klap4.db_entities.playlist import *
+#from klap4.db_entities.user import *
 
 def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
 

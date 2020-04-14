@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS, cross_origin
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from flask_restful import Resource, Api
 
 from sqlalchemy.sql.expression import and_
@@ -7,9 +9,19 @@ from sqlalchemy.sql.expression import and_
 from klap4 import db
 from klap4.db_entities import *
 
+from pathlib import Path
+
+#TODO: Need to connect to DB in API in order for admin panel to work. Any idea why?
+script_path = Path(__file__).absolute().parent
+db.connect(script_path/".."/"test.db")
+session = db.Session()
+
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
+app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+admin = Admin(app, name='KLAP4', template_mode='bootstrap3')
+admin.add_view(ModelView(Artist, session))
 
 
 '''@app.before_request

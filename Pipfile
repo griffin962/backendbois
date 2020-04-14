@@ -15,6 +15,7 @@ spotipy = "*"
 flask-restful = "*"
 klap-4 = {editable = true,path = "."}
 sqlalchemy-seed = "*"
+flask-admin = "*"
 
 [requires]
 python_version = "3.7"
