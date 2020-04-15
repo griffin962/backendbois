@@ -11,21 +11,6 @@ from sqlalchemy.sql.expression import and_
 SQLBase = declarative_base()
 
 
-def get_json(sql_object: SQLBase) -> dict:
-    dict_data = vars(sql_object).copy()
-    dict_data.pop("_sa_instance_state")
-    dict_data["id"] = sql_object.id
-    return dict_data
-
-
-# class JSONable:
-#     def __json__(self):
-#         raise NotImplementedError(f"Class {type(self).__name__} does not implement the .json() interface.")
-#
-#     def json(self):
-#         return self.__json__()
-
-
 KLAP4_TAG = namedtuple("KLAP4_TAG", ["genre_abbr",
                                      "artist_num",
                                      "album_letter",
@@ -101,8 +86,8 @@ from klap4.db_entities.genre import *
 from klap4.db_entities.album import *
 from klap4.db_entities.song import *
 from klap4.db_entities.label_and_promoter import *
-#from klap4.db_entities.playlist import *
-#from klap4.db_entities.user import *
+from klap4.db_entities.playlist import *
+from klap4.db_entities.program import *
 
 
 def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
@@ -167,104 +152,4 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
         tag_str = ''.join([str(d) if d is not None else '' for d in tag])
         raise NoResultFound(f"No tag found: '{tag_str}'") from e
 
-    return entity
-
-
-def search_artists(genre: str, name: str) -> SQLBase:
-    entity = None
-
-    from klap4.db import Session
-    session = Session()
-
-    entity = session.query(Artist) \
-        .join(
-            Genre, and_(Genre.name.like(genre+'%'), Genre.abbreviation == Artist.genre_abbr)
-        ) \
-        .filter(
-            Artist.name.like(name+'%')
-        ) \
-        .all()
-    
-    return entity
-
-
-def search_albums(genre: str, artist_name: str, name: str) -> SQLBase:
-    entity = None
-
-    from klap4.db import Session
-    session = Session()
-
-    entity = session.query(Album) \
-        .join(
-            Genre, and_(Genre.name.like(genre+'%'), Genre.abbreviation == Album.genre_abbr)
-        ) \
-        .join(Artist, and_(Artist.name.like(artist_name+'%'), Artist.number == Album.artist_num)
-        ) \
-        .filter(
-            Album.name.like(name+'%'),
-        ) \
-        .all()
-    
-    return entity
-
-
-def list_albums(artist_id: str) -> SQLBase:
-    entity = None
-
-    from klap4.db import Session
-    session = Session()
-
-    new_id = decompose_tag(artist_id)
-
-    entity = session.query(Album) \
-        .filter( and_(Album.genre_abbr == new_id[0], Album.artist_num == new_id[1])
-        ) \
-        .all()
-    
-    return entity
-
-
-def list_songs(album_id: str) -> SQLBase:
-    entity = None
-
-    from klap4.db import Session
-    session = Session()
-
-    new_id = decompose_tag(album_id)
-
-    entity = session.query(Song) \
-        .filter( and_(Song.genre_abbr == new_id[0], Song.artist_num == new_id[1], Song.album_letter == new_id[2])
-        ) \
-        .all()
-    
-    return entity
-
-def list_reviews(album_id: str) -> SQLBase:
-    entity = None
-
-    from klap4.db import Session
-    session = Session()
-
-    new_id = decompose_tag(album_id)
-
-    entity = session.query(AlbumReview) \
-        .filter( and_(AlbumReview.genre_abbr == new_id[0], AlbumReview.artist_num == new_id[1], AlbumReview.album_letter == new_id[2])
-        ) \
-        .all()
-    
-    return entity
-
-def list_problems(album_id: str) -> SQLBase:
-    entity = None
-
-    from klap4.db import Session
-    session = Session()
-
-    new_id = decompose_tag(album_id)
-
-    entity = session.query(AlbumProblem) \
-        .filter( and_(AlbumProblem.genre_abbr == new_id[0], AlbumProblem.artist_num == new_id[1], AlbumProblem.album_letter == new_id[2])
-        ) \
-        .all()
-    
     return entity

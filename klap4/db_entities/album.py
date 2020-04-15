@@ -131,8 +131,6 @@ class AlbumProblem(SQLBase):
     artist = relationship("klap4.db_entities.artist.Artist", back_populates="album_problems")
     album = relationship("klap4.db_entities.album.Album", back_populates="album_problems")
 
-    id = None
-
     @property
     def id(self):
         return self.album.id + str(self.dj_id)

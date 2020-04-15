@@ -4,28 +4,27 @@ from sqlalchemy import Column, ForeignKey, String, Integer
 from sqlalchemy.orm import relationship
 
 import klap4.db
-from klap4.db_entities import decompose_tag, full_module_name, SQLBase
+from klap4.db_entities import SQLBase
 
 
 class Playlist(SQLBase):
     __tablename__ = "playlist"
 
-    #initialize playlist variables
-    username = Column(String, ForeignKey("user.name"), primary_key=True)
+    dj_id = Column(String, primary_key=True)
+    playlist_name = Column(String, primary_key=True)
     show = Column(String, nullable=True)
-    playlist_name = Column(String, username + show, primary_key = True)
-    #id= None
-
-
-    #table relations
-    username = relationship("klap4.db_entities.user.User", back_populates="playlist")
 
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    #output representation
+
+    @property
+    def id(self):
+        return str(self.dj_id) + str(self.playlist_name)
+
+    
     def __repr__(self):
-        return f"<Artist(username={self.username}, " \
-                       f"show={self.show}, " \
-                       f"playlist_name={self.playlist_name})>"
+        return f"<Playlist(dj_id={self.dj_id}, " \
+                        f"playlist_name={self.playlist_name}, " \
+                        f"show={self.show})>"
