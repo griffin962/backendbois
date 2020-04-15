@@ -18,6 +18,7 @@ Trello board can be found [here](https://trello.com/b/X7n73A1F/kmnr-ctrlf).
 2. If it already exists in the project's root directory, delete the `test.db` file.
 3. Navigate to `Examples/` and run `python seed_db.py` to reinitialize the test database.
 4. Run `./run.py` to run the webserver, or you can find any of the example scripts in `Examples/`.
+5. The API can be found at `http://localhost:5000/`. Use the routes in `klap4/api.py` to test it out if you desire.
 
 ### Project Structure
 - There are two scripts in the project's root directory. `setup.py` sets up the `klap4` drectory as a package, while `run.py` runs the Flask web server.
