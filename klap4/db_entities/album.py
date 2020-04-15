@@ -33,6 +33,7 @@ class Album(SQLBase):
     label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="artists")
     promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists")
     album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="album")
+    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="album")
 
     is_new = False
     id = None
@@ -95,7 +96,7 @@ class AlbumReview(SQLBase):
     album = relationship("klap4.db_entities.album.Album", back_populates="album_reviews")
 
     is_recent = False
-    id = False
+    id = None
 
     def __init__(self, **kwargs):
         if "date_entered" in kwargs:
@@ -114,4 +115,31 @@ class AlbumReview(SQLBase):
         return f"<AlbumReview(id={self.id}, " \
                             f"date_entered={self.date_entered}, " \
                             f"is_recent={self.is_recent}, " \
-                            f"content={self.content[:20] + '...' if len(self.content) > 20 else self.message})>"
+                            f"content={self.content[:20] + '...' if len(self.content) > 20 else self.content})>"
+
+
+class AlbumProblem(SQLBase):
+    __tablename__ = "album_problem"
+
+    genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
+    artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
+    album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
+    dj_id = Column(String, primary_key=True)
+    content = Column(String, nullable=False)
+
+    genre = relationship("klap4.db_entities.genre.Genre", back_populates="album_problems")
+    artist = relationship("klap4.db_entities.artist.Artist", back_populates="album_problems")
+    album = relationship("klap4.db_entities.album.Album", back_populates="album_problems")
+
+    id = None
+
+    @property
+    def id(self):
+        return self.album.id + str(self.dj_id)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    
+    def __repr__(self):
+        return f"<AlbumProblem(id={self.id}, " \
+                                f"content={self.content[:20] + '...' if len(self.content) > 20 else self.content})>"

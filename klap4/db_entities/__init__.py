@@ -208,58 +208,63 @@ def search_albums(genre: str, artist_name: str, name: str) -> SQLBase:
     return entity
 
 
-def create_album(genre_abbr, artist_num, format_bitfield, label_id, promoter_id, name):
+def list_albums(artist_id: str) -> SQLBase:
     entity = None
 
-    from datetime import date
     from klap4.db import Session
     session = Session()
 
-    # Get the next letter for this artist
-    entity = session.query(Artist) \
-        .filter(
-            and_(Artist.genre_abbr == genre_abbr, Artist.number == artist_num)
+    new_id = decompose_tag(artist_id)
+
+    entity = session.query(Album) \
+        .filter( and_(Album.genre_abbr == new_id[0], Album.artist_num == new_id[1])
         ) \
-        .one()
+        .all()
     
-    next_letter = entity.next_album_letter()
-
-    new_album = Album(genre_abbr=genre_abbr, 
-                        artist_num=int(artist_num), 
-                        letter=next_letter, 
-                        name=name, 
-                        date_added=date.today(), 
-                        missing=False, 
-                        format_bitfield=format_bitfield, 
-                        label_id=label_id, 
-                        promoter_id=promoter_id)
-    
-    session.add(new_album)
-    session.commit()
-
-    return new_album
+    return entity
 
 
-def delete_artist(artist):
-    genre_abbr = artist.genre_abbr
-    number = artist.number
+def list_songs(album_id: str) -> SQLBase:
+    entity = None
 
     from klap4.db import Session
     session = Session()
 
-    session.query(Artist).filter(and_(Artist.genre_abbr == genre_abbr, Artist.number == number)).delete()
+    new_id = decompose_tag(album_id)
 
-    return
+    entity = session.query(Song) \
+        .filter( and_(Song.genre_abbr == new_id[0], Song.artist_num == new_id[1], Song.album_letter == new_id[2])
+        ) \
+        .all()
+    
+    return entity
 
-
-def delete_album(album):
-    genre_abbr = album.genre_abbr
-    artist_num = album.artist_num
-    letter = album.letter
+def list_reviews(album_id: str) -> SQLBase:
+    entity = None
 
     from klap4.db import Session
     session = Session()
 
-    session.query(Album).filter(and_(Album.genre_abbr == genre_abbr, Album.artist_num == artist_num, Album.letter == letter)).delete()
+    new_id = decompose_tag(album_id)
 
-    return
+    entity = session.query(AlbumReview) \
+        .filter( and_(AlbumReview.genre_abbr == new_id[0], AlbumReview.artist_num == new_id[1], AlbumReview.album_letter == new_id[2])
+        ) \
+        .all()
+    
+    return entity
+
+def list_problems(album_id: str) -> SQLBase:
+    entity = None
+
+    from klap4.db import Session
+    session = Session()
+
+    new_id = decompose_tag(album_id)
+
+    entity = session.query(AlbumProblem) \
+        .filter( and_(AlbumProblem.genre_abbr == new_id[0], AlbumProblem.artist_num == new_id[1], AlbumProblem.album_letter == new_id[2])
+        ) \
+        .all()
+    
+    return entity
