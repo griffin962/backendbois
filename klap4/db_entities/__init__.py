@@ -82,6 +82,7 @@ def full_module_name(name: str, *, module_name: str = "") -> str:
 # Need to append new modules as we add them in this file.
 from klap4.db_entities.software_log import *
 from klap4.db_entities.artist import *
+from klap4.db_entities.dj import *
 from klap4.db_entities.genre import *
 from klap4.db_entities.album import *
 from klap4.db_entities.song import *

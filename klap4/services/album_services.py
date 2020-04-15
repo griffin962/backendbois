@@ -109,20 +109,40 @@ def report_problem(album_id: str, dj_id: str, content: str) ->SQLBase:
     return newProblem
 
 
-def generate_chart(weeks: int, format: str) -> list:
+def generate_chart(format: str, weeks: int) -> list:
     from datetime import datetime, timedelta
 
     from klap4.db import Session
     session = Session()
 
-    # Need to make a flag for weeks and format
-    # If format == "all", order the song list by most recently played and most plays for the last number of weeks
-    # If format == "new", order the song list by most recently added, most recently played, and most plays for the last number of weeks
-    chart_list = session.query(Album) \
-        .filter(
-            and_(datetime.now() - Album.date_added < timedelta(days=30 * 6) )
-        ) \
-        .all()
+    if format == "all":
+        chart_list = session.query(Song) \
+            .filter(
+                datetime.now() - Song.last_played < timedelta(days=30 * 6)
+            ) \
+            .order_by(Song.times_played) \
+            .limit(20) \
+            .all()
+        
+        return format_object_list(chart_list)
 
+    elif format == "new":
+        chart_list = session.query(Song) \
+            .join(
+                Album, and_(
+                            datetime.now() - Album.date_added < timedelta(days=30 * 6), 
+                            Song.genre_abbr == Album.genre_abbr,
+                            Song.artist_num == Album.artist_num
+                        )
+            ) \
+            .filter(
+                datetime.now() - Song.last_played < timedelta(days=30 * 6)
+            ) \
+            .order_by(Song.times_played) \
+            .limit(20) \
+            .all()
+        
+        return format_object_list(chart_list)
 
-    return
+    # Will want to polish up the returned object. 
+    # We want to return the album/artist/label/promoter names with the song name and number of plays.

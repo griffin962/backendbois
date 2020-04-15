@@ -49,8 +49,8 @@ def cleanup_request():
         g.db.close()'''
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def ldap_login():
+@app.route('/session', methods=['GET', 'POST'])
+def user_session():
     if request.method == 'GET':
         return jsonify({"Login": True, "Username": "test_user"})
     if request.method == 'POST':
@@ -150,10 +150,11 @@ def report_album_problem(id):
         return "Added"
 
 
-@app.route('/charts/new', methods=['GET'])
-def get_new_charts():
+@app.route('/charts/<form>/<weeks>', methods=['GET'])
+def get_new_charts(form, weeks):
     if request.method == 'GET':
-        return "a"
+        charts = generate_chart(form, weeks)
+        return jsonify(charts)
 
 
 # Quickjump route for jumping straight to a resource based on ID
