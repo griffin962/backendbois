@@ -28,3 +28,22 @@ def add_playlist(user: str, name: str, show: str) -> SQLBase:
     session.commit()
 
     return newPlaylist
+
+def update_playlist(user: str, name: str, show:str) -> SQLBase:
+    from klap4.db import Session
+    session = Session()
+
+    update = Playlist.update(). \
+                        where(Playlist.dj_id == user). \
+                        values(playlist_name=name, show=show)
+    
+    return update
+
+
+def delete_playlist(user: str, name: str) -> None:
+    from klap4.db import Session
+    session = Session()
+
+    session.query(Playlist).filter(and_(Playlist.dj_id == user, Playlist.playlist_name == name)).delete()
+
+    return

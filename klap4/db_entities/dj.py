@@ -22,7 +22,7 @@ class DJ(SQLBase):
 
     @property
     def id(self):
-        return str(self.dj_id) + str(self.is_admin)
+        return str(self.dj_id) + '+' + str(self.is_admin)
     
 
     def __repr__(self):

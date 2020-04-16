@@ -179,3 +179,18 @@ def playlist():
         playlist = add_playlist(dj_id, p_name, show)
 
         return "Added"
+    
+    elif request.method == 'PUT':
+        dj_id = request.get_json()['username']
+        p_name = request.get_json()['playlist_name']
+        show = request.get_json()['show']
+        playlist = update_playlist(dj_id, p_name, show)
+
+        return "Updated"
+    
+    elif request.method == 'DELETE':
+        dj_id = request.get_json()['username']
+        p_name = request.get_json()['playlist_name']
+        delete_playlist(dj_id, p_name)
+
+        return "Deleted"
