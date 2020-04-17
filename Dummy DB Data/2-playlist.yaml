@@ -1,0 +1,5 @@
+---
+- model: klap4.db_entities.playlist.Playlist
+  fields:
+    id: "jam4x2+My Playlist"
+    show: "Jonathan's Dumpster Fire"

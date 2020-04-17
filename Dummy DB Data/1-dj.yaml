@@ -1,0 +1,5 @@
+---
+- model: klap4.db_entities.dj.DJ
+  fields:
+    id: "jam4x2"
+    name: "Jonathan Miller"

@@ -17,9 +17,13 @@ KLAP4_TAG = namedtuple("KLAP4_TAG", ["genre_abbr",
                                      "song_num",
                                      "album_review_dj_id"],
                        defaults=[None] * 5)
+PLAYLIST_TAG = namedtuple("PLAYLIST_TAG", ["dj_id",
+                                           "name",
+                                           "song_num"],
+                          defaults=[None] * 3)
 
 
-def decompose_tag(tag: str) -> KLAP4_TAG:
+def decompose_tag(tag: str, *, regex_hint: Union[str, None] = None) -> Union[KLAP4_TAG, PLAYLIST_TAG]:
     """Decomposes a music id/tag into it's respective attributes.
 
     A music tag always starts out with a combination of letters, for the genre.
@@ -32,37 +36,63 @@ def decompose_tag(tag: str) -> KLAP4_TAG:
     for an album review where the negative number is a negated dj id.
 
     Examples:
-        ``RR``: Genre with abbreviation "RK".
-        ``RR3``: The third artist in the previously defined genre.
-        ``RR3B``: The second album from the previously defined artist.
-        ``RR3B5``: The fifth song in the previously defined album.
-        ``RR3B-5``: A review of the previously defined album by the dj with id ``5``.
+        ``RR``: Genre with abbreviation "RR".
+        ``RR3B5``: The fifth song in the 2nd album of the 3rd artist in the "RR" genre.
+        ``RR3B-abcdef``: A review of the previously defined album by the dj with id ``abcdef``.
+        ``abcdef+My Playlist``: A playlist titled ``My Playlist`` from dj ``abcdef``.
+        ``abcdef+My Playlist+5``: The fifth playlist entry in the above playlist.
 
     Args:
         tag: The full tag string.
+        regex_hint: A hint as to what the tag is, if ``None`` then try to figure it out ourselves. Searches for the
+                    ``+`` within the first 7 characters for a playlist tag, else treat it as a klap4 tag. Valid values
+                    are ``"klap4"``, ``"playlist"``, or ``None``
 
     Returns:
          A named tuple containing each of the attributes, or ``None`` if it is not found.
     """
+    regexes = {
+        "klap4": r"([a-z]+)(\d+)?([a-z]+)?(\d+|\-[a-z0-9]+)?",
+        "playlist": r"([a-z0-9]+)(?:\+([^\n\+\t]+)(?:\+(\d+))?)?"
+    }
     if len(tag) == 0:
         raise ValueError("id must not be empty")
+    elif regex_hint is None:
+        if '+' in tag[:8]:
+            regex_hint = "playlist"
+        else:
+            regex_hint = "klap4"
+    elif regex_hint not in regexes:
+        raise ValueError(f"Unknown regex hint '{regex_hint}'.")
 
-    matched = re.findall(r"([a-zA-Z]+)(\d+)?([a-zA-Z]+)?(\d+|\-[a-zA-Z0-9]+)?", tag, re.IGNORECASE)[0]
+    decomposed_tag = None
+    regex_hint = regex_hint.lower()
+
+    matched = re.findall(regexes[regex_hint], tag, re.IGNORECASE)[0]
     matched = [match if len(match) > 0 else None for match in matched]
 
-    is_review = False
-    try:
-        matched[1] = int(matched[1])
-        if matched[3][0] == '-':
-            matched[3] = matched[3][1:]
-            matched.append(matched[3])
-            matched[3] = None
-        else:
-            matched[3] = int(matched[3])
-    except (TypeError, ValueError):
-        pass
+    if regex_hint == "klap4":
+        try:
+            matched[1] = int(matched[1])
+            if matched[3][0] == '-':
+                matched[3] = matched[3][1:]
+                matched.append(matched[3])
+                matched[3] = None
+            else:
+                matched[3] = int(matched[3])
+        except (TypeError, ValueError):
+            pass
 
-    return KLAP4_TAG(*matched)
+        decomposed_tag = KLAP4_TAG(*matched)
+    elif regex_hint == "playlist":
+        try:
+            matched[2] = int(matched[2])
+        except (TypeError, ValueError):
+            pass
+
+        decomposed_tag = PLAYLIST_TAG(*matched)
+
+    return decomposed_tag
 
 
 def full_module_name(name: str, *, module_name: str = "") -> str:
@@ -91,20 +121,20 @@ from klap4.db_entities.playlist import *
 from klap4.db_entities.program import *
 
 
-def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
-
-    # If tag is a string, turn it into a KLAP4_TAG
-    if not isinstance(tag, KLAP4_TAG):
+def get_entity_from_tag(tag: Union[str, KLAP4_TAG, PLAYLIST_TAG]) -> SQLBase:
+    # If tag is a string, turn it into a named tuple
+    if isinstance(tag, str):
         tag = decompose_tag(tag)
 
     entity = None
 
     try:
-        if tag.genre_abbr is not None:
-            from klap4.db import Session
-            session = Session()
-
-            entity = session.query(Genre).filter(Genre.abbreviation == tag.genre_abbr).one()
+        from klap4.db import Session
+        session = Session()
+        if isinstance(tag, KLAP4_TAG) and tag.genre_abbr is not None:
+            entity = session.query(Genre) \
+                .filter(Genre.abbreviation == tag.genre_abbr) \
+                .one()
 
             if tag.artist_num is not None and entity is not None:
                 entity = session.query(Artist) \
@@ -149,6 +179,31 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG]) -> SQLBase:
                                 )
                             ) \
                             .one()
+        elif isinstance(tag, PLAYLIST_TAG) and tag.dj_id is not None:
+            entity = session.query(DJ) \
+                .filter(DJ.id == tag.dj_id) \
+                .one()
+
+            if tag.name is not None:
+                entity = session.query(Playlist) \
+                    .filter(
+                        and_(
+                            Playlist.dj_id == tag.dj_id,
+                            Playlist.name == tag.name
+                        )
+                    ) \
+                    .one()
+
+                if tag.song_num is not None:
+                    entity = session.query(PlaylistEntry) \
+                        .filter(
+                            and_(
+                                PlaylistEntry.dj_id == tag.dj_id,
+                                PlaylistEntry.playlist_name == tag.name,
+                                PlaylistEntry.index == tag.song_num
+                            )
+                        ) \
+                        .one()
     except NoResultFound as e:
         tag_str = ''.join([str(d) if d is not None else '' for d in tag])
         raise NoResultFound(f"No tag found: '{tag_str}'") from e

@@ -1,0 +1,18 @@
+---
+- model: klap4.db_entities.playlist.PlaylistEntry
+  fields:
+    id: "jam4x2+My Playlist+1"
+    reference_type: 1
+    reference: "AL1C1"
+
+- model: klap4.db_entities.playlist.PlaylistEntry
+  fields:
+    id: "jam4x2+My Playlist+2"
+    reference_type: 0
+    reference: '{"Artist": "Ashnikko", "Album": "Hi, it''s me", "Song": "Special"}'
+
+- model: klap4.db_entities.playlist.PlaylistEntry
+  fields:
+    id: "jam4x2+My Playlist+3"
+    reference_type: 2
+    reference: "46aopTu45teng25ROkoeXk"

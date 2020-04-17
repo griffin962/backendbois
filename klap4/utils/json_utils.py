@@ -1,8 +1,9 @@
 from typing import Dict, List
 
+json = Dict[str, str]
+
 from klap4.db_entities import SQLBase
 
-json = Dict[str, str]
 
 # class JSONable:
 #     def __json__(self):
