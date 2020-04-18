@@ -103,3 +103,192 @@
     last_played: !!timestamp 2020-04-04
     times_played: 0
     recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A12"
+    name: "Residual"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A13"
+    name: "Argent Energy"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A14"
+    name: "Harbinger"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A15"
+    name: "Biowaves"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A16"
+    name: "Olivia's Doom"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A17"
+    name: "Transistor Fist"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A18"
+    name: "Dr,Samuel Hayden"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A19"
+    name: "Cyberdemon"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "III. Dakhma"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "Damnation"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "The Stench"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "Uac Report File; Shto36u3"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "Death & Exhale"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "SkullHacker"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "Lazarus Waves"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "Lazarus Waves"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "Lazarus Waves"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "Vega Core"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "6_idkill.Vega.Cih"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "Mastermind"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A20"
+    name: "IV. Doom"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
