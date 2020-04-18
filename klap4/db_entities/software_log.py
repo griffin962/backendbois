@@ -28,7 +28,7 @@ class SoftwareLog(SQLBase):
             kwargs["line_num"] = caller.lineno
 
         if "level" not in kwargs:
-            kwargs["level"] = loggin g.getLevelName("debug")
+            kwargs["level"] = logging.getLevelName("debug")
 
         if "tag" not in kwargs:
             kwargs["tag"] = "UNTAGGED"
