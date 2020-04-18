@@ -6,3 +6,102 @@
     last_played: !!timestamp 2020-04-04
     times_played: 1
     recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A1"
+    name: "I. Dogma"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 1
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A2"
+    name: "Rip & Tear"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 1
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A3"
+    name: "I. Dogma"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 1
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A4"
+    name: "Rust, Dust & Guts"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 1
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A5"
+    name: "II. Demigod"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A6"
+    name: "Hellwalker"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A7"
+    name: "Flesh & Metal"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A8"
+    name: "Impure Spectrum"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A9"
+    name: "Flesh & Metal"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A10"
+    name: "Ties That Bind"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "RK3A11"
+    name: "Bfg Division"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True

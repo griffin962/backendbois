@@ -36,6 +36,11 @@
 
 - model: klap4.db_entities.artist.Artist
   fields:
+    id: "RK3"
+    name: "Mick Gordon"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
     id: "EM1"
     name: "Elohim"
 
