@@ -26,19 +26,11 @@ PLAYLIST_TAG = namedtuple("PLAYLIST_TAG", ["dj_id",
 def decompose_tag(tag: str, *, regex_hint: Union[str, None] = None) -> Union[KLAP4_TAG, PLAYLIST_TAG]:
     """Decomposes a music id/tag into it's respective attributes.
 
-    A music tag always starts out with a combination of letters, for the genre.
-
-    Following the genre is a positive integer, for the artist.
-
-    Third is an album letter(s?)
-
-    Lastly is another positive integer for the song number within the album, or a negative integer
-    for an album review where the negative number is a negated dj id.
-
     Examples:
         ``RR``: Genre with abbreviation "RR".
         ``RR3B5``: The fifth song in the 2nd album of the 3rd artist in the "RR" genre.
         ``RR3B-abcdef``: A review of the previously defined album by the dj with id ``abcdef``.
+        ``RR3B!abcdef``: A problem report of the previously defined album by the dj with id ``abcdef``.
         ``abcdef+My Playlist``: A playlist titled ``My Playlist`` from dj ``abcdef``.
         ``abcdef+My Playlist+5``: The fifth playlist entry in the above playlist.
 
@@ -52,7 +44,7 @@ def decompose_tag(tag: str, *, regex_hint: Union[str, None] = None) -> Union[KLA
          A named tuple containing each of the attributes, or ``None`` if it is not found.
     """
     regexes = {
-        "klap4": r"([a-z]+)(\d+)?([a-z]+)?(\d+|\-[a-z0-9]+)?",
+        "klap4": r"([a-z]+)(\d+)?([a-z]+)?(\d+|(\-|\!)[a-z0-9]+)?",
         "playlist": r"([a-z0-9]+)(?:\+([^\n\+\t]+)(?:\+(\d+))?)?"
     }
     if len(tag) == 0:

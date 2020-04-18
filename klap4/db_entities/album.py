@@ -87,13 +87,14 @@ class AlbumReview(SQLBase):
     genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
     artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
     album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
-    dj_id = Column(String, primary_key=True)
+    dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
     date_entered = Column(DateTime, nullable=False)
     content = Column(String, nullable=False)
 
     genre = relationship("klap4.db_entities.genre.Genre", back_populates="album_reviews")
     artist = relationship("klap4.db_entities.artist.Artist", back_populates="album_reviews")
     album = relationship("klap4.db_entities.album.Album", back_populates="album_reviews")
+    dj = relationship("klap4.db_entities.dj.DJ", back_populates="album_reviews")
 
     is_recent = False
     id = None
@@ -124,20 +125,21 @@ class AlbumProblem(SQLBase):
     genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
     artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
     album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
-    dj_id = Column(String, primary_key=True)
+    dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
     content = Column(String, nullable=False)
 
     genre = relationship("klap4.db_entities.genre.Genre", back_populates="album_problems")
     artist = relationship("klap4.db_entities.artist.Artist", back_populates="album_problems")
     album = relationship("klap4.db_entities.album.Album", back_populates="album_problems")
+    dj = relationship("klap4.db_entities.dj.DJ", back_populates="album_problems")
 
     @property
     def id(self):
-        return self.album.id + str(self.dj_id)
+        return f"{self.album.id}!{self.dj_id}"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
     def __repr__(self):
         return f"<AlbumProblem(id={self.id}, " \
-                                f"content={self.content[:20] + '...' if len(self.content) > 20 else self.content})>"
+                             f"content={self.content[:20] + '...' if len(self.content) > 20 else self.content})>"

@@ -14,6 +14,8 @@ class DJ(SQLBase):
     name = Column(String, nullable=False)
     is_admin = Column(Boolean, nullable=False)
 
+    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="dj")
+    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="dj")
     playlists = relationship("klap4.db_entities.playlist.Playlist", back_populates="dj")
     playlist_entries = relationship("klap4.db_entities.playlist.PlaylistEntry", back_populates="dj")
 
