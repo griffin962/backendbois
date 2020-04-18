@@ -28,12 +28,17 @@ class Album(SQLBase):
     promoter_id = Column(Integer, ForeignKey("promoter.id"), nullable=True)
 
     genre = relationship("klap4.db_entities.genre.Genre", back_populates="albums", cascade="save-update, merge, delete")
-    artist = relationship("klap4.db_entities.artist.Artist", back_populates="albums", cascade="save-update, merge, delete")
+    artist = relationship("klap4.db_entities.artist.Artist", back_populates="albums",
+                          cascade="save-update, merge, delete")
     songs = relationship("klap4.db_entities.song.Song", back_populates="album", cascade="save-update, merge, delete")
-    label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="artists", cascade="save-update, merge, delete")
-    promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists", cascade="save-update, merge, delete")
-    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="album", cascade="save-update, merge, delete")
-    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="album", cascade="save-update, merge, delete")
+    label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="artists",
+                         cascade="save-update, merge, delete")
+    promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists",
+                            cascade="save-update, merge, delete")
+    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="album",
+                                 cascade="save-update, merge, delete")
+    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="album",
+                                  cascade="save-update, merge, delete")
 
     is_new = False
     id = None

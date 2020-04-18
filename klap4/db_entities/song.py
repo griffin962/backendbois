@@ -42,7 +42,7 @@ class Song(SQLBase):
             kwargs["artist_num"] = decomposed_tag.artist_num
             kwargs["album_letter"] = decomposed_tag.album_letter
 
-            if decomposed_tag.song_num is not None:
+            if decomposed_tag.song_num is not None:z
                 kwargs["number"] = decomposed_tag.song_num
 
             kwargs.pop("id")

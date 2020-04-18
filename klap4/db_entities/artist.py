@@ -16,13 +16,16 @@ class Artist(SQLBase):
     next_album_letter = None
     id = None
 
-    genre = relationship("klap4.db_entities.genre.Genre", back_populates="artists", cascade="save-update, merge, delete")
-    albums = relationship("klap4.db_entities.album.Album", back_populates="artist", cascade="save-update, merge, delete")
+    genre = relationship("klap4.db_entities.genre.Genre", back_populates="artists",
+                         cascade="save-update, merge, delete")
+    albums = relationship("klap4.db_entities.album.Album", back_populates="artist",
+                          cascade="save-update, merge, delete")
     album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="artist",
                                  cascade="save-update, merge, delete")
     album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="artist",
                                   cascade="save-update, merge, delete")
-    songs = relationship("klap4.db_entities.song.Song", back_populates="artist", cascade="save-update, merge, delete")
+    songs = relationship("klap4.db_entities.song.Song", back_populates="artist",
+                         cascade="save-update, merge, delete")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
