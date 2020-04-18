@@ -20,8 +20,11 @@ def main():
 
     for yaml_file in yaml_files:
         print(f"Loading file: {yaml_file}")
-        fixtures = load_fixture_files(data_dir, [yaml_file])
-        load_fixtures(klap4.db.Session, fixtures)
+        try:
+            fixtures = load_fixture_files(data_dir, [yaml_file])
+            load_fixtures(klap4.db.Session, fixtures)
+        except Exception as e:
+            raise RuntimeError(f"Error importing database data from file: {data_dir/yaml_file}") from e
 
     print("Done seeding data.")
 
