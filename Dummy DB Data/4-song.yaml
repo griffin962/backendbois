@@ -3,7 +3,6 @@
   fields:
     id: "AL1C1"
     name: "Concrete"
-    fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 1
     recommended: True

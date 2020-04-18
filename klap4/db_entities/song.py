@@ -51,6 +51,9 @@ class Song(SQLBase):
             album = get_entity_from_tag(f"{kwargs['genre_abbr']}{kwargs['artist_num']}{kwargs['album_letter']}")
             kwargs["number"] = len(album.songs) + 1
 
+        if "fcc_status" not in kwargs:
+            kwargs["fcc_status"] = Song.FCC_STATUS.OBSCENE
+
         super().__init__(**kwargs)
 
     @property
