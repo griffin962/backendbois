@@ -4,8 +4,6 @@
     id: "AL1C1"
     name: "Concrete"
     last_played: !!timestamp 2020-04-04
-    times_played: 1
-    recommended: True
 
 - model: klap4.db_entities.song.Song
   fields:

@@ -54,6 +54,15 @@ class Song(SQLBase):
         if "fcc_status" not in kwargs:
             kwargs["fcc_status"] = Song.FCC_STATUS.OBSCENE
 
+        if "times_played" not in kwargs:
+            kwargs["times_played"] = 0
+
+        if "recommended" not in kwargs:
+            kwargs["recommended"] = False
+
+        if "last_played" not in kwargs:
+            kwargs["last_played"] = datetime.fromtimestamp(0)
+
         super().__init__(**kwargs)
 
     @property
