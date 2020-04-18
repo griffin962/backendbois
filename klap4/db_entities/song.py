@@ -13,10 +13,10 @@ class Song(SQLBase):
     __tablename__ = "song"
 
     class FCC_STATUS:
-        UNRATED = 0
         CLEAN = 1
         INDECENT = 2
         OBSCENE = 3
+        UNRATED = 4
 
     genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
     artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
@@ -28,9 +28,10 @@ class Song(SQLBase):
     times_played = Column(Integer, nullable=False)
     recommended = Column(Boolean, nullable=False)
 
-    genre = relationship("klap4.db_entities.genre.Genre", back_populates="songs")
-    artist = relationship("klap4.db_entities.artist.Artist", back_populates="songs")
-    album = relationship("klap4.db_entities.album.Album", back_populates="songs")
+    genre = relationship("klap4.db_entities.genre.Genre", back_populates="songs", cascade="save-update, merge, delete")
+    artist = relationship("klap4.db_entities.artist.Artist", back_populates="songs",
+                          cascade="save-update, merge, delete")
+    album = relationship("klap4.db_entities.album.Album", back_populates="songs", cascade="save-update, merge, delete")
 
     id = None
 
@@ -52,7 +53,7 @@ class Song(SQLBase):
             kwargs["number"] = len(album.songs) + 1
 
         if "fcc_status" not in kwargs:
-            kwargs["fcc_status"] = Song.FCC_STATUS.OBSCENE
+            kwargs["fcc_status"] = Song.FCC_STATUS.UNRATED
 
         if "times_played" not in kwargs:
             kwargs["times_played"] = 0

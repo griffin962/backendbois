@@ -16,7 +16,8 @@ class Label(SQLBase):
     name = Column(String, nullable=False)
     url = Column(String, nullable=False)
 
-    artists = relationship("klap4.db_entities.album.Album", back_populates="label")
+    artists = relationship("klap4.db_entities.album.Album", back_populates="label",
+                           cascade="save-update, merge, delete")
 
     def __repr__(self):
         return f"<Label(id={self.id}, " \
@@ -30,7 +31,8 @@ class Promoter(SQLBase):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
 
-    artists = relationship("klap4.db_entities.album.Album", back_populates="promoter")
+    artists = relationship("klap4.db_entities.album.Album", back_populates="promoter",
+                           cascade="save-update, merge, delete")
 
     def __repr__(self):
         return f"<Promoter(id={self.id}, " \

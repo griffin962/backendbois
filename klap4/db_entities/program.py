@@ -23,12 +23,13 @@ class Program(SQLBase):
     description = Column(String, nullable=False)
 
     program_slots = relationship("klap4.db_entities.program.ProgramSlot", back_populates="programs",
-                                 secondary=program_type_slots_table)
+                                 secondary=program_type_slots_table, cascade="save-update, merge, delete")
     program_logs = relationship("klap4.db_entities.program.ProgramLogEntry", back_populates="program",
                                 primaryjoin="and_("
                                                  "Program.type == ProgramLogEntry.program_type,"
                                                  "Program.name == ProgramLogEntry.program_name"
-                                            ")")
+                                            ")",
+                                cascade="save-update, merge, delete")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -47,7 +48,7 @@ class ProgramSlot(SQLBase):
     time = Column(Time, primary_key=True)
 
     programs = relationship("klap4.db_entities.program.Program", back_populates="program_slots",
-                            secondary=program_type_slots_table)
+                            secondary=program_type_slots_table, cascade="save-update, merge, delete")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -70,7 +71,8 @@ class ProgramLogEntry(SQLBase):
                            primaryjoin="and_("
                                             "Program.type == ProgramLogEntry.program_type,"
                                             "Program.name == ProgramLogEntry.program_name"
-                                       ")")
+                                       ")",
+                           cascade="save-update, merge, delete")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

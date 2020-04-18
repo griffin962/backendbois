@@ -17,11 +17,14 @@ class Genre(SQLBase):
     next_artist_num = 0
     id = None
 
-    artists = relationship("klap4.db_entities.artist.Artist", back_populates="genre")
-    albums = relationship("klap4.db_entities.album.Album", back_populates="genre")
-    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="genre")
-    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="genre")
-    songs = relationship("klap4.db_entities.song.Song", back_populates="genre")
+    artists = relationship("klap4.db_entities.artist.Artist", back_populates="genre",
+                           cascade="save-update, merge, delete")
+    albums = relationship("klap4.db_entities.album.Album", back_populates="genre", cascade="save-update, merge, delete")
+    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="genre",
+                                 cascade="save-update, merge, delete")
+    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="genre",
+                                  cascade="save-update, merge, delete")
+    songs = relationship("klap4.db_entities.song.Song", back_populates="genre", cascade="save-update, merge, delete")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
@@ -45,6 +48,5 @@ class Genre(SQLBase):
                       f"color={self.color}, " \
                       f"next_artist_num={self.next_artist_num})>"
     
-
     def __str__(self):
         return self.abbreviation

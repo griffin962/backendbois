@@ -15,8 +15,9 @@ class Playlist(SQLBase):
     name = Column(String, primary_key=True)
     show = Column(String, nullable=False)
 
-    dj = relationship("klap4.db_entities.dj.DJ", back_populates="playlists")
-    entries = relationship("klap4.db_entities.playlist.PlaylistEntry", back_populates="playlist")
+    dj = relationship("klap4.db_entities.dj.DJ", back_populates="playlists", cascade="save-update, merge, delete")
+    entries = relationship("klap4.db_entities.playlist.PlaylistEntry", back_populates="playlist",
+                           cascade="save-update, merge, delete")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
@@ -47,8 +48,10 @@ class PlaylistEntry(SQLBase):
     reference_type = Column(Integer, nullable=False)
     reference = Column(String, nullable=False)
 
-    dj = relationship("klap4.db_entities.dj.DJ", back_populates="playlist_entries")
-    playlist = relationship("klap4.db_entities.playlist.Playlist", back_populates="entries")
+    dj = relationship("klap4.db_entities.dj.DJ", back_populates="playlist_entries",
+                      cascade="save-update, merge, delete")
+    playlist = relationship("klap4.db_entities.playlist.Playlist", back_populates="entries",
+                            cascade="save-update, merge, delete")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:

@@ -27,13 +27,13 @@ class Album(SQLBase):
     label_id = Column(Integer, ForeignKey("label.id"), nullable=True)
     promoter_id = Column(Integer, ForeignKey("promoter.id"), nullable=True)
 
-    genre = relationship("klap4.db_entities.genre.Genre", back_populates="albums")
-    artist = relationship("klap4.db_entities.artist.Artist", back_populates="albums")
-    songs = relationship("klap4.db_entities.song.Song", back_populates="album")
-    label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="artists")
-    promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists")
-    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="album")
-    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="album")
+    genre = relationship("klap4.db_entities.genre.Genre", back_populates="albums", cascade="save-update, merge, delete")
+    artist = relationship("klap4.db_entities.artist.Artist", back_populates="albums", cascade="save-update, merge, delete")
+    songs = relationship("klap4.db_entities.song.Song", back_populates="album", cascade="save-update, merge, delete")
+    label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="artists", cascade="save-update, merge, delete")
+    promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists", cascade="save-update, merge, delete")
+    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="album", cascade="save-update, merge, delete")
+    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="album", cascade="save-update, merge, delete")
 
     is_new = False
     id = None
@@ -91,10 +91,14 @@ class AlbumReview(SQLBase):
     date_entered = Column(DateTime, nullable=False)
     content = Column(String, nullable=False)
 
-    genre = relationship("klap4.db_entities.genre.Genre", back_populates="album_reviews")
-    artist = relationship("klap4.db_entities.artist.Artist", back_populates="album_reviews")
-    album = relationship("klap4.db_entities.album.Album", back_populates="album_reviews")
-    dj = relationship("klap4.db_entities.dj.DJ", back_populates="album_reviews")
+    genre = relationship("klap4.db_entities.genre.Genre", back_populates="album_reviews",
+                         cascade="save-update, merge, delete")
+    artist = relationship("klap4.db_entities.artist.Artist", back_populates="album_reviews",
+                          cascade="save-update, merge, delete")
+    album = relationship("klap4.db_entities.album.Album", back_populates="album_reviews",
+                         cascade="save-update, merge, delete")
+    dj = relationship("klap4.db_entities.dj.DJ", back_populates="album_reviews",
+                      cascade="save-update, merge, delete")
 
     is_recent = False
     id = None
@@ -128,10 +132,14 @@ class AlbumProblem(SQLBase):
     dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
     content = Column(String, nullable=False)
 
-    genre = relationship("klap4.db_entities.genre.Genre", back_populates="album_problems")
-    artist = relationship("klap4.db_entities.artist.Artist", back_populates="album_problems")
-    album = relationship("klap4.db_entities.album.Album", back_populates="album_problems")
-    dj = relationship("klap4.db_entities.dj.DJ", back_populates="album_problems")
+    genre = relationship("klap4.db_entities.genre.Genre", back_populates="album_problems",
+                         cascade="save-update, merge, delete")
+    artist = relationship("klap4.db_entities.artist.Artist", back_populates="album_problems",
+                          cascade="save-update, merge, delete")
+    album = relationship("klap4.db_entities.album.Album", back_populates="album_problems",
+                         cascade="save-update, merge, delete")
+    dj = relationship("klap4.db_entities.dj.DJ", back_populates="album_problems",
+                      cascade="save-update, merge, delete")
 
     @property
     def id(self):
