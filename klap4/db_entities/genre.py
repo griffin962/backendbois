@@ -10,9 +10,10 @@ from klap4.db_entities import SQLBase
 class Genre(SQLBase):
     __tablename__ = "genre"
 
-    abbreviation = Column(String(2), primary_key=True)
+    abbreviation = Column(String(3), primary_key=True)
     name = Column(String, nullable=False)
     color = Column(String, nullable=False)
+
     next_artist_num = 0
     id = None
 
@@ -43,3 +44,7 @@ class Genre(SQLBase):
                       f"name={self.name}, " \
                       f"color={self.color}, " \
                       f"next_artist_num={self.next_artist_num})>"
+    
+
+    def __str__(self):
+        return self.abbreviation

@@ -5,11 +5,15 @@ class GenreModelView(ModelView):
     form_columns = ('abbreviation', 'name', 'color')
 
 
+class ArtistModelView(ModelView):
+    column_list=['name', 'genre_abbr', 'number']
+
+
 class ProgramModelView(ModelView):
     column_display_pk = True
-    form_columns = ('program_type', 'name', 'description')
+    form_columns = ('type', 'name', 'description')
 
 
 class PlaylistModelView(ModelView):
     column_display_pk = True
-    form_columns = ('dj_id', 'playlist_name', 'show')
+    form_columns = ('dj_id', 'name', 'show')

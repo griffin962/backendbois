@@ -30,7 +30,7 @@ global_user = "test_user"
 
 #TODO: Make custom model views for each model (like genre)
 admin.add_view(GenreModelView(Genre, session))
-admin.add_view(ModelView(Artist, session))
+admin.add_view(ArtistModelView(Artist, session))
 admin.add_view(ModelView(Album, session))
 admin.add_view(ModelView(Song, session))
 admin.add_view(ModelView(AlbumReview, session))
@@ -55,6 +55,9 @@ def user_session():
         return jsonify({"Login": True, "Username": "test_user"})
     if request.method == 'POST':
         username = request.get_json()['username']
+        #Checks if user is in LDAP server against their password
+        # If so, checks if they're in our database
+        # If not, add them to the database
         return jsonify({"Login": True, "Username": username})
 
 
@@ -84,7 +87,7 @@ def search(category):
 
         elif category == "album":
             genre = request.get_json()['genre']
-            artist_name = request.get_json()['artist_name']
+            artist_name = request.get_json()['artistName']
             name = request.get_json()['name']
 
             #TODO: make search fields for label, promoter, format, and is_new in future
@@ -92,7 +95,7 @@ def search(category):
             return jsonify(album_list)
         
         elif category == "program":
-            p_type = request.get_json()['program_type']
+            p_type = request.get_json()['programType']
             name = request.get_json()['name']
             program_list = search_programming(p_type, name)
             return jsonify(program_list)
@@ -138,7 +141,7 @@ def review_album(id):
         review = add_review(id, dj_id, content)
 
         return "Added"
-    
+
 
 @app.route('/album/problem/<id>', methods=['POST'])
 def report_album_problem(id):
@@ -154,6 +157,7 @@ def report_album_problem(id):
 def get_new_charts(form, weeks):
     if request.method == 'GET':
         charts = generate_chart(form, weeks)
+        charts = charts_format(charts)
         return jsonify(charts)
 
 
@@ -161,6 +165,8 @@ def get_new_charts(form, weeks):
 @app.route('/quickjump/<id>', methods=['GET'])
 def quickjump(id):
     entity = get_json(get_entity_from_tag(id))
+
+    #new_entity = { typ: "Artist", id: "AL2" }
 
     return jsonify(entity)
 
@@ -174,7 +180,7 @@ def playlist():
     
     elif request.method == 'POST':
         dj_id = request.get_json()['username']
-        p_name = request.get_json()['playlist_name']
+        p_name = request.get_json()['playlistName']
         show = request.get_json()['show']
         playlist = add_playlist(dj_id, p_name, show)
 
@@ -182,7 +188,7 @@ def playlist():
     
     elif request.method == 'PUT':
         dj_id = request.get_json()['username']
-        p_name = request.get_json()['playlist_name']
+        p_name = request.get_json()['playlistName']
         show = request.get_json()['show']
         playlist = update_playlist(dj_id, p_name, show)
 
@@ -190,7 +196,7 @@ def playlist():
     
     elif request.method == 'DELETE':
         dj_id = request.get_json()['username']
-        p_name = request.get_json()['playlist_name']
+        p_name = request.get_json()['playlistName']
         delete_playlist(dj_id, p_name)
 
         return "Deleted"
