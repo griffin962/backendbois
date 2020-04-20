@@ -141,61 +141,51 @@ def generate_chart(format: str) -> list:
     from klap4.db import Session
     session = Session()
 
-    if format == "all":
-        chart_list = session.query(Song) \
-            .filter(
-                datetime.now() - Song.last_played < timedelta(days=30 * 6)
-            ) \
-            .order_by(Song.times_played) \
-            .limit(20) \
-            .all()
-        
-        return format_object_list(chart_list)
+    chart_list = None
 
-    elif format == "new":
-        chart_list = session.query(Song) \
-            .join(
-                Album, and_(
-                            datetime.now() - Album.date_added < timedelta(days=30 * 6), 
-                            Song.genre_abbr == Album.genre_abbr,
-                            Song.artist_num == Album.artist_num
-                        )
+    if format == "all":
+        chart_list = session.query(Song.genre_abbr, Song.artist_num, Song.album_letter, func.sum(Song.times_played)) \
+            .filter(datetime.now() - Song.last_played < timedelta(days=30*6)
             ) \
-            .filter(
-                datetime.now() - Song.last_played < timedelta(days=30 * 6)
-            ) \
-            .order_by(Song.times_played) \
+            .group_by(Song.genre_abbr, Song.artist_num, Song.album_letter) \
             .limit(20) \
             .all()
         
-        return format_object_list(chart_list)
+    
+    elif format == "new":
+        chart_list = session.query(Song.genre_abbr, Song.artist_num, Song.album_letter, func.sum(Song.times_played)) \
+            .join(Album, and_(datetime.now() - Album.date_added < timedelta(days=30*6), Song.genre_abbr == Album.genre_abbr, Song.artist_num == Album.artist_num)) \
+            .filter(datetime.now() - Song.last_played < timedelta(days=30*6)) \
+            .group_by(Song.genre_abbr, Song.artist_num, Song.album_letter) \
+            .limit(20) \
+            .all()
+    
+    sorted_charts = sorted(chart_list, key=lambda x:(-x[3], x[0], x[1], x[2]))
+    return sorted_charts
 
 
 def charts_format(chart_list):
     formatted_list = []
-    for song in chart_list:
-        decomp = decompose_tag(song["id"])
-        artist_tag = decomp[0] + str(decomp[1])
-        album_tag = decomp[0] + str(decomp[1]) + decomp[2]
+    for entry in chart_list:
+        genre_tag = entry[0]
+        artist_tag = genre_tag + str(entry[1])
+        album_tag = artist_tag + entry[2]
+
+        genre = get_entity_from_tag(genre_tag)
         artist = get_entity_from_tag(artist_tag)
         album = get_entity_from_tag(album_tag)
 
-        label_name = None if album.label_id is None else album.label.name
-        promoter_name = None if album.promoter_id is None else album.promoter.name
-
-        new_song = {
+        formatted_album = {
                     "album_id": album_tag,
-                    "rank": chart_list.index(song)+1,
+                    "rank": chart_list.index(entry)+1,
+                    "genre": genre.name,
                     "artist_name": artist.name,
                     "album_name": album.name,
-                    "song_name": song["name"],
-                    "label_name": label_name,
-                    "promoter_name": promoter_name,
-                    "recommended": song["recommended"],
-                    "times_played": song["times_played"]
-
+                    "label_name": None if album.label_id is None else album.label.name,
+                    "promoter_name": None if album.promoter_id is None else album.promoter.name,
+                    "times_played": entry[3]
         }
-
-        formatted_list.append(new_song)
+        formatted_list.append(formatted_album)
     
     return formatted_list
+    

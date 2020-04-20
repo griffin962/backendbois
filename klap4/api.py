@@ -55,11 +55,14 @@ def user_session():
         return jsonify({"Login": True, "Username": "test_user"})
     if request.method == 'POST':
         username = request.get_json()['username']
-        #Checks if user is in LDAP server against their password
-        # If so, checks if they're in our database
-        # If not, add them to the database
-        return jsonify({"Login": True, "Username": username})
+        password = request.get_json()['password']
 
+        #Checks if user is in LDAP server against their password
+        #if login(username, password) == True:
+        name = 'Test User'
+        is_admin = True
+        session_user = check_user(username, name, is_admin)
+        return jsonify(session_user)
 
 # Search route returns different lists based on what the user wants to search.
 @app.route('/search/<category>', methods=['GET', 'POST'])
