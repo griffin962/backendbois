@@ -31,7 +31,7 @@ global_user = "test_user"
 #TODO: Make custom model views for each model (like genre)
 admin.add_view(GenreModelView(Genre, session))
 admin.add_view(ArtistModelView(Artist, session))
-admin.add_view(ModelView(Album, session))
+admin.add_view(AlbumModelView(Album, session))
 admin.add_view(ModelView(Song, session))
 admin.add_view(ModelView(AlbumReview, session))
 admin.add_view(ModelView(AlbumProblem, session))
@@ -120,17 +120,20 @@ def display(category, id):
             entity_list.append(formatted_list)
 
             return jsonify(entity_list)
-            #TODO: Get an album list
 
         elif category == "album":
-            album = get_entity_from_tag(id)
+            album = get_json(get_entity_from_tag(id))
+
             album_info = display_album(id)
 
-            album_info.append(get_json(album))
+            thingy = {
+                        "album": album,
+                        "reviews": album_info[0],
+                        "problems": album_info[1],
+                        "songs": album_info[2],
+            }
 
-            return jsonify(album_info)
-
-            #TODO: Get a song list, album review list, and a list of problems
+            return jsonify(thingy)
 
 
 @app.route('/album/review/<id>', methods=['POST'])
@@ -153,10 +156,10 @@ def report_album_problem(id):
         return "Added"
 
 
-@app.route('/charts/<form>/<weeks>', methods=['GET'])
-def get_new_charts(form, weeks):
+@app.route('/charts/<form>', methods=['GET'])
+def get_new_charts(form):
     if request.method == 'GET':
-        charts = generate_chart(form, weeks)
+        charts = generate_chart(form)
         charts = charts_format(charts)
         return jsonify(charts)
 

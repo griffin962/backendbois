@@ -7,6 +7,11 @@ class GenreModelView(ModelView):
 
 class ArtistModelView(ModelView):
     column_list=['name', 'genre_abbr', 'number']
+    form_columns = ('genre', 'name')
+
+
+class AlbumModelView(ModelView):
+    column_list=['name', 'artist', 'genre_abbr', 'date_added', 'missing', 'format_bitfield']
 
 
 class ProgramModelView(ModelView):

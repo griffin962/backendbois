@@ -57,3 +57,7 @@ class Artist(SQLBase):
         return f"<Artist(id={self.id}, " \
                        f"name={self.name}, " \
                        f"next_album_letter={self.next_album_letter})>"
+    
+
+    def __str__(self):
+        return self.name

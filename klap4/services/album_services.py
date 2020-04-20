@@ -38,9 +38,45 @@ def search_albums(genre: str, artist_name: str, name: str) -> list:
         .all()
 
     return format_object_list(album_list)
-    
 
-def display_album(album_id: str) -> list:
+
+def list_reviews(album_id: str) -> list:
+    from klap4.db import Session
+    session = Session()
+
+    new_id = decompose_tag(album_id)
+    
+    reviews = session.query(AlbumReview) \
+        .filter(and_(AlbumReview.genre_abbr == new_id[0], AlbumReview.artist_num == new_id[1], AlbumReview.album_letter == new_id[2])).all()
+    
+    return format_object_list(reviews)
+
+
+def list_problems(album_id: str) -> list:
+    from klap4.db import Session
+    session = Session()
+
+    new_id = decompose_tag(album_id)
+
+    problems = session.query(AlbumProblem) \
+        .filter(and_(AlbumProblem.genre_abbr == new_id[0], AlbumProblem.artist_num == new_id[1], AlbumProblem.album_letter == new_id[2])).all()
+
+    return format_object_list(problems) 
+
+
+def list_songs(album_id: str) -> list:
+    from klap4.db import Session
+    session = Session()
+
+    new_id = decompose_tag(album_id)
+
+    songs = session.query(Song) \
+        .filter(and_(Song.genre_abbr == new_id[0], Song.artist_num == new_id[1], Song.album_letter == new_id[2])).all()
+
+    return format_object_list(songs)
+
+
+def display_album(album_id: str):
     from klap4.db import Session
     session = Session()
 
@@ -48,25 +84,15 @@ def display_album(album_id: str) -> list:
 
     new_id = decompose_tag(album_id)
 
-    artist = session.query(Artist) \
-        .filter(and_(Artist.genre_abbr == new_id[0], Artist.number == new_id[1])).one()
-
-    reviews = session.query(AlbumReview) \
-        .filter(and_(AlbumReview.genre_abbr == new_id[0], AlbumReview.artist_num == new_id[1], AlbumReview.album_letter == new_id[2])).all()
-    info_list.append(reviews)
-
-    problems = session.query(AlbumProblem) \
-        .filter(and_(AlbumProblem.genre_abbr == new_id[0], AlbumProblem.artist_num == new_id[1], AlbumProblem.album_letter == new_id[2])).all()
-    info_list.append(problems)
-
-    songs = session.query(Song) \
-        .filter(and_(Song.genre_abbr == new_id[0], Song.artist_num == new_id[1], Song.album_letter == new_id[2])).all()
-    info_list.append(songs)
-
-    for sublist in info_list:
-        format_object_list(sublist)
+    '''artist = session.query(Artist) \
+        .filter(and_(Artist.genre_abbr == new_id[0], Artist.number == new_id[1])).one()'''
     
-    info_list.append(get_json(artist))
+    reviews = list_reviews(album_id)
+    info_list.append(reviews)
+    problems = list_problems(album_id)
+    info_list.append(problems)
+    songs = list_songs(album_id)
+    info_list.append(songs)
 
     return info_list
 
@@ -109,7 +135,7 @@ def report_problem(album_id: str, dj_id: str, content: str) ->SQLBase:
     return newProblem
 
 
-def generate_chart(format: str, weeks: int) -> list:
+def generate_chart(format: str) -> list:
     from datetime import datetime, timedelta
 
     from klap4.db import Session
