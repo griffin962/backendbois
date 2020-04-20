@@ -23,7 +23,7 @@ session = db.Session()
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
-app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+app.config['FLASK_ADMIN_SWATCH'] = 'cyborg'
 app.secret_key = 'secret'
 admin = Admin(app, name='KLAP4', template_mode='bootstrap3')
 global_user = "test_user"
@@ -37,8 +37,8 @@ admin.add_view(ModelView(AlbumReview, session))
 admin.add_view(ModelView(AlbumProblem, session))
 admin.add_view(ProgramModelView(Program, session))
 admin.add_view(PlaylistModelView(Playlist, session))
-
-'''@app.before_request
+'''
+@app.before_request
 def initialize_request():
     g.db = db.Session()
 
@@ -46,8 +46,8 @@ def initialize_request():
 @app.after_request
 def cleanup_request():
     if "db" in g:
-        g.db.close()'''
-
+        g.db.close()
+'''
 
 @app.route('/session', methods=['GET', 'POST'])
 def user_session():
@@ -57,12 +57,15 @@ def user_session():
         username = request.get_json()['username']
         password = request.get_json()['password']
 
-        #Checks if user is in LDAP server against their password
+        #Checks if user is in LDAP server against their password (needs to be modified for ldap)
         #if login(username, password) == True:
-        name = 'Test User'
-        is_admin = True
-        session_user = check_user(username, name, is_admin)
-        return jsonify(session_user)
+        if username == 'test' and password == 'password':
+            name = 'Test User'
+            is_admin = True
+            session_user = check_user(username, name, is_admin)
+            return jsonify(session_user)
+        else:
+            return jsonify({"login": "failed"})
 
 # Search route returns different lists based on what the user wants to search.
 @app.route('/search/<category>', methods=['GET', 'POST'])
@@ -125,11 +128,14 @@ def display(category, id):
             return jsonify(entity_list)
 
         elif category == "album":
+            artist_id = decompose_tag(id)[0] + str(decompose_tag(id)[1])
+            artist = get_json(get_entity_from_tag(artist_id))
             album = get_json(get_entity_from_tag(id))
 
             album_info = display_album(id)
 
             thingy = {
+                        "artist": artist,
                         "album": album,
                         "reviews": album_info[0],
                         "problems": album_info[1],
