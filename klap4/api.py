@@ -118,14 +118,18 @@ def display(category, id):
             artist = get_entity_from_tag(id)
             album_list = list_albums(id)
 
-            entity_list.append(get_json(artist))
             formatted_list = []
             for item in album_list:
                 obj = get_json(item)
                 formatted_list.append(obj)
             entity_list.append(formatted_list)
 
-            return jsonify(entity_list)
+            artist_obj = {
+                            "artist": get_json(artist),
+                            "albums": entity_list[0]
+            }
+
+            return jsonify(artist_obj)
 
         elif category == "album":
             artist_id = decompose_tag(id)[0] + str(decompose_tag(id)[1])
