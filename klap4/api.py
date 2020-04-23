@@ -49,10 +49,8 @@ def cleanup_request():
         g.db.close()
 '''
 
-@app.route('/session', methods=['GET', 'POST'])
+@app.route('/session', methods=['POST'])
 def user_session():
-    if request.method == 'GET':
-        return jsonify({"Login": True, "Username": "test_user"})
     if request.method == 'POST':
         username = request.get_json()['username']
         password = request.get_json()['password']
@@ -108,14 +106,14 @@ def search(category):
 
 
 # Display route will return different data based on resource type and ID
-@app.route('/display/<category>/<id>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route('/display/<category>/<id>', methods=['GET'])
 def display(category, id):
 
     entity_list = []
 
     if request.method == 'GET':
         if category == "artist":
-            artist = get_entity_from_tag(id)
+            artist = get_json(get_entity_from_tag(id))
             album_list = list_albums(id)
 
             formatted_list = []
@@ -125,7 +123,7 @@ def display(category, id):
             entity_list.append(formatted_list)
 
             artist_obj = {
-                            "artist": get_json(artist),
+                            "artist": artist,
                             "albums": entity_list[0]
             }
 
@@ -147,6 +145,16 @@ def display(category, id):
             }
 
             return jsonify(thingy)
+        elif category == "programming":
+            # Write stuff here, delete the `pass` when finished
+            # Make a function in programming_services.py to access the database and stuff
+            programming = display_program(id)
+            obj = {
+                    "programs": programming[0],
+                    "program_slots": programming[1]
+            }
+            return jsonify(obj)
+            #pass
 
 
 @app.route('/album/review/<id>', methods=['POST'])
@@ -216,3 +224,11 @@ def playlist():
         delete_playlist(dj_id, p_name)
 
         return "Deleted"
+
+@app.route('/playlist/display/<dj>/<name>', methods=['GET'])
+def show_playlist(dj, name):
+    # Call display_playlist() and return
+    # Use the id to get the DJ name and playlist name
+    if request.method == 'GET':
+        playlist = display_playlist(dj, name)
+        return jsonify(playlist)

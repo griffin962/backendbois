@@ -91,73 +91,73 @@
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "AL3"
+    id: "AL3A"
     name: "Soy Pablo"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "AL4"
+    id: "AL4A"
     name: "Honeymoon"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "RK2"
+    id: "RK2A"
     name: "The World's Best American Band"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "RK2"
+    id: "RK2B"
     name: "You Deserve Love"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "EM1"
+    id: "EM1A"
     name: "Elohim"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "AL5"
+    id: "AL5A"
     name: "Superclean Vol. 1"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "AL5"
+    id: "AL5B"
     name: "Superclean Vol. 2"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "AL6"
+    id: "AL6A"
     name: "Oncle Jazz"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "PP2"
+    id: "PP2A"
     name: "Swimmer"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "PP3"
+    id: "PP3A"
     name: "Matahari"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "AL7"
+    id: "AL7A"
     name: "In A Million Years"
     format_bitfield: 1
 
 - model: klap4.db_entities.album.Album
   fields:
-    id: "AL8"
+    id: "AL8A"
     name: "Futre Me Hates Me"
     format_bitfield: 1
 

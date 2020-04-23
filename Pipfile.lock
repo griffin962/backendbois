@@ -51,6 +51,14 @@
             ],
             "version": "==7.1.1"
         },
+        "colorama": {
+            "hashes": [
+                "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff",
+                "sha256:e96da0d330793e2cb9485e9ddfd918d456036c7149416295932478192f4436a1"
+            ],
+            "markers": "sys_platform == 'win32'",
+            "version": "==0.4.3"
+        },
         "entrypoints": {
             "hashes": [
                 "sha256:589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19",
@@ -283,12 +291,12 @@
         },
         "spotipy": {
             "hashes": [
-                "sha256:29679098449c15a7a19b892fc95bf791f9b019672b4ce86185ff8b6f62d5fd51",
-                "sha256:77307501a777440f451394cd541734d1744303ceebc1c49ca701cf0e54f1703c",
-                "sha256:861c5762a61f342820eed07d2e4f6268dcd159d712f9f6e2c7c4468ec836430a"
+                "sha256:293a070de156345359620e17945a379762488b0e00f01a25530ab7af1abea4ab",
+                "sha256:9d5ca9f600bbceb6c86d66e819e2a1446db819cfca349a2f55c3fdda11b606af",
+                "sha256:a90dbadeb899763a6789dabbf9a57ec8874f1e72c38161669661c0714654acaf"
             ],
             "index": "pypi",
-            "version": "==2.11.1"
+            "version": "==2.11.2"
         },
         "sqlalchemy": {
             "hashes": [
@@ -372,10 +380,10 @@
         },
         "wtforms": {
             "hashes": [
-                "sha256:0cdbac3e7f6878086c334aa25dc5a33869a3954e9d1e015130d65a69309b3b61",
-                "sha256:e3ee092c827582c50877cdbd49e9ce6d2c5c1f6561f849b3b068c1b8029626f1"
+                "sha256:6ff8635f4caeed9f38641d48cfe019d0d3896f41910ab04494143fc027866e1b",
+                "sha256:861a13b3ae521d6700dac3b2771970bd354a63ba7043ecc3a82b5288596a1972"
             ],
-            "version": "==2.2.1"
+            "version": "==2.3.1"
         }
     },
     "develop": {}

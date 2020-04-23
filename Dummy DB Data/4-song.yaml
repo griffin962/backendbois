@@ -292,3 +292,147 @@
     last_played: !!timestamp 2020-04-04
     times_played: 0
     recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A1"
+    name: "Why Am I Like This?"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A2"
+    name: "The Wave"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A3"
+    name: "Sleepy Eyes"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A4"
+    name: "Skinny Legs"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A5"
+    name: "Fuck Your Money"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A6"
+    name: "Hallucinating"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A7"
+    name: "The Universe Is Yours"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A8"
+    name: "Enemies"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A9"
+    name: "Panic Attacks"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A10"
+    name: "Silence Is Cool"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A11"
+    name: "Half Love"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A12"
+    name: "I Want You"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A13"
+    name: "Not Just Your Mama"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A14"
+    name: "Water Baby"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A15"
+    name: "Insecure"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "EM1A15"
+    name: "Insecure"
+    fcc_status: 3
+    last_played: !!timestamp 2020-04-04
+    times_played: 0
+    recommended: True

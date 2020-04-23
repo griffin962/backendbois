@@ -34,6 +34,10 @@ class Program(SQLBase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
+    @property
+    def id(self):
+        return str(self.type) + ',' + str(self.name)
+    
     def __repr__(self):
         return f"<Program(type={self.type}, " \
                         f"name={self.name}, " \

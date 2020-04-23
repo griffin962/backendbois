@@ -1,4 +1,5 @@
 from ldap3 import Server, Connection, ALL
+from http.cookies import BaseCookie, Morsel
 
 def login(user):
     server = Server('ldap.kmnr.us', use_ssl=True, get_info=ALL)
@@ -16,6 +17,7 @@ def check_user(user, name, is_admin):
         session.add(new_DJ)
         session.commit()
     
-    user_obj = {"id": username, "name": name, "is_admin": is_admin}
-    
+    user_obj = {
+                'Set-Cookie': 'sid=123, userid=test, name=Test, role=admin'
+    }
     return user_obj
