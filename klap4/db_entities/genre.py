@@ -17,14 +17,17 @@ class Genre(SQLBase):
     next_artist_num = 0
     id = None
 
-    artists = relationship("klap4.db_entities.artist.Artist", back_populates="genre",
-                           cascade="save-update, merge, delete")
-    albums = relationship("klap4.db_entities.album.Album", back_populates="genre", cascade="save-update, merge, delete")
+    # Relationships:
+
+    # artists
+    # albums
+    # songs
+
+
     album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="genre",
                                  cascade="save-update, merge, delete")
     album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="genre",
                                   cascade="save-update, merge, delete")
-    songs = relationship("klap4.db_entities.song.Song", back_populates="genre", cascade="save-update, merge, delete")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:

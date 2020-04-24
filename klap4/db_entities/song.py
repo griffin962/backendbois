@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta
 
 from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 
 import klap4.db
 from klap4.db_entities import decompose_tag, SQLBase
@@ -18,9 +18,9 @@ class Song(SQLBase):
         OBSCENE = 3
         UNRATED = 4
 
-    genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
-    artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
-    album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
+    genre_abbr = Column(String(2), primary_key=True)
+    artist_num = Column(Integer, primary_key=True)
+    album_letter = Column(String(1), primary_key=True)
     number = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     fcc_status = Column(Integer, nullable=False)
@@ -28,16 +28,37 @@ class Song(SQLBase):
     times_played = Column(Integer, nullable=False)
     recommended = Column(Boolean, nullable=False)
 
-    genre = relationship("klap4.db_entities.genre.Genre", back_populates="songs", cascade="save-update, merge, delete")
-    artist = relationship("klap4.db_entities.artist.Artist", back_populates="songs",
-                          cascade="save-update, merge, delete")
-    album = relationship("klap4.db_entities.album.Album", back_populates="songs", cascade="save-update, merge, delete")
+    genre = relationship("klap4.db_entities.genre.Genre",
+                         backref=backref("songs", uselist=True),
+                         uselist=False,
+                         cascade="save-update, merge, delete",
+                         primaryjoin="foreign(Genre.abbreviation) == Song.genre_abbr")
+
+    artist = relationship("klap4.db_entities.artist.Artist",
+                          backref=backref("songs", uselist=True),
+                          uselist=False,
+                          cascade="save-update, merge, delete",
+                          primaryjoin="and_("
+                                      "     foreign(Artist.genre_abbr) == Song.genre_abbr,"
+                                      "     foreign(Artist.number) == Song.artist_num"
+                                      ")")
+
+    album = relationship("klap4.db_entities.album.Album",
+                         backref=backref("songs", uselist=True),
+                         uselist=False,
+                         cascade="save-update, merge, delete",
+                         primaryjoin="and_("
+                                     "      foreign(Album.genre_abbr) == Song.genre_abbr,"
+                                     "      foreign(Album.artist_num) == Song.artist_num,"
+                                     "      foreign(Album.letter) == Song.album_letter"
+                                     ")")
 
     id = None
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
             decomposed_tag = decompose_tag(kwargs["id"])
+
             kwargs["genre_abbr"] = decomposed_tag.genre_abbr
             kwargs["artist_num"] = decomposed_tag.artist_num
             kwargs["album_letter"] = decomposed_tag.album_letter

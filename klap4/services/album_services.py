@@ -151,7 +151,6 @@ def generate_chart(format: str) -> list:
             .limit(20) \
             .all()
         
-    
     elif format == "new":
         chart_list = session.query(Song.genre_abbr, Song.artist_num, Song.album_letter, func.sum(Song.times_played)) \
             .join(Album, and_(datetime.now() - Album.date_added < timedelta(days=30*6), Song.genre_abbr == Album.genre_abbr, Song.artist_num == Album.artist_num)) \

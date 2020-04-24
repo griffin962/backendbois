@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta
 
 from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 
 import klap4.db
 from klap4.db_entities import decompose_tag, full_module_name, SQLBase
@@ -17,8 +17,8 @@ class Album(SQLBase):
         CD = 1 * 2 ** 1
         DIGITAL = 1 * 2 ** 2
 
-    genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
-    artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
+    genre_abbr = Column(String(2), primary_key=True)
+    artist_num = Column(Integer, primary_key=True)
     letter = Column(String(1), primary_key=True)
     name = Column(String, nullable=False)
     date_added = Column(DateTime, nullable=False)
@@ -27,12 +27,30 @@ class Album(SQLBase):
     label_id = Column(Integer, ForeignKey("label.id"), nullable=True)
     promoter_id = Column(Integer, ForeignKey("promoter.id"), nullable=True)
 
-    genre = relationship("klap4.db_entities.genre.Genre", back_populates="albums", cascade="save-update, merge, delete")
-    artist = relationship("klap4.db_entities.artist.Artist", back_populates="albums",
-                          cascade="save-update, merge, delete")
-    songs = relationship("klap4.db_entities.song.Song", back_populates="album", cascade="save-update, merge, delete")
-    label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="artists",
+    genre = relationship("klap4.db_entities.genre.Genre",
+                         backref=backref("albums", uselist=True),
+                         uselist=False,
+                         cascade="save-update, merge, delete",
+                         primaryjoin="foreign(Genre.abbreviation) == Album.genre_abbr")
+
+    artist = relationship("klap4.db_entities.artist.Artist",
+                          backref=backref("albums", uselist=True),
+                          uselist=False,
+                          cascade="save-update, merge, delete",
+                          primaryjoin="and_("
+                                      "     foreign(Artist.genre_abbr) == Album.genre_abbr,"
+                                      "     foreign(Artist.number) == Album.artist_num"
+                                      ")")
+
+    # Relationships:
+
+    # songs
+
+    label = relationship("klap4.db_entities.label_and_promoter.Label",
+                         back_populates="artists",
+                         uselist=False,
                          cascade="save-update, merge, delete")
+
     promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists",
                             cascade="save-update, merge, delete")
     album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="album",

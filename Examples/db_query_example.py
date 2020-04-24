@@ -22,14 +22,16 @@ def playlist_demo():
 
 def simple_tag_fetch_demo():
     print("TAG FETCH DEMO")
-    artist = get_entity_from_tag("AL1")
+    artist = get_entity_from_tag("RK3A1")
 
-    print(get_json(artist))
-    print(artist.genre.name)
+    print(get_json(artist.album))
+    print(artist.id)
 
     print("\n\n")
 
+
 def charts_test():
+    print("CHARTS DEMO")
     from datetime import datetime, timedelta
 
     thing = generate_chart("all")
@@ -37,11 +39,15 @@ def charts_test():
     thing2 = charts_format(thing)
     print(thing2)
 
+    print("\n\n")
+
 
 def main():
     script_path = Path(__file__).absolute().parent
     db.connect(script_path/".."/"test.db")
 
+    simple_tag_fetch_demo()
+    playlist_demo()
     charts_test()
 
 
