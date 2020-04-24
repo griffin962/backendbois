@@ -73,3 +73,8 @@
   fields:
     id: "AL8"
     name: "The Beths"
+
+- model: klap4.db_entities.artist.Artist
+  fields:
+    id: "AL9"
+    name: "100 gecs"

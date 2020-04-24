@@ -22,10 +22,10 @@ def playlist_demo():
 
 def simple_tag_fetch_demo():
     print("TAG FETCH DEMO")
-    artist = get_entity_from_tag("RK3A1")
+    album = get_entity_from_tag("RK3A")
 
-    print(get_json(artist.album))
-    print(artist.id)
+    print(get_json(album))
+    print(album.id)
 
     print("\n\n")
 

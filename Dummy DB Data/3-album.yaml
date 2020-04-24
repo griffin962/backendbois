@@ -166,3 +166,15 @@
     id: "RK3A"
     name: "Doom (Original Game Soundtrack)"
     format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    id: "AL9A"
+    name: "100 gecs"
+    format_bitfield: 1
+
+- model: klap4.db_entities.album.Album
+  fields:
+    id: "AL9B"
+    name: "1000 gecs"
+    format_bitfield: 1

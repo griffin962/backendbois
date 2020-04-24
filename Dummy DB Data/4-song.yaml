@@ -436,3 +436,79 @@
     last_played: !!timestamp 2020-04-04
     times_played: 0
     recommended: True
+
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9A1"
+    name: "dog food"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9A2"
+    name: "gum"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9A3"
+    name: "bloodstains"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9A4"
+    name: "fuck teeth"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9A5"
+    name: "25 bands and a gecccco"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9B1"
+    name: "745 sticky"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9B2"
+    name: "money machine"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9B3"
+    name: "800 db cloud"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9B4"
+    name: "I Need Help Immediately"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9B5"
+    name: "stupid horse"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9B6"
+    name: "xXXi_wud_nvrstøp_ÜXXx"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9B7"
+    name: "ringtone"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9B8"
+    name: "gecgecgec"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9B9"
+    name: "hand crushed by a mallet"
+
+- model: klap4.db_entities.song.Song
+  fields:
+    id: "AL9B10"
+    name: "get 2 Ü"
