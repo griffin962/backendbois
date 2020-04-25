@@ -36,7 +36,7 @@ class Program(SQLBase):
     
     @property
     def id(self):
-        return str(self.type) + ',' + str(self.name)
+        return str(self.type) + '-' + str(self.name)
     
     def __repr__(self):
         return f"<Program(type={self.type}, " \

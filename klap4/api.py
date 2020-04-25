@@ -49,18 +49,15 @@ def cleanup_request():
         g.db.close()
 '''
 
-@app.route('/session', methods=['POST'])
-def user_session():
+@app.route('/login', methods=['POST'])
+def login():
     if request.method == 'POST':
-        username = request.get_json()['username']
-        password = request.get_json()['password']
-
-        #Checks if user is in LDAP server against their password (needs to be modified for ldap)
-        #if login(username, password) == True:
-        if username == 'test' and password == 'password':
+        encoded_message = request.headers['Authorization']
+        user_obj = decode_message(encoded_message)
+        if ldap_login(user_obj):
             name = 'Test User'
             is_admin = True
-            session_user = check_user(username, name, is_admin)
+            session_user = check_user(user_obj['username'], name, is_admin)
             return jsonify(session_user)
         else:
             return jsonify({"login": "failed"})
