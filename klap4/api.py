@@ -15,6 +15,7 @@ from klap4.db_entities import *
 from klap4.services import *
 from klap4.utils import *
 from klap4.views import *
+from klap4.config import config
 
 
 #TODO: Need to connect to DB in API in order for admin panel to work. Any idea why?
@@ -34,7 +35,7 @@ app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_ACCESS_COOKIE_PATH'] = '/'
 app.config['JWT_REFRESH_COOKIE_PATH'] = '/token/refresh'
 
-CORS(app)
+cors = CORS(app, resources={r"/*": {"origins": config.config()['clientOrigin']}}, supports_credentials=True)
 api = Api(app)
 jwt = JWTManager(app)
 admin = Admin(app, name='KLAP4', template_mode='bootstrap3')
