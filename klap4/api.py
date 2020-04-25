@@ -29,6 +29,8 @@ app.secret_key = 'secret'
 app.config['FLASK_ADMIN_SWATCH'] = 'cyborg'
 app.config['JWT_SECRET_KEY'] = 'super-secret'
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+app.config['JWT_COOKIE_SECURE'] = False         # Set to True in production
+app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_ACCESS_COOKIE_PATH'] = '/api/'
 app.config['JWT_REFRESH_COOKIE_PATH'] = '/token/refresh'
 
@@ -59,19 +61,42 @@ def cleanup_request():
         g.db.close()
 '''
 
-@app.route('/login', methods=['POST', 'DELETE'])
+@app.route('/token/auth', methods=['POST', 'DELETE'])
 def login():
     if request.method == 'POST':
         encoded_message = request.headers['Authorization']
         user_obj = decode_message(encoded_message)
         if ldap_login(user_obj):
+            username = user_obj['username']
             name = 'Test User'
             is_admin = True
-            check_user(user_obj['username'], name, is_admin)
-            access_token = create_access_token(identity=user_obj['username'])
-            return jsonify(access_token=access_token), 200
+            check_user(username, name, is_admin)
+            access_token = create_access_token(identity=username)
+            refresh_token = create_refresh_token(identity=username)
+
+            resp = jsonify({'login': True})
+            set_access_cookies(resp, access_token)
+            set_refresh_cookies(resp, refresh_token)
+            return resp, 200
         else:
-            return make_response(jsonify({"error": "Login failed"}), 400)
+            return jsonify({"login": False}), 400
+
+@app.route('/token/refresh', methods=['POST'])
+@jwt_refresh_token_required
+def refresh():
+    current_user = get_jwt_identity()
+    access_token = create_access_token(identity=current_user)
+
+    resp = jsonify({'refresh': True})
+    set_access_cookies(resp, access_token)
+    return resp, 200
+
+
+@app.route('/token/remove', methods=['POST'])
+def logout():
+    resp = jsonify({'logout': True})
+    unset_jwt_cookies(resp)
+    return resp, 200
 
 # Search route returns different lists based on what the user wants to search.
 @app.route('/search/<category>', methods=['GET', 'POST'])
