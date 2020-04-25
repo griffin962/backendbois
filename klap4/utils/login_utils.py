@@ -27,12 +27,16 @@ def ldap_login(user_obj):
     print(conn)
 
 
-def check_user(user, name, is_admin):
+def check_user(userid, name, is_admin):
     from klap4.db import Session
     from klap4.db_entities.dj import DJ
 
     session = Session()
-    if session.query(DJ).filter_by(id = user).first() is None:
-        new_DJ = DJ(id=user, name=name, is_admin=is_admin)
-        session.add(new_DJ)
+    if session.query(DJ).filter_by(id = userid).first() is None:
+        user = DJ(id=userid, name=name, is_admin=is_admin)
+        session.add(user)
         session.commit()
+    else:
+        user = session.query(DJ).filter_by(id = userid).first()
+    
+    return user
