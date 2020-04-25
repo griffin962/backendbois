@@ -5,10 +5,10 @@ from flask_cors import CORS, cross_origin
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_restful import Resource, Api
-from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, 
+from flask_jwt_extended import (JWTManager, jwt_required, jwt_optional, create_access_token, 
                                 get_jwt_identity, jwt_refresh_token_required, 
                                 create_refresh_token, set_access_cookies, 
-                                set_refresh_cookies, unset_jwt_cookies)
+                                set_refresh_cookies, unset_jwt_cookies, get_jwt_claims)
 
 from klap4 import db
 from klap4.db_entities import *
@@ -61,7 +61,11 @@ def cleanup_request():
         g.db.close()
 '''
 
-@app.route('/token/auth', methods=['POST', 'DELETE'])
+@jwt.user_claims_loader
+def add_claims_to_access(identity):
+    return 
+
+@app.route('/token/auth', methods=['POST'])
 def login():
     if request.method == 'POST':
         encoded_message = request.headers['Authorization']
@@ -97,6 +101,16 @@ def logout():
     resp = jsonify({'logout': True})
     unset_jwt_cookies(resp)
     return resp, 200
+
+
+@app.route('/', methods=['GET'])
+@jwt_optional
+def display_user():
+    current_user = get_jwt_identity()
+    if current_user:
+        return jsonify(logged_in_as=current_user), 200
+    else:
+        return jsonify(logged_in_as='Anonymous'), 200
 
 # Search route returns different lists based on what the user wants to search.
 @app.route('/search/<category>', methods=['GET', 'POST'])
@@ -240,6 +254,7 @@ def quickjump(id):
 
 
 @app.route('/playlist/<dj>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+#@jwt_protected
 def playlist(dj):
     if request.method == 'GET':
         playlists = list_playlists(dj)
