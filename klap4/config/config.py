@@ -1,6 +1,5 @@
 def config():
     return {
-        "clientOrigin": "http://localhost:50178"
+        "clientOrigin": "http://localhost:8080"
         }
-
-
+        

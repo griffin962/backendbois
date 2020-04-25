@@ -36,6 +36,7 @@ def update_playlist(user: str, name: str, show:str) -> SQLBase:
     update = Playlist.update(). \
                         where(Playlist.dj_id == user). \
                         values(name=name, show=show)
+    session.commit()
     
     return update
 
@@ -45,6 +46,7 @@ def delete_playlist(user: str, name: str) -> None:
     session = Session()
 
     session.query(Playlist).filter(and_(Playlist.dj_id == user, Playlist.name == name)).delete()
+    session.commit()
 
     return
 
