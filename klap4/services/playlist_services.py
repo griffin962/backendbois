@@ -21,7 +21,7 @@ def add_playlist(user: str, name: str, show: str) -> SQLBase:
     session = Session()
 
     newPlaylist = Playlist(dj_id=user,
-                                playlist_name=name,
+                                name=name,
                                 show=show)
     
     session.add(newPlaylist)
@@ -35,7 +35,7 @@ def update_playlist(user: str, name: str, show:str) -> SQLBase:
 
     update = Playlist.update(). \
                         where(Playlist.dj_id == user). \
-                        values(playlist_name=name, show=show)
+                        values(name=name, show=show)
     
     return update
 
@@ -44,7 +44,7 @@ def delete_playlist(user: str, name: str) -> None:
     from klap4.db import Session
     session = Session()
 
-    session.query(Playlist).filter(and_(Playlist.dj_id == user, Playlist.playlist_name == name)).delete()
+    session.query(Playlist).filter(and_(Playlist.dj_id == user, Playlist.name == name)).delete()
 
     return
 
@@ -53,21 +53,22 @@ def display_playlist(dj_id: str, p_name: str) -> SQLBase:
     from klap4.db import Session
     session = Session()
 
-    info_list = []
-
-    playlist = session.query(Playlist) \
-        .filter(and_(Playlist.dj_id == dj_id, Playlist.playlist_name == p_name)).one()
+    u_playlist = session.query(Playlist) \
+        .filter(and_(Playlist.dj_id == dj_id, Playlist.name == p_name)).one()
+    
+    playlist = get_json(u_playlist)
     
     playlist_entries = session.query(PlaylistEntry) \
         .filter(and_(PlaylistEntry.dj_id == dj_id, PlaylistEntry.playlist_name == p_name)).all()
-    info_list.append(playlist_entries)
 
-    for sublist in info_list:
-        format_object_list(sublist)
+    info_list = format_object_list(playlist_entries)
 
-    info_list.append(get_json(playlist))
+    obj = {
+            "playlist": playlist,
+            "playlist_entries": info_list
+    }
 
-    return info_list
+    return obj
 
 
 def add_playlist_entry(user: str, p_name: str, song: str, artist: str, album: str) -> SQLBase:

@@ -4,7 +4,7 @@ from http.cookies import BaseCookie, Morsel
 
 
 def decode_message(base64_message):
-    base64_bytes = base64_message.encode('ascii')
+    base64_bytes = base64_message[5:].encode('ascii')
     message_bytes = b64decode(base64_bytes)
     message = message_bytes.decode('ascii')
 
@@ -36,8 +36,3 @@ def check_user(user, name, is_admin):
         new_DJ = DJ(id=user, name=name, is_admin=is_admin)
         session.add(new_DJ)
         session.commit()
-    
-    user_obj = {
-                'Set-Cookie': 'sid=123, userid=test, name=Test, role=admin'
-    }
-    return user_obj

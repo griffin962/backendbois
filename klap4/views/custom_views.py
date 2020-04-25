@@ -22,3 +22,7 @@ class ProgramModelView(ModelView):
 class PlaylistModelView(ModelView):
     column_display_pk = True
     form_columns = ('dj_id', 'name', 'show')
+
+class DJModelView(ModelView):
+    column_display_pk = True
+    form_columns = ('id', 'name', 'is_admin')
