@@ -1,6 +1,6 @@
 from sqlalchemy import func, extract
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import and_, or_
 
 
 from klap4.db_entities import SQLBase
@@ -50,14 +50,23 @@ def get_program_slots():
 
     from datetime import datetime
 
+    tdy = datetime.today().weekday()
+    tmrw = tdy + 1
+    ystr = tdy - 1
+
+    if datetime.today().weekday() == 6:
+        tmrw = 0
+    elif datetime.today().weekday == 0:
+        ystr = 6 
+
     tdy_slots = session.query(ProgramSlot) \
-        .filter(ProgramSlot.day == datetime.today().weekday())
+        .filter(ProgramSlot.day == tdy)
     
     ystr_slots = session.query(ProgramSlot) \
-        .filter(ProgramSlot.day == datetime.today().weekday() - 1)
+        .filter(ProgramSlot.day == ystr)
     
     tmrw_slots = session.query(ProgramSlot) \
-        .filter(ProgramSlot.day == datetime.today().weekday() + 1)
+        .filter(ProgramSlot.day == tmrw)
 
     program_slots = tdy_slots.union(ystr_slots).union(tmrw_slots).all() 
     
@@ -70,14 +79,23 @@ def get_program_log():
 
     from datetime import datetime
 
+    tdy = datetime.today().weekday()
+    tmrw = tdy + 1
+    ystr = tdy - 1
+
+    if datetime.today().weekday() == 6:
+        tmrw = 0
+    elif datetime.today().weekday == 0:
+        ystr = 6 
+
     tdy_logs = session.query(ProgramLogEntry) \
-        .filter(extract('day', ProgramLogEntry.timestamp) == datetime.today().day)    
+        .filter(extract('day', ProgramLogEntry.timestamp) == tdy)    
 
     ystr_logs = session.query(ProgramLogEntry) \
-        .filter(extract('day', ProgramLogEntry.timestamp) == datetime.today().day - 1)
+        .filter(extract('day', ProgramLogEntry.timestamp) == ystr)
 
     tmrw_logs = session.query(ProgramLogEntry) \
-        .filter(extract('day', ProgramLogEntry.timestamp) == datetime.today().day + 1)
+        .filter(extract('day', ProgramLogEntry.timestamp) == tmrw)
     
     program_log_entries = tdy_logs.union(ystr_logs).union(tmrw_logs).all()
 

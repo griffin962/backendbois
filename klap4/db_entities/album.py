@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer
 from sqlalchemy.orm import backref, relationship
 
 import klap4.db
@@ -91,6 +91,9 @@ class Album(SQLBase):
                       f"format={self.format_bitfield}, " \
                       f"label_id={self.label_id}, " \
                       f"promoter_id={self.promoter_id})>"
+    
+    def __str__(self):
+        return str(self.name)
 
 
 class AlbumReview(SQLBase):
