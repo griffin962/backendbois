@@ -54,8 +54,11 @@ def display_playlist(dj_id: str, p_name: str) -> SQLBase:
     from klap4.db import Session
     session = Session()
 
-    u_playlist = session.query(Playlist) \
-        .filter(and_(Playlist.dj_id == dj_id, Playlist.name == p_name)).one()
+    try:
+        u_playlist = session.query(Playlist) \
+            .filter(and_(Playlist.dj_id == dj_id, Playlist.name == p_name)).one()
+    except:
+        return {"error": "ERROR"}
     
     playlist = get_json(u_playlist)
     
@@ -72,16 +75,15 @@ def display_playlist(dj_id: str, p_name: str) -> SQLBase:
     return obj
 
 
-def add_playlist_entry(user: str, p_name: str, song: str, artist: str, album: str) -> SQLBase:
+def add_playlist_entry(user: str, p_name: str, index: int, ref: str) -> SQLBase:
     from klap4.db import Session
     session = Session()
 
     newPlaylistEntry = PlaylistEntry(
         dj_id=user, 
         playlist_name=p_name, 
-        song_name=song, 
-        artist_name=artist, 
-        album_name=album)
+        index=index,
+        reference=ref)
     
     session.add(newPlaylistEntry)
     session.commit()
@@ -89,7 +91,7 @@ def add_playlist_entry(user: str, p_name: str, song: str, artist: str, album: st
     return newPlaylistEntry
 
 
-def update_playlist_entry(user: str, p_name: str, song: str, artist: str, album: str, new_song: str, new_artist: str, new_album: str):
+def update_playlist_entry(user: str, p_name: str, index: int, ref: str, new_index: int, new_ref: str):
     from klap4.db import Session
     session = Session()
     
@@ -98,28 +100,26 @@ def update_playlist_entry(user: str, p_name: str, song: str, artist: str, album:
                     and_(
                         PlaylistEntry.dj_id == user, 
                         PlaylistEntry.playlist_name == p_name,
-                        PlaylistEntry.song_name == song,
-                        PlaylistEntry.artist_name == artist,
-                        PlaylistEntry.album_name == album
+                        PlaylistEntry.index == index,
+                        PlaylistEntry.reference == ref
                     )
                 ). \
-                values(song_name=new_song, artist_name=new_artist, album_name=new_album)
+                values(index=new_index, reference=new_ref)
     
     session.commit()
     
     return update
 
 
-def delete_playlist_entry(user: str, p_name: str, song: str, artist: str, album: str) -> None:
+def delete_playlist_entry(user: str, p_name: str, index: int, ref: str) -> None:
     from klap4.db import Session
     session = Session()
 
     session.query(PlaylistEntry).filter(and_(
         PlaylistEntry.dj_id == user, 
         PlaylistEntry.playlist_name == p_name, 
-        PlaylistEntry.song_name == song, 
-        PlaylistEntry.artist_name == artist, 
-        PlaylistEntry.album_name == album)).delete()
+        PlaylistEntry.index == index,
+        PlaylistEntry.reference == ref)).delete()
     
     session.commit()
     

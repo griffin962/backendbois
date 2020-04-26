@@ -43,3 +43,23 @@ def display_program(prog_typ: str) -> SQLBase:
     info_list.append(program_slots)
 
     return info_list
+
+
+def get_program_slots():
+    from klap4.db import Session
+    session = Session()
+
+    from datetime import datetime
+
+    tdy_slots = session.query(ProgramSlot) \
+        .filter(ProgramSlot.day == datetime.today().weekday())
+    
+    ystr_slots = session.query(ProgramSlot) \
+        .filter(ProgramSlot.day == datetime.today().weekday() - 1)
+    
+    tmrw_slots = session.query(ProgramSlot) \
+        .filter(ProgramSlot.day == datetime.today().weekday() + 1)
+
+    program_slots = tdy_slots.union(ystr_slots).union(tmrw_slots).all() 
+    
+    return format_object_list(program_slots)

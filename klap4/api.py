@@ -47,8 +47,11 @@ admin.add_view(AlbumModelView(Album, session))
 admin.add_view(ModelView(Song, session))
 admin.add_view(ModelView(AlbumReview, session))
 admin.add_view(ModelView(AlbumProblem, session))
+admin.add_view(ProgramFormatModelView(ProgramFormat, session))
 admin.add_view(ProgramModelView(Program, session))
+admin.add_view(ProgramSlotModelView(ProgramSlot, session))
 admin.add_view(PlaylistModelView(Playlist, session))
+admin.add_view(PlaylistEntryModelView(PlaylistEntry, session))
 admin.add_view(DJModelView(DJ, session))
 '''
 @app.before_request
@@ -290,10 +293,41 @@ def playlist(dj):
 
         return "Deleted"
 
-@app.route('/playlist/display/<dj>/<playlist_name>', methods=['GET'])
+@app.route('/playlist/display/<dj>/<playlist_name>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def show_playlist(dj, playlist_name):
-    # Call display_playlist() and return
-    # Use the id to get the DJ name and playlist name
     if request.method == 'GET':
         playlist = display_playlist(dj, playlist_name)
         return jsonify(playlist)
+
+    elif request.method == 'POST':
+        index = request.get_json()['index']
+        reference = request.get_json()['ref']
+        new_entry = add_playlist_entry(dj, playlist_name, index, reference)
+        return "Added"
+
+    elif request.method == 'PUT':
+        index = request.get_json()['index']
+        ref = request.get_json()['ref']
+        new_index = request.get_json()['newIndex']
+        new_ref = request.get_json()['newRef']
+        updated_entry = update_playlist_entry(dj, playlist_name, index, ref, new_index, new_ref)
+        return "Updated"
+
+    elif request.method == 'DELETE':
+        index = request.get_json()['index']
+        ref = request.get_json()['ref']
+        delete_playlist_entry(dj, playlist_name, index, ref)
+        return "Deleted"
+
+
+@app.route('/programming/log', methods=['GET', 'POST'])
+def programming_log():
+    from datetime import datetime
+    import time
+    if request.method == 'GET':
+        program_slots = get_program_slots()
+
+        for slot in program_slots:
+            slot['time'] = str(slot['time'])
+    
+        return jsonify(program_slots)

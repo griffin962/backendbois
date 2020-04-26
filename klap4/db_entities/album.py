@@ -133,7 +133,7 @@ class AlbumReview(SQLBase):
 
     @property
     def is_recent(self):
-        return datetime.now() - self.date_added < timedelta(weeks=4)
+        return datetime.now() - self.date_entered < timedelta(weeks=4)
 
     @property
     def id(self):

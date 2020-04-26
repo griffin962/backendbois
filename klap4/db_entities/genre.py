@@ -19,7 +19,7 @@ class Genre(SQLBase):
 
     # Relationships:
 
-    # artists
+    artists = relationship("Artist", back_populates="genre", cascade="all, delete-orphan")
     # albums
     # songs
 

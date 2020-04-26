@@ -5,7 +5,8 @@ from pathlib import Path
 from klap4 import db
 from klap4.db_entities import *
 from klap4.utils import *
-from klap4.services.album_services import generate_chart, charts_format
+from klap4.services.album_services import generate_chart, charts_format, display_album
+from klap4.services.program_services import get_program_slots
 
 
 def playlist_demo():
@@ -46,10 +47,10 @@ def main():
     script_path = Path(__file__).absolute().parent
     db.connect(script_path/".."/"test.db")
 
-    simple_tag_fetch_demo()
-    playlist_demo()
-    charts_test()
-
+    s = get_program_slots()
+    print(s)
+    a = display_album("AL1A")
+    print(a)
 
 if __name__ == '__main__':
     main()
