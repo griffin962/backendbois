@@ -18,12 +18,6 @@ class Artist(SQLBase):
                             backref=backref("artists", uselist=True, cascade="save-update, merge, delete"),
                             uselist=False,
                             primaryjoin="foreign(Genre.abbreviation) == Artist.genre_abbr")
-    # songs
-
-    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="artist",
-                                 cascade="save-update, merge, delete")
-    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="artist",
-                                  cascade="save-update, merge, delete")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:

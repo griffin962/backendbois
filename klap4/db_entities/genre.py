@@ -14,13 +14,6 @@ class Genre(SQLBase):
     name = Column(String, nullable=False)
     color = Column(String, nullable=False)
 
-    # Relationships:
-    # songs
-
-
-    album_reviews = relationship("AlbumReview", back_populates="genre", cascade="all, delete-orphan")
-    album_problems = relationship("AlbumProblem", back_populates="genre", cascade="all, delete-orphan")
-
     def __init__(self, **kwargs):
         if "id" in kwargs:
             kwargs["abbreviation"] = kwargs["id"]

@@ -26,8 +26,8 @@ class Album(SQLBase):
     date_added = Column(DateTime, nullable=False)
     missing = Column(Boolean, nullable=False)
     format_bitfield = Column(Integer, nullable=False)
-    label_id = Column(Integer, ForeignKey("label.id"), nullable=True)
-    promoter_id = Column(Integer, ForeignKey("promoter.id"), nullable=True)
+    label_id = Column(Integer, nullable=True)
+    promoter_id = Column(Integer, nullable=True)
 
     genre = relationship("klap4.db_entities.genre.Genre",
                          backref=backref("albums", uselist=True, cascade="all"),
@@ -41,25 +41,16 @@ class Album(SQLBase):
                                       "     foreign(Artist.genre_abbr) == Album.genre_abbr,"
                                       "     foreign(Artist.number) == Album.artist_num"
                                       ")")
-
-    # Relationships:
-
-    # songs
-
+    
     label = relationship("klap4.db_entities.label_and_promoter.Label",
-                         back_populates="artists",
+                         backref=backref("albums", uselist=True, cascade="all"),
                          uselist=False,
-                         cascade="save-update, merge, delete")
-
-    promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="artists",
-                            cascade="save-update, merge, delete")
-    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="album",
-                                 cascade="save-update, merge, delete")
-    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="album",
-                                  cascade="save-update, merge, delete")
-
-    is_new = False
-    id = None
+                         primaryjoin="foreign(Label.id) == Album.label_id")
+    
+    promoter = relationship("klap4.db_entities.label_and_promoter.Promoter",
+                            backref=backref("albums", uselist=True, cascade="all"),
+                            uselist=False,
+                            primaryjoin="foreign(Promoter.id) == Album.promoter_id")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
@@ -107,24 +98,39 @@ class Album(SQLBase):
 class AlbumReview(SQLBase):
     __tablename__ = "album_review"
 
-    genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
-    artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
-    album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
-    dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
+    genre_abbr = Column(String(2), primary_key=True)
+    artist_num = Column(Integer, primary_key=True)
+    album_letter = Column(String(1), primary_key=True)
+    dj_id = Column(String, primary_key=True)
     date_entered = Column(DateTime, nullable=False)
     content = Column(String, nullable=False)
 
-    genre = relationship("klap4.db_entities.genre.Genre", back_populates="album_reviews",
-                         cascade="save-update, merge, delete")
-    artist = relationship("klap4.db_entities.artist.Artist", back_populates="album_reviews",
-                          cascade="save-update, merge, delete")
-    album = relationship("klap4.db_entities.album.Album", back_populates="album_reviews",
-                         cascade="save-update, merge, delete")
-    dj = relationship("klap4.db_entities.dj.DJ", back_populates="album_reviews",
-                      cascade="save-update, merge, delete")
-
-    is_recent = False
-    id = None
+    genre = relationship("klap4.db_entities.genre.Genre",
+                         backref=backref("album_reviews", uselist=True, cascade="all"),
+                         uselist=False,
+                         primaryjoin="foreign(Genre.abbreviation) == AlbumReview.genre_abbr")
+    
+    artist = relationship("klap4.db_entities.artist.Artist",
+                          backref=backref("album_reviews", uselist=True, cascade="all"),
+                          uselist=False,
+                          primaryjoin="and_("
+                                      "     foreign(Artist.genre_abbr) == AlbumReview.genre_abbr,"
+                                      "     foreign(Artist.number) == AlbumReview.artist_num"
+                                      ")")
+    
+    album = relationship("klap4.db_entities.album.Album",
+                         backref=backref("album_reviews", uselist=True, cascade="all"),
+                         uselist=False,
+                         primaryjoin="and_("
+                                     "     foreign(Album.genre_abbr) == AlbumReview.genre_abbr,"
+                                     "     foreign(Album.artist_num) == AlbumReview.artist_num,"
+                                     "     foreign(Album.letter) == AlbumReview.album_letter"
+                                     ")")
+    
+    dj = relationship("klap4.db_entities.dj.DJ",
+                      backref=backref("album_reviews", uselist=True, cascade="all"),
+                      uselist=False,
+                      primaryjoin="foreign(DJ.id) == AlbumReview.dj_id")
 
     def __init__(self, **kwargs):
         if "date_entered" in kwargs:
@@ -155,14 +161,32 @@ class AlbumProblem(SQLBase):
     dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
     content = Column(String, nullable=False)
 
-    genre = relationship("klap4.db_entities.genre.Genre", back_populates="album_problems",
-                         cascade="save-update, merge, delete")
-    artist = relationship("klap4.db_entities.artist.Artist", back_populates="album_problems",
-                          cascade="save-update, merge, delete")
-    album = relationship("klap4.db_entities.album.Album", back_populates="album_problems",
-                         cascade="save-update, merge, delete")
-    dj = relationship("klap4.db_entities.dj.DJ", back_populates="album_problems",
-                      cascade="save-update, merge, delete")
+    genre = relationship("klap4.db_entities.genre.Genre",
+                         backref=backref("album_problems", uselist=True, cascade="all"),
+                         uselist=False,
+                         primaryjoin="foreign(Genre.abbreviation) == AlbumProblem.genre_abbr")
+    
+    artist = relationship("klap4.db_entities.artist.Artist",
+                          backref=backref("album_problems", uselist=True, cascade="all"),
+                          uselist=False,
+                          primaryjoin="and_("
+                                      "     foreign(Artist.genre_abbr) == AlbumProblem.genre_abbr,"
+                                      "     foreign(Artist.number) == AlbumProblem.artist_num"
+                                      ")")
+    
+    album = relationship("klap4.db_entities.album.Album",
+                         backref=backref("album_problems", uselist=True, cascade="all"),
+                         uselist=False,
+                         primaryjoin="and_("
+                                     "     foreign(Album.genre_abbr) == AlbumProblem.genre_abbr,"
+                                     "     foreign(Album.artist_num) == AlbumProblem.artist_num,"
+                                     "     foreign(Album.letter) == AlbumProblem.album_letter"
+                                     ")")
+    
+    dj = relationship("klap4.db_entities.dj.DJ",
+                      backref=backref("album_problems", uselist=True, cascade="all"),
+                      uselist=False,
+                      primaryjoin="foreign(DJ.id) == AlbumProblem.dj_id")
 
     @property
     def id(self):

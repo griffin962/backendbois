@@ -14,10 +14,6 @@ class DJ(SQLBase):
     name = Column(String, nullable=False)
     is_admin = Column(Boolean, nullable=False)
 
-    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="dj",
-                                 cascade="save-update, merge, delete")
-    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="dj",
-                                  cascade="save-update, merge, delete")
     playlists = relationship("klap4.db_entities.playlist.Playlist", back_populates="dj",
                              cascade="save-update, merge, delete")
     playlist_entries = relationship("klap4.db_entities.playlist.PlaylistEntry", back_populates="dj",
