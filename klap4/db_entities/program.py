@@ -9,12 +9,6 @@ import klap4.db
 from klap4.db_entities import SQLBase
 
 
-# TODO: God this table name is awful
-program_type_slots_table = Table("program_type_slots_table", SQLBase.metadata,
-                                 Column("program_type", String, ForeignKey("program.type")),
-                                 Column("program_slot_type", String, ForeignKey("program_slot.program_type")))
-
-
 class ProgramFormat(SQLBase):
     __tablename__ = "program_format"
 
@@ -45,6 +39,7 @@ class Program(SQLBase):
 
     type = Column(String, ForeignKey("program_format.type"), primary_key=True)
     name = Column(String, primary_key=True)
+    duration = Column(Integer)
     months = Column(String)
 
     program_format = relationship("ProgramFormat", back_populates="programs")
@@ -69,19 +64,17 @@ class Program(SQLBase):
 class ProgramSlot(SQLBase):
     __tablename__ = "program_slot"
 
-    program_type = Column(String, ForeignKey("program_format.type"), primary_key=True)
-    day = Column(Integer, primary_key=True)
-    time = Column(Time, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    program_type = Column(String, ForeignKey("program_format.type"), nullable=False)
+    day = Column(Integer)
+    time = Column(Time)
 
     program_format = relationship("ProgramFormat", back_populates="program_slots")
+    program_log_entries = relationship("ProgramLogEntry", back_populates="program_slot")
     
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    @property
-    def id(self):
-        return str(self.program_type)+ '+' + str(self.day)+ '+' + str(self.time)
 
     def __repr__(self):
         return f"<ProgramSlot(program_type={self.program_type}, " \
@@ -94,14 +87,21 @@ class ProgramLogEntry(SQLBase):
 
     program_type = Column(String, ForeignKey("program_format.type"), primary_key=True)
     program_name = Column(String, ForeignKey("program.name"))
+    slot_id = Column(String, ForeignKey("program_slot.id"), primary_key=True)
     timestamp = Column(DateTime, primary_key=True)
     dj = Column(String, ForeignKey("dj.id"), nullable=False)
 
     program_format = relationship("ProgramFormat", back_populates="program_log_entries")
     program_desc = relationship("Program", back_populates="program_log_entries")
+    program_slot = relationship("ProgramSlot", back_populates="program_log_entries")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+    
+
+    @property
+    def id(self):
+        return str(self.program_type) + str(self.slot_id) + str(self.timestamp)
 
     def __repr__(self):
         return f"<ProgramLogEntry(program_type={self.program_type}, " \

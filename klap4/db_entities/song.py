@@ -29,24 +29,21 @@ class Song(SQLBase):
     recommended = Column(Boolean, nullable=False)
 
     genre = relationship("klap4.db_entities.genre.Genre",
-                         backref=backref("songs", uselist=True),
+                         backref=backref("songs", uselist=True, cascade="all"),
                          uselist=False,
-                         cascade="save-update, merge, delete",
                          primaryjoin="foreign(Genre.abbreviation) == Song.genre_abbr")
 
     artist = relationship("klap4.db_entities.artist.Artist",
-                          backref=backref("songs", uselist=True),
+                          backref=backref("songs", uselist=True, cascade="all"),
                           uselist=False,
-                          cascade="save-update, merge, delete",
                           primaryjoin="and_("
                                       "     foreign(Artist.genre_abbr) == Song.genre_abbr,"
                                       "     foreign(Artist.number) == Song.artist_num"
                                       ")")
 
     album = relationship("klap4.db_entities.album.Album",
-                         backref=backref("songs", uselist=True),
+                         backref=backref("songs", uselist=True, cascade="all"),
                          uselist=False,
-                         cascade="save-update, merge, delete",
                          primaryjoin="and_("
                                      "      foreign(Album.genre_abbr) == Song.genre_abbr,"
                                      "      foreign(Album.artist_num) == Song.artist_num,"

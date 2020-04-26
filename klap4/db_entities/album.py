@@ -13,9 +13,11 @@ class Album(SQLBase):
     __tablename__ = "album"
 
     class FORMAT:
-        VINYL = 1 * 2 ** 0
-        CD = 1 * 2 ** 1
-        DIGITAL = 1 * 2 ** 2
+        VINYL = 0b00001
+        CD = 0b00010
+        DIGITAL =0b00100
+        SINGLE = 0b01000
+        SEVENINCH = 0b10000
 
     genre_abbr = Column(String(2), primary_key=True)
     artist_num = Column(Integer, primary_key=True)
@@ -28,15 +30,13 @@ class Album(SQLBase):
     promoter_id = Column(Integer, ForeignKey("promoter.id"), nullable=True)
 
     genre = relationship("klap4.db_entities.genre.Genre",
-                         backref=backref("albums", uselist=True),
+                         backref=backref("albums", uselist=True, cascade="all"),
                          uselist=False,
-                         cascade="save-update, merge, delete",
                          primaryjoin="foreign(Genre.abbreviation) == Album.genre_abbr")
 
     artist = relationship("klap4.db_entities.artist.Artist",
-                          backref=backref("albums", uselist=True),
+                          backref=backref("albums", uselist=True, cascade="all"),
                           uselist=False,
-                          cascade="save-update, merge, delete",
                           primaryjoin="and_("
                                       "     foreign(Artist.genre_abbr) == Album.genre_abbr,"
                                       "     foreign(Artist.number) == Album.artist_num"

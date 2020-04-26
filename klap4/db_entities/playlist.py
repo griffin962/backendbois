@@ -32,7 +32,7 @@ class Playlist(SQLBase):
 
     @property
     def id(self):
-        return f"{self.dj.id}+{self.name}"
+        return f"{self.dj_id}+{self.name}"
 
     def __repr__(self):
         return f"<Playlist(id={self.id}, " \

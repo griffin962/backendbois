@@ -10,17 +10,14 @@ from klap4.db_entities import decompose_tag, full_module_name, SQLBase
 class Artist(SQLBase):
     __tablename__ = "artist"
 
-    genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
+    genre_abbr = Column(String(2), primary_key=True)
     number = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    next_album_letter = None
-    id = None
 
-    genre = relationship("Genre", back_populates="artists")
-
-    # Relationships:
-
-    # albums
+    genre = relationship("klap4.db_entities.genre.Genre", 
+                            backref=backref("artists", uselist=True, cascade="save-update, merge, delete"),
+                            uselist=False,
+                            primaryjoin="foreign(Genre.abbreviation) == Artist.genre_abbr")
     # songs
 
     album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="artist",

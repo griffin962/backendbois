@@ -329,5 +329,12 @@ def programming_log():
 
         for slot in program_slots:
             slot['time'] = str(slot['time'])
+        
+        program_log_entries = get_program_log()
+
+        thingy = {
+                "program_slots": program_slots,
+                "program_log_entries": program_log_entries
+            }
     
-        return jsonify(program_slots)
+        return jsonify(thingy)

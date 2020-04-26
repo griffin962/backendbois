@@ -14,20 +14,12 @@ class Genre(SQLBase):
     name = Column(String, nullable=False)
     color = Column(String, nullable=False)
 
-    next_artist_num = 0
-    id = None
-
     # Relationships:
-
-    artists = relationship("Artist", back_populates="genre", cascade="all, delete-orphan")
-    # albums
     # songs
 
 
-    album_reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="genre",
-                                 cascade="save-update, merge, delete")
-    album_problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="genre",
-                                  cascade="save-update, merge, delete")
+    album_reviews = relationship("AlbumReview", back_populates="genre", cascade="all, delete-orphan")
+    album_problems = relationship("AlbumProblem", back_populates="genre", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
