@@ -15,7 +15,7 @@ class Artist(SQLBase):
     name = Column(String, nullable=False)
 
     genre = relationship("klap4.db_entities.genre.Genre", 
-                            backref=backref("artists", uselist=True, cascade="save-update, merge, delete"),
+                            backref=backref("artists", uselist=True),
                             uselist=False,
                             primaryjoin="foreign(Genre.abbreviation) == Artist.genre_abbr")
 

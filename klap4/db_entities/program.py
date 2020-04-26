@@ -15,9 +15,7 @@ class ProgramFormat(SQLBase):
     type = Column(String, primary_key=True)
     description = Column(String, nullable=False)
 
-    programs = relationship("Program", back_populates="program_format", cascade="all, delete-orphan")
-    program_slots = relationship("ProgramSlot", back_populates="program_format", cascade="all, delete-orphan")
-    program_log_entries = relationship("ProgramLogEntry", back_populates="program_format", cascade="all, delete-orphan")
+    program_log_entries = relationship("ProgramLogEntry", back_populates="program_format")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -37,13 +35,17 @@ class ProgramFormat(SQLBase):
 class Program(SQLBase):
     __tablename__ = "program"
 
-    type = Column(String, ForeignKey("program_format.type"), primary_key=True)
+    type = Column(String, primary_key=True)
     name = Column(String, primary_key=True)
     duration = Column(Integer)
     months = Column(String)
 
-    program_format = relationship("ProgramFormat", back_populates="programs")
-    program_log_entries = relationship("ProgramLogEntry", back_populates="program_desc", cascade="all, delete-orphan")
+    program_format = relationship("klap4.db_entities.program.ProgramFormat",
+                                  backref=backref("programs", uselist=True),
+                                  uselist=False,
+                                  primaryjoin="foreign(ProgramFormat.type) == Program.type")
+
+    program_log_entries = relationship("ProgramLogEntry", back_populates="program_desc")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -65,11 +67,15 @@ class ProgramSlot(SQLBase):
     __tablename__ = "program_slot"
 
     id = Column(Integer, primary_key=True)
-    program_type = Column(String, ForeignKey("program_format.type"), nullable=False)
+    program_type = Column(String, nullable=False)
     day = Column(Integer)
     time = Column(Time)
 
-    program_format = relationship("ProgramFormat", back_populates="program_slots")
+    program_format = relationship("klap4.db_entities.program.ProgramFormat",
+                                  backref=backref("program_slots", uselist=True),
+                                  uselist=False,
+                                  primaryjoin="foreign(ProgramFormat.type) == ProgramSlot.program_type")
+
     program_log_entries = relationship("ProgramLogEntry", back_populates="program_slot")
     
 

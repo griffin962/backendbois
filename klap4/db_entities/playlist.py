@@ -16,7 +16,7 @@ class Playlist(SQLBase):
     show = Column(String, nullable=False)
 
     dj = relationship("klap4.db_entities.dj.DJ",
-                      backref=backref("playlists", uselist=True, cascade="all"),
+                      backref=backref("playlists", uselist=True),
                       uselist=False,
                       primaryjoin="foreign(DJ.id) == Playlist.dj_id")
 
@@ -44,18 +44,18 @@ class PlaylistEntry(SQLBase):
     __tablename__ = "playlist_entry"
 
     dj_id = Column(String, primary_key=True)
-    playlist_name = Column(String, ForeignKey("playlist.name"), primary_key=True)
+    playlist_name = Column(String, primary_key=True)
     index = Column(Integer, primary_key=True)
     reference_type = Column(Integer, nullable=False)
     reference = Column(String, nullable=False)
 
     dj = relationship("klap4.db_entities.dj.DJ",
-                      backref=backref("playlist_entries", uselist=True, cascade="all"),
+                      backref=backref("playlist_entries", uselist=True),
                       uselist=False,
                       primaryjoin="foreign(DJ.id) == PlaylistEntry.dj_id")
     
     playlist = relationship("klap4.db_entities.playlist.Playlist",
-                            backref=backref("playlist_entries", uselist=True, cascade="all"),
+                            backref=backref("playlist_entries", uselist=True),
                             uselist=False,
                             primaryjoin="and_("
                                         "     foreign(Playlist.dj_id) == PlaylistEntry.dj_id,"

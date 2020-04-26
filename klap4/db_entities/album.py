@@ -30,12 +30,12 @@ class Album(SQLBase):
     promoter_id = Column(Integer, nullable=True)
 
     genre = relationship("klap4.db_entities.genre.Genre",
-                         backref=backref("albums", uselist=True, cascade="all"),
+                         backref=backref("albums", uselist=True),
                          uselist=False,
                          primaryjoin="foreign(Genre.abbreviation) == Album.genre_abbr")
 
     artist = relationship("klap4.db_entities.artist.Artist",
-                          backref=backref("albums", uselist=True, cascade="all"),
+                          backref=backref("albums", uselist=True),
                           uselist=False,
                           primaryjoin="and_("
                                       "     foreign(Artist.genre_abbr) == Album.genre_abbr,"
@@ -43,12 +43,12 @@ class Album(SQLBase):
                                       ")")
     
     label = relationship("klap4.db_entities.label_and_promoter.Label",
-                         backref=backref("albums", uselist=True, cascade="all"),
+                         backref=backref("albums", uselist=True),
                          uselist=False,
                          primaryjoin="foreign(Label.id) == Album.label_id")
     
     promoter = relationship("klap4.db_entities.label_and_promoter.Promoter",
-                            backref=backref("albums", uselist=True, cascade="all"),
+                            backref=backref("albums", uselist=True),
                             uselist=False,
                             primaryjoin="foreign(Promoter.id) == Album.promoter_id")
 
@@ -106,12 +106,12 @@ class AlbumReview(SQLBase):
     content = Column(String, nullable=False)
 
     genre = relationship("klap4.db_entities.genre.Genre",
-                         backref=backref("album_reviews", uselist=True, cascade="all"),
+                         backref=backref("album_reviews", uselist=True),
                          uselist=False,
                          primaryjoin="foreign(Genre.abbreviation) == AlbumReview.genre_abbr")
     
     artist = relationship("klap4.db_entities.artist.Artist",
-                          backref=backref("album_reviews", uselist=True, cascade="all"),
+                          backref=backref("album_reviews", uselist=True),
                           uselist=False,
                           primaryjoin="and_("
                                       "     foreign(Artist.genre_abbr) == AlbumReview.genre_abbr,"
@@ -119,7 +119,7 @@ class AlbumReview(SQLBase):
                                       ")")
     
     album = relationship("klap4.db_entities.album.Album",
-                         backref=backref("album_reviews", uselist=True, cascade="all"),
+                         backref=backref("album_reviews", uselist=True),
                          uselist=False,
                          primaryjoin="and_("
                                      "     foreign(Album.genre_abbr) == AlbumReview.genre_abbr,"
@@ -128,7 +128,7 @@ class AlbumReview(SQLBase):
                                      ")")
     
     dj = relationship("klap4.db_entities.dj.DJ",
-                      backref=backref("album_reviews", uselist=True, cascade="all"),
+                      backref=backref("album_reviews", uselist=True),
                       uselist=False,
                       primaryjoin="foreign(DJ.id) == AlbumReview.dj_id")
 
@@ -162,12 +162,12 @@ class AlbumProblem(SQLBase):
     content = Column(String, nullable=False)
 
     genre = relationship("klap4.db_entities.genre.Genre",
-                         backref=backref("album_problems", uselist=True, cascade="all"),
+                         backref=backref("album_problems", uselist=True),
                          uselist=False,
                          primaryjoin="foreign(Genre.abbreviation) == AlbumProblem.genre_abbr")
     
     artist = relationship("klap4.db_entities.artist.Artist",
-                          backref=backref("album_problems", uselist=True, cascade="all"),
+                          backref=backref("album_problems", uselist=True),
                           uselist=False,
                           primaryjoin="and_("
                                       "     foreign(Artist.genre_abbr) == AlbumProblem.genre_abbr,"
@@ -175,7 +175,7 @@ class AlbumProblem(SQLBase):
                                       ")")
     
     album = relationship("klap4.db_entities.album.Album",
-                         backref=backref("album_problems", uselist=True, cascade="all"),
+                         backref=backref("album_problems", uselist=True),
                          uselist=False,
                          primaryjoin="and_("
                                      "     foreign(Album.genre_abbr) == AlbumProblem.genre_abbr,"
@@ -184,7 +184,7 @@ class AlbumProblem(SQLBase):
                                      ")")
     
     dj = relationship("klap4.db_entities.dj.DJ",
-                      backref=backref("album_problems", uselist=True, cascade="all"),
+                      backref=backref("album_problems", uselist=True),
                       uselist=False,
                       primaryjoin="foreign(DJ.id) == AlbumProblem.dj_id")
 
