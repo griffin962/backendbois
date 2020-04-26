@@ -29,8 +29,9 @@ class Album(SQLBase):
     label_id = Column(Integer, nullable=True)
     promoter_id = Column(Integer, nullable=True)
 
-    genre = relationship("klap4.db_entities.genre.Genre", back_populates="albums")
-
+    genre = relationship("klap4.db_entities.genre.Genre", 
+                         back_populates="albums",
+                         primaryjoin="Genre.abbreviation == Album.genre_abbr")
     artist = relationship("klap4.db_entities.artist.Artist",
                           back_populates="albums",
                           primaryjoin="and_("

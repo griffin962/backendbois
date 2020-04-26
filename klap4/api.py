@@ -91,7 +91,7 @@ def login():
         set_refresh_cookies(resp, refresh_token)
         return resp, 200
     else:
-        return jsonify({"login": False}), 400
+        return jsonify({"login": False}), 401
 
 @app.route('/token/refresh', methods=['POST'])
 @jwt_refresh_token_required
@@ -301,22 +301,22 @@ def show_playlist(dj, playlist_name):
 
     elif request.method == 'POST':
         index = request.get_json()['index']
-        reference = request.get_json()['ref']
-        new_entry = add_playlist_entry(dj, playlist_name, index, reference)
+        entry = request.get_json()['entry']
+        new_entry = add_playlist_entry(dj, playlist_name, index, entry)
         return "Added"
 
     elif request.method == 'PUT':
         index = request.get_json()['index']
         ref = request.get_json()['ref']
         new_index = request.get_json()['newIndex']
-        new_ref = request.get_json()['newRef']
-        updated_entry = update_playlist_entry(dj, playlist_name, index, ref, new_index, new_ref)
+        new_entry = request.get_json()['newEntry']
+        updated_entry = update_playlist_entry(dj, playlist_name, index, entry, new_index, new_entry)
         return "Updated"
 
     elif request.method == 'DELETE':
         index = request.get_json()['index']
-        ref = request.get_json()['ref']
-        delete_playlist_entry(dj, playlist_name, index, ref)
+        entry = request.get_json()['entry']
+        delete_playlist_entry(dj, playlist_name, index, entry)
         return "Deleted"
 
 
@@ -338,3 +338,4 @@ def programming_log():
             }
     
         return jsonify(thingy)
+    

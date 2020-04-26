@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from sqlalchemy import Column, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 
 import klap4.db
 from klap4.db_entities import SQLBase
@@ -14,7 +14,8 @@ class Genre(SQLBase):
     name = Column(String, nullable=False)
     color = Column(String, nullable=False)
 
-    albums = relationship("klap4.db_entities.album.Album", back_populates="genre", cascade="all, delete-orphan")
+    artists = relationship("klap4.db_entities.artist.Artist", back_populates="genre", cascade="all, delete-orphan")
+    albums = relationship("klap4.db_entities.album.Album", back_populates="genre")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:

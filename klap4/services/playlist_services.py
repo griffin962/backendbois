@@ -75,7 +75,7 @@ def display_playlist(dj_id: str, p_name: str) -> SQLBase:
     return obj
 
 
-def add_playlist_entry(user: str, p_name: str, index: int, ref: str) -> SQLBase:
+def add_playlist_entry(user: str, p_name: str, index: int, entry) -> SQLBase:
     from klap4.db import Session
     session = Session()
 
@@ -83,7 +83,7 @@ def add_playlist_entry(user: str, p_name: str, index: int, ref: str) -> SQLBase:
         dj_id=user, 
         playlist_name=p_name, 
         index=index,
-        reference=ref)
+        entry=entry)
     
     session.add(newPlaylistEntry)
     session.commit()
@@ -91,7 +91,7 @@ def add_playlist_entry(user: str, p_name: str, index: int, ref: str) -> SQLBase:
     return newPlaylistEntry
 
 
-def update_playlist_entry(user: str, p_name: str, index: int, ref: str, new_index: int, new_ref: str):
+def update_playlist_entry(user: str, p_name: str, index: int, entry, new_index: int, new_entry):
     from klap4.db import Session
     session = Session()
     
@@ -101,17 +101,17 @@ def update_playlist_entry(user: str, p_name: str, index: int, ref: str, new_inde
                         PlaylistEntry.dj_id == user, 
                         PlaylistEntry.playlist_name == p_name,
                         PlaylistEntry.index == index,
-                        PlaylistEntry.reference == ref
+                        PlaylistEntry.entry == entry
                     )
                 ). \
-                values(index=new_index, reference=new_ref)
+                values(index=new_index, entry=new_entry)
     
     session.commit()
     
     return update
 
 
-def delete_playlist_entry(user: str, p_name: str, index: int, ref: str) -> None:
+def delete_playlist_entry(user: str, p_name: str, index: int, entry) -> None:
     from klap4.db import Session
     session = Session()
 
@@ -119,7 +119,7 @@ def delete_playlist_entry(user: str, p_name: str, index: int, ref: str) -> None:
         PlaylistEntry.dj_id == user, 
         PlaylistEntry.playlist_name == p_name, 
         PlaylistEntry.index == index,
-        PlaylistEntry.reference == ref)).delete()
+        PlaylistEntry.entry)).delete()
     
     session.commit()
     

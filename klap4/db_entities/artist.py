@@ -14,13 +14,8 @@ class Artist(SQLBase):
     number = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
 
-    genre = relationship("klap4.db_entities.genre.Genre", backref=backref("artists", cascade="all, delete-orphan"))
-    albums = relationship("klap4.db_entities.album.Album", back_populates="artist", cascade="all, delete-orphan",
-                          primaryjoin="and_("
-                                      "     Artist.genre_abbr == Album.genre_abbr,"
-                                      "     Artist.number == Album.artist_num"
-                                      ")")
-
+    genre = relationship("klap4.db_entities.genre.Genre", back_populates="artists")
+    albums = relationship("klap4.db_entities.album.Album", back_populates="artist", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:

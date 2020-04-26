@@ -14,6 +14,8 @@ class DJ(SQLBase):
     name = Column(String, nullable=False)
     is_admin = Column(Boolean, nullable=False)
 
+    playlists = relationship("klap4.db_entities.playlist.Playlist", back_populates="dj", cascade="all, delete-orphan")
+
     def __init__(self, **kwargs):
         if "is_admin" not in kwargs:
             kwargs["is_admin"] = False

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from sqlalchemy import Column, ForeignKey, String, Integer
+from sqlalchemy import Column, ForeignKey, String, Integer, JSON
 from sqlalchemy.orm import backref, relationship
 
 import klap4.db
@@ -11,14 +11,11 @@ from klap4.utils import *
 class Playlist(SQLBase):
     __tablename__ = "playlist"
 
-    dj_id = Column(String, primary_key=True)
+    dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
     name = Column(String, primary_key=True)
     show = Column(String, nullable=False)
 
-    dj = relationship("klap4.db_entities.dj.DJ",
-                      backref=backref("playlists", uselist=True),
-                      uselist=False,
-                      primaryjoin="foreign(DJ.id) == Playlist.dj_id")
+    dj = relationship("klap4.db_entities.dj.DJ", back_populates="playlists")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
@@ -43,23 +40,24 @@ class Playlist(SQLBase):
 class PlaylistEntry(SQLBase):
     __tablename__ = "playlist_entry"
 
-    dj_id = Column(String, primary_key=True)
-    playlist_name = Column(String, primary_key=True)
+    dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
+    playlist_name = Column(String, ForeignKey("playlist.name"), primary_key=True)
     index = Column(Integer, primary_key=True)
-    reference_type = Column(Integer, nullable=False)
-    reference = Column(String, nullable=False)
+    reference_type = Column(Integer, nullable=True)
+    reference = Column(String, nullable=True)
+    entry = Column(JSON, nullable=False)
 
     dj = relationship("klap4.db_entities.dj.DJ",
-                      backref=backref("playlist_entries", uselist=True),
+                      backref=backref("playlist_entries", uselist=True, cascade="all, delete-orphan"),
                       uselist=False,
-                      primaryjoin="foreign(DJ.id) == PlaylistEntry.dj_id")
+                      primaryjoin="DJ.id == PlaylistEntry.dj_id")
     
     playlist = relationship("klap4.db_entities.playlist.Playlist",
-                            backref=backref("playlist_entries", uselist=True),
+                            backref=backref("playlist_entries", uselist=True, cascade="all, delete-orphan"),
                             uselist=False,
                             primaryjoin="and_("
-                                        "     foreign(Playlist.dj_id) == PlaylistEntry.dj_id,"
-                                        "     foreign(Playlist.name) == PlaylistEntry.playlist_name"
+                                        "     Playlist.dj_id == PlaylistEntry.dj_id,"
+                                        "     Playlist.name == PlaylistEntry.playlist_name"
                                         ")")
 
     def __init__(self, **kwargs):
