@@ -14,6 +14,8 @@ class DJ(SQLBase):
     name = Column(String, nullable=False)
     is_admin = Column(Boolean, nullable=False)
 
+    reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="dj", cascade="all, delete-orphan")
+    problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="dj", cascade="all, delete-orphan")
     playlists = relationship("klap4.db_entities.playlist.Playlist", back_populates="dj", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):

@@ -14,8 +14,10 @@ class Genre(SQLBase):
     name = Column(String, nullable=False)
     color = Column(String, nullable=False)
 
-    artists = relationship("klap4.db_entities.artist.Artist", back_populates="genre", cascade="all, delete-orphan")
-    albums = relationship("klap4.db_entities.album.Album", back_populates="genre")
+    artists = relationship("klap4.db_entities.artist.Artist", back_populates="genre", uselist=True, cascade="all, delete-orphan")
+    albums = relationship("klap4.db_entities.album.Album", uselist=True, back_populates="genre")
+    reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="genre")
+    problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="genre")
     songs = relationship("klap4.db_entities.song.Song", back_populates="genre")
 
     def __init__(self, **kwargs):

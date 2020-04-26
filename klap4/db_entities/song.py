@@ -33,20 +33,18 @@ class Song(SQLBase):
                          primaryjoin="Genre.abbreviation == Song.genre_abbr")
 
     artist = relationship("klap4.db_entities.artist.Artist",
-                          backref=backref("songs", uselist=True),
-                          uselist=False,
+                          back_populates="songs",
                           primaryjoin="and_("
-                                      "     foreign(Artist.genre_abbr) == Song.genre_abbr,"
-                                      "     foreign(Artist.number) == Song.artist_num"
+                                      "     Artist.genre_abbr == Song.genre_abbr,"
+                                      "     Artist.number == Song.artist_num"
                                       ")")
 
     album = relationship("klap4.db_entities.album.Album",
-                         backref=backref("songs", uselist=True),
-                         uselist=False,
+                         back_populates="songs",
                          primaryjoin="and_("
-                                     "      foreign(Album.genre_abbr) == Song.genre_abbr,"
-                                     "      foreign(Album.artist_num) == Song.artist_num,"
-                                     "      foreign(Album.letter) == Song.album_letter"
+                                     "      Album.genre_abbr == Song.genre_abbr,"
+                                     "      Album.artist_num == Song.artist_num,"
+                                     "      Album.letter == Song.album_letter"
                                      ")")
 
     id = None
