@@ -155,10 +155,10 @@ class AlbumReview(SQLBase):
 class AlbumProblem(SQLBase):
     __tablename__ = "album_problem"
 
-    genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
-    artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
-    album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
-    dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
+    genre_abbr = Column(String(2), primary_key=True)
+    artist_num = Column(Integer, primary_key=True)
+    album_letter = Column(String(1), primary_key=True)
+    dj_id = Column(String, primary_key=True)
     content = Column(String, nullable=False)
 
     genre = relationship("klap4.db_entities.genre.Genre",

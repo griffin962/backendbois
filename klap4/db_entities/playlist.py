@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from sqlalchemy import Column, ForeignKey, String, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 
 import klap4.db
 from klap4.db_entities import SQLBase, decompose_tag
@@ -11,13 +11,14 @@ from klap4.utils import *
 class Playlist(SQLBase):
     __tablename__ = "playlist"
 
-    dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
+    dj_id = Column(String, primary_key=True)
     name = Column(String, primary_key=True)
     show = Column(String, nullable=False)
 
-    dj = relationship("klap4.db_entities.dj.DJ", back_populates="playlists", cascade="save-update, merge, delete")
-    entries = relationship("klap4.db_entities.playlist.PlaylistEntry", back_populates="playlist",
-                           cascade="save-update, merge, delete")
+    dj = relationship("klap4.db_entities.dj.DJ",
+                      backref=backref("playlists", uselist=True, cascade="all"),
+                      uselist=False,
+                      primaryjoin="foreign(DJ.id) == Playlist.dj_id")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
@@ -42,16 +43,24 @@ class Playlist(SQLBase):
 class PlaylistEntry(SQLBase):
     __tablename__ = "playlist_entry"
 
-    dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
+    dj_id = Column(String, primary_key=True)
     playlist_name = Column(String, ForeignKey("playlist.name"), primary_key=True)
     index = Column(Integer, primary_key=True)
     reference_type = Column(Integer, nullable=False)
     reference = Column(String, nullable=False)
 
-    dj = relationship("klap4.db_entities.dj.DJ", back_populates="playlist_entries",
-                      cascade="save-update, merge, delete")
-    playlist = relationship("klap4.db_entities.playlist.Playlist", back_populates="entries",
-                            cascade="save-update, merge, delete")
+    dj = relationship("klap4.db_entities.dj.DJ",
+                      backref=backref("playlist_entries", uselist=True, cascade="all"),
+                      uselist=False,
+                      primaryjoin="foreign(DJ.id) == PlaylistEntry.dj_id")
+    
+    playlist = relationship("klap4.db_entities.playlist.Playlist",
+                            backref=backref("playlist_entries", uselist=True, cascade="all"),
+                            uselist=False,
+                            primaryjoin="and_("
+                                        "     foreign(Playlist.dj_id) == PlaylistEntry.dj_id,"
+                                        "     foreign(Playlist.name) == PlaylistEntry.playlist_name"
+                                        ")")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
