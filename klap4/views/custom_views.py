@@ -12,6 +12,7 @@ class ArtistModelView(ModelView):
 
 class AlbumModelView(ModelView):
     column_list=['name', 'artist', 'genre_abbr', 'date_added', 'missing', 'format_bitfield']
+    form_columns = ('genre', 'artist', 'letter', 'name', 'date_added', 'missing', 'format_bitfield', 'label_id', 'promoter_id') 
 
 
 class ProgramFormatModelView(ModelView):
@@ -27,6 +28,11 @@ class ProgramModelView(ModelView):
 class ProgramSlotModelView(ModelView):
     column_display_pk = True
     form_columns = ('program_format', 'day', 'time')
+
+
+class ProgramLogEntryModelView(ModelView):
+    column_display_pk = True
+    form_columns = ('program_format', 'program_name', 'program_slot', 'timestamp', 'dj')
 
 
 class PlaylistModelView(ModelView):

@@ -25,3 +25,7 @@ class DJ(SQLBase):
         return f"<DJ(id={self.id}, " \
                    f"name={self.name}, " \
                    f"is_admin={self.is_admin})>"
+    
+
+    def __str__(self):
+        return str(self.id)

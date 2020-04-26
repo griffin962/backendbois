@@ -26,12 +26,13 @@ class Album(SQLBase):
     date_added = Column(DateTime, nullable=False)
     missing = Column(Boolean, nullable=False)
     format_bitfield = Column(Integer, nullable=False)
-    label_id = Column(Integer, nullable=True)
-    promoter_id = Column(Integer, nullable=True)
+    label_id = Column(Integer, ForeignKey("label.id"), nullable=True)
+    promoter_id = Column(Integer, ForeignKey("promoter.id"), nullable=True)
 
     genre = relationship("klap4.db_entities.genre.Genre", 
                          back_populates="albums",
                          primaryjoin="Genre.abbreviation == Album.genre_abbr")
+
     artist = relationship("klap4.db_entities.artist.Artist",
                           back_populates="albums",
                           primaryjoin="and_("
@@ -40,14 +41,10 @@ class Album(SQLBase):
                                       ")")
     
     label = relationship("klap4.db_entities.label_and_promoter.Label",
-                         backref=backref("albums", uselist=True),
-                         uselist=False,
-                         primaryjoin="foreign(Label.id) == Album.label_id")
+                         back_populates="albums")
     
     promoter = relationship("klap4.db_entities.label_and_promoter.Promoter",
-                            backref=backref("albums", uselist=True),
-                            uselist=False,
-                            primaryjoin="foreign(Promoter.id) == Album.promoter_id")
+                            back_populates="albums")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:

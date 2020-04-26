@@ -18,9 +18,9 @@ class Song(SQLBase):
         OBSCENE = 3
         UNRATED = 4
 
-    genre_abbr = Column(String(2), primary_key=True)
-    artist_num = Column(Integer, primary_key=True)
-    album_letter = Column(String(1), primary_key=True)
+    genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
+    artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
+    album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
     number = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     fcc_status = Column(Integer, nullable=False)
@@ -29,9 +29,8 @@ class Song(SQLBase):
     recommended = Column(Boolean, nullable=False)
 
     genre = relationship("klap4.db_entities.genre.Genre",
-                         backref=backref("songs", uselist=True),
-                         uselist=False,
-                         primaryjoin="foreign(Genre.abbreviation) == Song.genre_abbr")
+                         back_populates="songs",
+                         primaryjoin="Genre.abbreviation == Song.genre_abbr")
 
     artist = relationship("klap4.db_entities.artist.Artist",
                           backref=backref("songs", uselist=True),

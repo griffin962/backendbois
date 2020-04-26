@@ -86,6 +86,9 @@ class ProgramSlot(SQLBase):
         return f"<ProgramSlot(program_type={self.program_type}, " \
                             f"day={self.day}, " \
                             f"time={self.time})>"
+    
+    def __str__(self):
+        return int(self.id)
 
 
 class ProgramLogEntry(SQLBase):
@@ -93,13 +96,14 @@ class ProgramLogEntry(SQLBase):
 
     program_type = Column(String, ForeignKey("program_format.type"), primary_key=True)
     program_name = Column(String, ForeignKey("program.name"))
-    slot_id = Column(String, ForeignKey("program_slot.id"), primary_key=True)
+    slot_id = Column(Integer, ForeignKey("program_slot.id"), primary_key=True)
     timestamp = Column(DateTime, primary_key=True)
-    dj = Column(String, ForeignKey("dj.id"), nullable=False)
+    dj_id = Column(String, ForeignKey("dj.id"), nullable=False)
 
     program_format = relationship("ProgramFormat", back_populates="program_log_entries")
     program_desc = relationship("Program", back_populates="program_log_entries")
     program_slot = relationship("ProgramSlot", back_populates="program_log_entries")
+    dj = relationship("klap4.db_entities.dj.DJ", backref=backref("program_log_entries", uselist=True, cascade="all, delete-orphan"))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -113,7 +117,7 @@ class ProgramLogEntry(SQLBase):
         return f"<ProgramLogEntry(program_type={self.program_type}, " \
                                 f"program_name={self.program_name}, " \
                                 f"timestamp={self.timestamp}, " \
-                                f"dj={self.dj})>"
+                                f"dj={self.dj_id})>"
 
 
 class Quarter(SQLBase):
