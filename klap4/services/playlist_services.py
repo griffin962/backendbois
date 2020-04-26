@@ -94,21 +94,17 @@ def add_playlist_entry(user: str, p_name: str, index: int, entry) -> SQLBase:
 def update_playlist_entry(user: str, p_name: str, index: int, entry, new_index: int, new_entry):
     from klap4.db import Session
     session = Session()
-    
-    update = PlaylistEntry.update(). \
-                where(
-                    and_(
-                        PlaylistEntry.dj_id == user, 
-                        PlaylistEntry.playlist_name == p_name,
-                        PlaylistEntry.index == index,
-                        PlaylistEntry.entry == entry
-                    )
-                ). \
-                values(index=new_index, entry=new_entry)
+
+    session.update(PlaylistEntry) \
+        .filter(
+            and_(PlaylistEntry.dj_id == user, PlaylistEntry.playlist_name == p_name,
+                 PlaylistEntry.index == index, PlaylistEntry.entry == entry)
+        ) \
+        .update({PlaylistEntry.index:new_index, PlaylistEntry.entry:new_entry}, synchronize_session=False)
     
     session.commit()
     
-    return update
+    return
 
 
 def delete_playlist_entry(user: str, p_name: str, index: int, entry) -> None:
