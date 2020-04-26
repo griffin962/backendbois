@@ -48,8 +48,6 @@ class Album(SQLBase):
     label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="albums")
     promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="albums")
 
-    __table_args__ = (UniqueConstraint('genre_abbr', 'artist_num', 'letter'),)
-
     def __init__(self, **kwargs):
         if "id" in kwargs:
             decomposed_tag = decompose_tag(kwargs["id"])

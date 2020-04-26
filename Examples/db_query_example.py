@@ -49,8 +49,6 @@ def main():
 
     s = get_program_slots()
     print(s)
-    a = display_album("AL1A")
-    print(a)
 
 if __name__ == '__main__':
     main()

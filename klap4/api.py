@@ -321,16 +321,22 @@ def show_playlist(dj, playlist_name):
         return "Deleted"
 
 
+@app.route('/playlist/upload/<dj>/<playlist_name>', methods=['POST'])
+def upload_playlist(dj, playlist_name):
+    entry_list = request.get_json()['playlistEntries']
+    for item in entry_list:
+        index = item['index']
+        entry = item['entry']
+        new_entry = add_playlist_entry(dj, playlist_name, index, entry)
+    return "Uploaded"
+
+
 @app.route('/programming/log', methods=['GET', 'POST'])
 def programming_log():
     from datetime import datetime
     import time
     if request.method == 'GET':
         program_slots = get_program_slots()
-
-        for slot in program_slots:
-            slot['time'] = str(slot['time'])
-        
         program_log_entries = get_program_log()
 
         thingy = {

@@ -60,17 +60,25 @@ def get_program_slots():
         ystr = 6 
 
     tdy_slots = session.query(ProgramSlot) \
-        .filter(ProgramSlot.day == tdy)
+        .filter(ProgramSlot.day == tdy).all()
     
     ystr_slots = session.query(ProgramSlot) \
-        .filter(ProgramSlot.day == ystr)
+        .filter(ProgramSlot.day == ystr).all()
     
     tmrw_slots = session.query(ProgramSlot) \
-        .filter(ProgramSlot.day == tmrw)
+        .filter(ProgramSlot.day == tmrw).all()
 
-    program_slots = tdy_slots.union(ystr_slots).union(tmrw_slots).all() 
+    program_slots = {
+                        "today": format_object_list(tdy_slots),
+                        "yesterday": format_object_list(ystr_slots),
+                        "tomorrow": format_object_list(tmrw_slots)
+    }
+
+    for category in program_slots.items():
+        for slot in category[1]:
+            slot['time'] = str(slot['time'])
     
-    return format_object_list(program_slots)
+    return program_slots
 
 
 def get_program_log():
@@ -89,14 +97,20 @@ def get_program_log():
         ystr = 6 
 
     tdy_logs = session.query(ProgramLogEntry) \
-        .filter(extract('day', ProgramLogEntry.timestamp) == tdy)    
+        .filter(extract('day', ProgramLogEntry.timestamp) == tdy).all()  
 
     ystr_logs = session.query(ProgramLogEntry) \
-        .filter(extract('day', ProgramLogEntry.timestamp) == ystr)
+        .filter(extract('day', ProgramLogEntry.timestamp) == ystr).all()
 
     tmrw_logs = session.query(ProgramLogEntry) \
-        .filter(extract('day', ProgramLogEntry.timestamp) == tmrw)
+        .filter(extract('day', ProgramLogEntry.timestamp) == tmrw).all()
     
-    program_log_entries = tdy_logs.union(ystr_logs).union(tmrw_logs).all()
 
-    return format_object_list(program_log_entries)
+    program_log_entries = {
+                            "today": format_object_list(tdy_logs),
+                            "yesterday": format_object_list(ystr_logs),
+                            "tomorrow": format_object_list(tmrw_logs)
+    }
+    
+
+    return program_log_entries
