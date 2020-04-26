@@ -19,8 +19,8 @@ class Album(SQLBase):
         SINGLE = 0b01000
         SEVENINCH = 0b10000
 
-    genre_abbr = Column(String(2), primary_key=True)
-    artist_num = Column(Integer, primary_key=True)
+    genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
+    artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
     letter = Column(String(1), primary_key=True)
     name = Column(String, nullable=False)
     date_added = Column(DateTime, nullable=False)
@@ -29,17 +29,13 @@ class Album(SQLBase):
     label_id = Column(Integer, nullable=True)
     promoter_id = Column(Integer, nullable=True)
 
-    genre = relationship("klap4.db_entities.genre.Genre",
-                         backref=backref("albums", uselist=True),
-                         uselist=False,
-                         primaryjoin="foreign(Genre.abbreviation) == Album.genre_abbr")
+    genre = relationship("klap4.db_entities.genre.Genre", back_populates="albums")
 
     artist = relationship("klap4.db_entities.artist.Artist",
-                          backref=backref("albums", uselist=True),
-                          uselist=False,
+                          back_populates="albums",
                           primaryjoin="and_("
-                                      "     foreign(Artist.genre_abbr) == Album.genre_abbr,"
-                                      "     foreign(Artist.number) == Album.artist_num"
+                                      "     Artist.genre_abbr == Album.genre_abbr,"
+                                      "     Artist.number == Album.artist_num"
                                       ")")
     
     label = relationship("klap4.db_entities.label_and_promoter.Label",

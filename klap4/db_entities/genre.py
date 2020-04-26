@@ -14,6 +14,8 @@ class Genre(SQLBase):
     name = Column(String, nullable=False)
     color = Column(String, nullable=False)
 
+    albums = relationship("klap4.db_entities.album.Album", back_populates="genre", cascade="all, delete-orphan")
+
     def __init__(self, **kwargs):
         if "id" in kwargs:
             kwargs["abbreviation"] = kwargs["id"]
