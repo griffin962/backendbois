@@ -268,7 +268,9 @@ def playlist(dj):
         dj_id = request.get_json()['username']
         p_name = request.get_json()['playlistName']
         show = request.get_json()['show']
-        playlist = update_playlist(dj_id, p_name, show)
+        new_name = request.get_json()['newName']
+        new_show = request.get_json()['newShow']
+        update_playlist(dj_id, p_name, show, new_name, new_show)
 
         return "Updated"
     
@@ -296,7 +298,7 @@ def show_playlist(dj, playlist_name):
         ref = request.get_json()['ref']
         new_index = request.get_json()['newIndex']
         new_entry = request.get_json()['newEntry']
-        updated_entry = update_playlist_entry(dj, playlist_name, index, entry, new_index, new_entry)
+        update_playlist_entry(dj, playlist_name, index, entry, new_index, new_entry)
         return "Updated"
 
     elif request.method == 'DELETE':
@@ -316,7 +318,7 @@ def upload_playlist(dj, playlist_name):
     return "Uploaded"
 
 
-@app.route('/programming/log', methods=['GET', 'POST'])
+@app.route('/programming/log', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def programming_log():
     if request.method == 'GET':
         program_slots = get_program_slots()
@@ -331,3 +333,23 @@ def programming_log():
     elif request.method == 'POST':
         program_type = request.get_json()['programType']
         program_name = request.get_json()['programName']
+        slot_id = request.get_json()['slotId']
+        dj_id = request.get_json()['djId']
+
+        new_log = add_program_log(program_type, program_name, slot_id, dj_id)
+        return "Added"
+    elif request.method == 'PUT':
+        program_type = request.get_json()['programType']
+        program_name = request.get_json()['programName']
+        slot_id = request.get_json()['slotId']
+        dj_id = request.get_json()['djId']
+        new_name = request.get_json()['newName']
+
+        update_program_log(program_type, program_name, slot_id, dj_id, new_name)
+        return "Updated"
+    elif request.method == 'DELETE:
+        program_type = request.get_json()['programType']
+        timestamp = request.get_json()['timestamp']
+        dj_id = request.get_json()['djId']
+        delete_program_log(program_type, timestamp, dj_id)
+        return "Deleted"

@@ -114,3 +114,54 @@ def get_program_log():
     
 
     return program_log_entries
+
+
+def add_program_log(program_type, program_name, slot_id, dj_id):
+    from klap4.db import Session
+    session = Session()
+
+    from datetime import datetime
+
+    new_log = ProgramLogEntry(
+                                program_type=program_type,
+                                program_name=program_name,
+                                slot_id=slot_id,
+                                timestamp=datetime.now(),
+                                dj = dj_id
+                            )
+    session.add(new_log)
+    session.commit()
+
+    return new_log
+
+
+def update_program_log(program_type, program_name, slot_id, dj_id, new_name):
+    from klap4.db import Session
+    session = Session()
+
+    from datetime import datetime
+
+    session.query(ProgramLogEntry) \
+        .filter(
+            and_(ProgramLogEntry.program_type == program_type, ProgramLogEntry.program_name == program_name,
+                 ProgramLogEntry.slot_id == slot_id, ProgramLogEntry.dj_id == dj_id)
+        ) \
+        .update({ProgramLogEntry.timestamp: datetime.now(), ProgramLogEntry.program_name: new_name}, synchronize_session=False)
+    
+    session.commit()
+    
+    return
+
+
+def delete_program_log(program_type, timestamp, dj_id):
+    from klap4.db import Session
+    session = Session()
+
+    from datetime import datetime
+
+    session.query(ProgramLogEntry) \
+        .filter(and_(ProgramLogEntry.program_type == program_type, ProgramLogEntry.timestamp == timestamp, ProgramLogEntry.dj_id == dj_id)) \
+        .delete()
+
+    session.commit()
+    return
