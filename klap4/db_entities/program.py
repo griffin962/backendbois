@@ -136,6 +136,17 @@ class ProgramLogEntry(SQLBase):
     def id(self):
         return str(self.program_type) + str(self.slot_id) + str(self.timestamp)
 
+    def serialize(self):
+        serialized_program = {
+            "program_type": self.program_type,
+            "program_name": self.program_name,
+            "slot_id": self.slot_id,
+            "timestamp": self.timestamp,
+            "dj_id": self.dj_id
+        }        
+
+        return serialized_program
+
     def __repr__(self):
         return f"<ProgramLogEntry(program_type={self.program_type}, " \
                                 f"program_name={self.program_name}, " \

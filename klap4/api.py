@@ -337,7 +337,8 @@ def programming_log():
         dj_id = request.get_json()['djId']
 
         new_log = add_program_log(program_type, program_name, slot_id, dj_id)
-        return jsonify(get_json(new_log))
+
+        return jsonify(new_log.serialize())
     elif request.method == 'PUT':
         program_type = request.get_json()['programType']
         program_name = request.get_json()['programName']
@@ -351,6 +352,11 @@ def programming_log():
         program_type = request.get_json()['programType']
         timestamp = request.get_json()['timestamp']
         dj_id = request.get_json()['djId']
-        pyTime = strftime('%Y-%m-%d %H:%M:%S', strptime(timestamp, '%a, %d %b %Y %H:%M:%S GMT'))
-        delete_program_log(program_type, pyTime, dj_id)
+
+        try:
+            pyTime = strftime('%Y-%m-%d %H:%M:%S', strptime(timestamp, '%a, %d %b %Y %H:%M:%S GMT'))
+            delete_program_log(program_type, pyTime, dj_id)
+        except:
+            delete_program_log(program_type, timestamp, dj_id)
+
         return "Deleted"

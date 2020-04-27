@@ -77,14 +77,14 @@ class Artist(SQLBase):
                                 "missing": album.missing
                             })
 
-            serialized_artist = {
-                                 "id": self.id,
-                                 "name": self.name,
-                                 "genre": self.genre.name,
-                                 "albums": album_list,
-                                 #"image": getArtistImage(self.name)
-                                }
-            return serialized_artist
+        serialized_artist = {
+                                "id": self.id,
+                                "name": self.name,
+                                "genre": self.genre.name,
+                                "albums": album_list,
+                                #"image": getArtistImage(self.name)
+                            }
+        return serialized_artist
 
     def __repr__(self):
         return f"<Artist(id={self.id}, " \
