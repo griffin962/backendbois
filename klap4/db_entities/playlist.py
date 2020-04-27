@@ -85,7 +85,7 @@ class PlaylistEntry(SQLBase):
 
             print(playlist)
 
-        kwargs["reference"] = normalize_metadata[kwargs["reference_type"]](kwargs["reference"])
+        #kwargs["reference"] = normalize_metadata[kwargs["reference_type"]](kwargs["reference"])
 
         super().__init__(**kwargs)
 

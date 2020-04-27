@@ -298,15 +298,17 @@ def show_playlist(dj, playlist_name):
     elif request.method == 'POST':
         index = request.get_json()['index']
         entry = request.get_json()['entry']
+        print(index, entry)
         new_entry = add_playlist_entry(dj, playlist_name, index, entry)
         return "Added"
 
     elif request.method == 'PUT':
-        index = request.get_json()['index']
-        ref = request.get_json()['ref']
-        new_index = request.get_json()['newIndex']
-        new_entry = request.get_json()['newEntry']
-        update_playlist_entry(dj, playlist_name, index, entry, new_index, new_entry)
+        if 'entry' in request.get_json().keys() and 'newEntry' in request.get_json().keys():
+            entry = request.get_json()['entry']
+            new_entry = request.get_json()['newEntry']
+            index = request.get_json()['index']
+            update_playlist_entry(dj, playlist_name, index, entry, None, new_entry)
+
         return "Updated"
 
     elif request.method == 'DELETE':

@@ -86,25 +86,29 @@ def add_playlist_entry(user: str, p_name: str, index: int, entry) -> SQLBase:
     session = Session()
 
     from datetime import datetime
-
-    song_query = session.query(Song) \
-                    .join(Artist, and_(Artist.genre_abbr == Song.genre_abbr, 
-                          Artist.number == Song.artist_num, 
-                          Artist.name == entry["artist"])) \
-                    .join(Album, and_(Album.genre_abbr == Song.genre_abbr, 
-                          Album.artist_num == Song.artist_num, 
-                          Album.letter == Song.album_letter, 
-                          Album.name == entry["album"])) \
-                    .filter(Song.name == entry["song"])
     try:
-        song_entry = song_query.one()
+        song_entry = session.query(Song) \
+                        .join(Artist, and_(Artist.genre_abbr == Song.genre_abbr, 
+                            Artist.number == Song.artist_num, 
+                            Artist.name == entry["artist"])) \
+                        .join(Album, and_(Album.genre_abbr == Song.genre_abbr, 
+                            Album.artist_num == Song.artist_num, 
+                            Album.letter == Song.album_letter, 
+                            Album.name == entry["album"])) \
+                        .filter(Song.name == entry["song"]).one()
+        
+        old_times_played = song_entry.times_played
+
+        song_entry.last_played = datetime.now()
+        session.commit()
+        song_entry.times_played = old_times_played + 1
+        session.commit()
+
         reference_type = REFERENCE_TYPE.IN_KLAP4
         reference = song_entry.genre_abbr + str(song_entry.artist_num) + song_entry.album_letter
-        song_query.update({Song.last_played: datetime.now(), Song.times_played: song_entry.times_played + 1})
-        session.commit()
     except:
         reference_type = REFERENCE_TYPE.MANUAL
-        reference = entry
+        reference = str(entry)
 
 
     newPlaylistEntry = PlaylistEntry(
@@ -121,46 +125,51 @@ def add_playlist_entry(user: str, p_name: str, index: int, entry) -> SQLBase:
     return newPlaylistEntry
 
 
-def update_playlist_entry(user: str, p_name: str, index: int, entry, new_index: int, new_entry):
+def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index: int, new_entry):
     from klap4.db import Session
     session = Session()
 
     from datetime import datetime
 
-    song_query = session.query(Song) \
-                    .join(Artist, and_(Artist.genre_abbr == Song.genre_abbr, 
-                          Artist.number == Song.artist_num, 
-                          Artist.name == new_entry["artist"])) \
-                    .join(Album, and_(Album.genre_abbr == Song.genre_abbr, 
-                          Album.artist_num == Song.artist_num, 
-                          Album.letter == Song.album_letter, 
-                          Album.name == new_entry["album"])) \
-                    .filter(Song.name == new_entry["song"])
-    
-    try:
-        song_entry = song_query.one()    
-        reference_type = REFERENCE_TYPE.IN_KLAP4
-        reference = song_entry.genre_abbr + str(song_entry.artist_num) + song_entry.album_letter
-        song_query.update({Song.last_played: datetime.now(), Song.times_played: song_entry.times_played+1})
-        session.commit()
-    except:
-        reference_type = REFERENCE_TYPE.MANUAL
-        reference = new_entry
+    if new_index is None:
+        try:
+            song_entry = session.query(Song) \
+                            .join(Artist, and_(Artist.genre_abbr == Song.genre_abbr, 
+                                Artist.number == Song.artist_num, 
+                                Artist.name == entry["artist"])) \
+                            .join(Album, and_(Album.genre_abbr == Song.genre_abbr, 
+                                Album.artist_num == Song.artist_num, 
+                                Album.letter == Song.album_letter, 
+                                Album.name == entry["album"])) \
+                            .filter(Song.name == entry["song"]).one()
+            
+            old_times_played = song_entry.times_played
 
-    session.query(PlaylistEntry) \
-        .filter(
-            and_(PlaylistEntry.dj_id == user, PlaylistEntry.playlist_name == p_name,
-                 PlaylistEntry.index == index, PlaylistEntry.entry == entry)
-        ) \
-        .update({PlaylistEntry.index:new_index, 
-                 PlaylistEntry.reference_type: reference_type,
-                 PlaylistEntry.reference: reference,
-                 PlaylistEntry.entry:new_entry}, 
-                 synchronize_session=False)
+            song_entry.last_played = datetime.now()
+            session.commit()
+            song_entry.times_played = old_times_played + 1
+            session.commit()
+
+            reference_type = REFERENCE_TYPE.IN_KLAP4
+            reference = song_entry.genre_abbr + str(song_entry.artist_num) + song_entry.album_letter
+        except:
+            reference_type = REFERENCE_TYPE.MANUAL
+            reference = str(entry)
+        
+        session.query(PlaylistEntry) \
+            .filter(
+                and_(PlaylistEntry.dj_id == dj_id, PlaylistEntry.playlist_name == p_name,
+                     PlaylistEntry.index == index,
+                     PlaylistEntry.entry == entry)
+            ) \
+            .update({PlaylistEntry.entry: new_entry,
+                     PlaylistEntry.reference: reference,
+                     PlaylistEntry.reference_type: reference_type},
+                     synchronize_session=False)
+        session.commit()
+
+        return
     
-    session.commit()
-    
-    return
 
 
 def delete_playlist_entry(user: str, p_name: str, index: int, entry) -> None:
