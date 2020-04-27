@@ -98,7 +98,6 @@ def add_playlist_entry(user: str, p_name: str, index: int, entry) -> SQLBase:
                         .filter(Song.name == entry["song"]).one()
         
         old_times_played = song_entry.times_played
-
         song_entry.last_played = datetime.now()
         session.commit()
         song_entry.times_played = old_times_played + 1
@@ -136,13 +135,12 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
             song_entry = session.query(Song) \
                             .join(Artist, and_(Artist.genre_abbr == Song.genre_abbr, 
                                 Artist.number == Song.artist_num, 
-                                Artist.name == entry["artist"])) \
+                                Artist.name == new_entry["artist"])) \
                             .join(Album, and_(Album.genre_abbr == Song.genre_abbr, 
                                 Album.artist_num == Song.artist_num, 
                                 Album.letter == Song.album_letter, 
-                                Album.name == entry["album"])) \
-                            .filter(Song.name == entry["song"]).one()
-            
+                                Album.name == new_entry["album"])) \
+                            .filter(Song.name == new_entry["song"]).one()
             old_times_played = song_entry.times_played
 
             song_entry.last_played = datetime.now()
@@ -154,7 +152,7 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
             reference = song_entry.genre_abbr + str(song_entry.artist_num) + song_entry.album_letter
         except:
             reference_type = REFERENCE_TYPE.MANUAL
-            reference = str(entry)
+            reference = str(new_entry)
         
         session.query(PlaylistEntry) \
             .filter(
