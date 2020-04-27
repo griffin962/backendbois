@@ -337,7 +337,7 @@ def programming_log():
         dj_id = request.get_json()['djId']
 
         new_log = add_program_log(program_type, program_name, slot_id, dj_id)
-        return "Added"
+        return jsonify(get_json(new_log))
     elif request.method == 'PUT':
         program_type = request.get_json()['programType']
         program_name = request.get_json()['programName']
