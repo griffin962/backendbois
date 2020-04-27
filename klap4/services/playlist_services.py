@@ -130,7 +130,7 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
 
     from datetime import datetime
 
-    if new_index is None:
+    if new_index is None and entry is not None and new_entry is not None:
         try:
             song_entry = session.query(Song) \
                             .join(Artist, and_(Artist.genre_abbr == Song.genre_abbr, 
@@ -165,8 +165,27 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
                      PlaylistEntry.reference_type: reference_type},
                      synchronize_session=False)
         session.commit()
+    
+    elif new_index is not None and entry is None and new_entry is None:
+        playlist_entries = session.query(PlaylistEntry) \
+            .filter(
+                and_(PlaylistEntry.dj_id == dj_id, PlaylistEntry.playlist_name == p_name) \
+            ).all()
+        
+        if new_index > index:
+            playlist_entries[index].index = new_index
+            for entry in playlist_entries[index+1:new_index+1]:
+                entry.index = entry.index - 1
+            
+            session.commit()
 
-        return
+        elif new_index < index:
+            playlist_entries[new_index].index = index
+            for entry in playlist_entries[new_index+1:index+1]:
+                entry.index = entry.index + 1
+            
+            session.commit()
+    return
     
 
 
