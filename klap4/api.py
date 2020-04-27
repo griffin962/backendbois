@@ -168,36 +168,34 @@ def search(category):
 def display(category, id):
     if request.method == 'GET':
         if category == "artist":
-            artist = get_entity_from_tag(id)
-            serialized_artist = artist.serialize()
-            return jsonify(serialized_artist)
-            '''album_list = list_albums(id)
-
-            formatted_list = []
-            for item in album_list:
-                obj = get_json(item)
-                formatted_list.append(obj)
-            entity_list.append(formatted_list)
-
-            artist_obj = {
-                            "artist": artist,
-                            "albums": entity_list[0]
-            }
-
-            return jsonify(artist_obj)'''
+            try:
+                artist = get_entity_from_tag(id)
+                serialized_artist = artist.serialize()
+                return jsonify(serialized_artist)
+            except:
+                return jsonify(error='Not Found'), 405
 
         elif category == "album":
-            album = get_entity_from_tag(id)
-            serialized_album = album.serialize()
-            return jsonify(serialized_album)
-            
+            try:
+                album = get_entity_from_tag(id)
+                serialized_album = album.serialize()
+                return jsonify(serialized_album)
+            except:
+                return jsonify(error='Not Found'), 405
+
         elif category == "programming":
-            programming = display_program(id)
-            obj = {
-                    "programs": programming[0],
-                    "program_slots": programming[1]
-            }
-            return jsonify(obj)
+            try:
+                programming = display_program(id)
+                obj = {
+                        "programs": programming[0],
+                        "program_slots": programming[1]
+                }
+                return jsonify(obj)
+            except:
+                return jsonify(error='Not Found'), 405
+        
+        else:
+            return jsonify(error='Not Found'), 405
 
 
 @app.route('/album/review/<id>', methods=['POST'])
@@ -347,7 +345,7 @@ def programming_log():
 
         update_program_log(program_type, program_name, slot_id, dj_id, new_name)
         return "Updated"
-    elif request.method == 'DELETE:
+    elif request.method == 'DELETE':
         program_type = request.get_json()['programType']
         timestamp = request.get_json()['timestamp']
         dj_id = request.get_json()['djId']

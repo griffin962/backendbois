@@ -49,6 +49,7 @@ def main():
 
     s = get_program_slots()
     print(s)
+    q = get_entity_from_tag('EXQ1')
 
 if __name__ == '__main__':
     main()
