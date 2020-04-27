@@ -96,15 +96,13 @@ def add_playlist_entry(user: str, p_name: str, index: int, entry) -> SQLBase:
                           Album.letter == Song.album_letter, 
                           Album.name == entry["album"])) \
                     .filter(Song.name == entry["song"]) \
-    
-    song_entry = song_query.one()
-    
-    if song_entry:
+    try:
+        song_entry = song_query.one()
         reference_type = REFERENCE_TYPE.IN_KLAP4
         reference = song_entry.genre_abbr + str(song_entry.artist_num) + song_entry.album_letter
         song_query.update({Song.last_played: datetime.now(), Song.times_played: song_entry.times_played + 1})
         session.commit()
-    else:
+    except:
         reference_type = REFERENCE_TYPE.MANUAL
         reference = get_metadata[reference_type]
 
@@ -139,14 +137,13 @@ def update_playlist_entry(user: str, p_name: str, index: int, entry, new_index: 
                           Album.name == new_entry["album"])) \
                     .filter(Song.name == new_entry["song"]) \
     
-    song_entry = song_query.one()
-    
-    if song_entry:
+    try:
+        song_entry = song_query.one()    
         reference_type = REFERENCE_TYPE.IN_KLAP4
         reference = song_entry.genre_abbr + str(song_entry.artist_num) + song_entry.album_letter
         song_query.update({Song.last_played: datetime.now(), Song.times_played: song_entry.times_played+1})
         session.commit()
-    else:
+    except:
         reference_type = REFERENCE_TYPE.MANUAL
         reference = get_metadata[reference_type]
 
