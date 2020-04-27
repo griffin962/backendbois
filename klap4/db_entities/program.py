@@ -37,7 +37,7 @@ class ProgramFormat(SQLBase):
         for program in self.programs:
             program_list.append({
                                  "name": program.name,
-                                 "duration": program.duration,
+                                 "duration": str(program.duration),
                                  "months": program.months
                                 })
         for program_slot in self.program_slots:
@@ -67,7 +67,7 @@ class Program(SQLBase):
 
     type = Column(String, ForeignKey("program_format.type"), primary_key=True)
     name = Column(String, primary_key=True)
-    duration = Column(Integer)
+    duration = Column(Time)
     months = Column(String)
 
     program_format = relationship("klap4.db_entities.program.ProgramFormat",
@@ -80,6 +80,16 @@ class Program(SQLBase):
     @property
     def id(self):
         return str(self.type)+'+'+str(self.name)
+    
+
+    def serialize(self):
+        serialized_program = {
+                              "type": self.program_format.type,
+                              "name": self.name,
+                              "duration": str(self.duration),
+                              "months": self.months
+                             }
+        return serialized_program
     
     def __repr__(self):
         return f"<Program(type={self.type}, " \

@@ -13,13 +13,17 @@ def search_programming(p_type: str, name: str) -> SQLBase:
     from klap4.db import Session
     session = Session()
 
+    serialized_list = []
     program_list = session.query(Program) \
         .filter(
             and_(Program.type.like(p_type+'%'), Program.name.like(name+'%'))
         ) \
         .all()
     
-    return format_object_list(program_list)
+    for program in program_list:
+        serialized_list.append(program.serialize())
+    
+    return serialized_list
 
 def display_program(prog_typ: str) -> SQLBase:
     from klap4.db import Session
@@ -121,7 +125,7 @@ def add_program_log(program_type, program_name, slot_id, dj_id):
     new_log = ProgramLogEntry(
                                 program_type=program_type,
                                 program_name=program_name,
-                                slot_id=slot_id,
+                                slot_id=int(slot_id),
                                 timestamp=datetime.now(),
                                 dj_id = dj_id
                             )

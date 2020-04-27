@@ -183,7 +183,7 @@ def display(category, id):
             except:
                 return jsonify(error='Not Found'), 404
 
-        elif category == "programming":
+        elif category == "program":
             try:
                 program = display_program(id)
                 serialized_program = program.serialize()

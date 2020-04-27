@@ -22,7 +22,7 @@ class ProgramFormatModelView(ModelView):
 
 class ProgramModelView(ModelView):
     column_display_pk = True
-    form_columns = ('type', 'name', 'months')
+    form_columns = ('program_format', 'name', 'duration', 'months')
 
 
 class ProgramSlotModelView(ModelView):
