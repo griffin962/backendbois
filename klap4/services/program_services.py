@@ -106,6 +106,8 @@ def get_program_log():
         ) \
         .all()
 
+    print(tdy_logs)
+
     program_log_entries = {
                             "today": format_object_list(tdy_logs),
                             "yesterday": format_object_list(ystr_logs),
@@ -158,10 +160,9 @@ def delete_program_log(program_type, timestamp, dj_id):
     session = Session()
 
     from datetime import datetime
-
-    session.query(ProgramLogEntry) \
-        .filter(and_(ProgramLogEntry.program_type == program_type, ProgramLogEntry.timestamp == timestamp, ProgramLogEntry.dj_id == dj_id)) \
-        .delete()
+    delQuer = session.query(ProgramLogEntry) \
+        .filter(and_(ProgramLogEntry.program_type == program_type, ProgramLogEntry.timestamp.contains(timestamp), ProgramLogEntry.dj_id == dj_id)) \
+        .delete(synchronize_session='fetch')
 
     session.commit()
     return

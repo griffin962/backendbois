@@ -17,6 +17,7 @@ from klap4.utils import *
 from klap4.views import *
 from klap4.config import config
 
+from time import strptime, strftime
 
 #TODO: Need to connect to DB in API in order for admin panel to work. Any idea why?
 script_path = Path(__file__).absolute().parent
@@ -350,5 +351,6 @@ def programming_log():
         program_type = request.get_json()['programType']
         timestamp = request.get_json()['timestamp']
         dj_id = request.get_json()['djId']
-        delete_program_log(program_type, timestamp, dj_id)
+        pyTime = strftime('%Y-%m-%d %H:%M:%S', strptime(timestamp, '%a, %d %b %Y %H:%M:%S GMT'))
+        delete_program_log(program_type, pyTime, dj_id)
         return "Deleted"
