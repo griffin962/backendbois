@@ -46,7 +46,7 @@ admin.add_view(GenreModelView(Genre, session))
 admin.add_view(ArtistModelView(Artist, session))
 admin.add_view(AlbumModelView(Album, session))
 admin.add_view(ModelView(Song, session))
-admin.add_view(ModelView(AlbumReview, session))
+admin.add_view(AlbumReviewModelView(AlbumReview, session))
 admin.add_view(ModelView(AlbumProblem, session))
 admin.add_view(ProgramFormatModelView(ProgramFormat, session))
 admin.add_view(ProgramModelView(Program, session))
@@ -197,21 +197,29 @@ def display(category, id):
 
 
 @app.route('/album/review/<id>', methods=['POST'])
+#@jwt_required
 def review_album(id):
     if request.method == 'POST':
-        dj_id = request.get_json()['username']
+        dj_id = request.get_json()['dj_id']
         content = request.get_json()['content']
-        review = add_review(id, dj_id, content)
+        try:
+            review = add_review(id, dj_id, content)
+        except:
+            return jsonify(error='Bad request'), 400
 
         return "Added"
 
 
 @app.route('/album/problem/<id>', methods=['POST'])
+#@jwt_required
 def report_album_problem(id):
     if request.method == 'POST':
-        dj_id = request.get_json()['username']
+        dj_id = request.get_json()['dj_id']
         content = request.get_json()['content']
-        problem = report_problem(id, dj_id, content)
+        try:
+            problem = report_problem(id, dj_id, content)
+        except:
+            return jsonify(error='Bad request'), 400
 
         return "Added"
 
