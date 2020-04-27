@@ -128,7 +128,7 @@ def display_user():
 def search(category):
     if request.method == 'GET':
         if category == "artist":
-            artist_list = search_artists("", "")
+            artist_list = new_artist_list()
             return jsonify(artist_list)
 
         elif category == "album":
@@ -185,12 +185,9 @@ def display(category, id):
 
         elif category == "programming":
             try:
-                programming = display_program(id)
-                obj = {
-                        "programs": programming[0],
-                        "program_slots": programming[1]
-                }
-                return jsonify(obj)
+                program = display_program(id)
+                serialized_program = program.serialize()
+                return jsonify(serialized_program)
             except:
                 return jsonify(error='Not Found'), 404
         
@@ -226,6 +223,8 @@ def get_new_charts(form, weeks):
         charts = generate_chart(form, weeks)
         charts = charts_format(charts)
         return jsonify(charts)
+    else:
+        return jsonify(error='Bad Request'), 400
 
 
 # Quickjump route for jumping straight to a resource based on ID
