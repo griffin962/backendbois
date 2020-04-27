@@ -181,7 +181,7 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
                 entry.index = entry.index - 1
             
             session.commit()
-            playlist_entries[old_index-1].index = new_index
+            playlist_entries[old_index-1].index = new_index - 1
             session.commit()
 
         elif new_index < old_index:
@@ -190,7 +190,7 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
                 entry.index = entry.index + 1
             
             session.commit()
-            playlist_entries[new_index-1].index = old_index
+            playlist_entries[new_index-1].index = old_index - 1
             session.commit()
         else:
             pass

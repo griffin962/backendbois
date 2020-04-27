@@ -3,3 +3,9 @@
   fields:
     id: "jam4x2"
     name: "Jonathan Miller"
+
+- model: klap4.db_entities.dj.DJ
+  fields:
+    id: "test"
+    name: "Test User"
+    is_admin: True
