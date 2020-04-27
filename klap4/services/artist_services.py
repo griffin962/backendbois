@@ -9,6 +9,23 @@ from klap4.db_entities.album import Album
 from klap4.utils import *
 
 
+def new_artist_list():
+    from klap4.db import Session
+    session = Session()
+
+    from datetime import datetime, timedelta
+    new_album_limit = datetime.now() - timedelta(days=30*6)
+
+    new_artist_list = session.query(Artist) \
+        .join(
+            Album, and_(Album.genre_abbr == Artist.genre_abbr, Album.artist_num == Artist.number, Album.date_added > new_album_limit)
+        ) \
+        .all()
+    
+    return format_object_list(new_artist_list)
+            
+
+
 def search_artists(genre: str, name: str) -> list:
     from klap4.db import Session
     session = Session()
@@ -23,19 +40,3 @@ def search_artists(genre: str, name: str) -> list:
         .all()
     
     return format_object_list(artist_list)
-
-
-def list_albums(artist_id: str) -> SQLBase:
-    entity = None
-
-    from klap4.db import Session
-    session = Session()
-
-    new_id = decompose_tag(artist_id)
-
-    entity = session.query(Album) \
-        .filter( and_(Album.genre_abbr == new_id[0], Album.artist_num == new_id[1])
-        ) \
-        .all()
-    
-    return entity

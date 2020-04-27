@@ -16,6 +16,12 @@ class Playlist(SQLBase):
     show = Column(String, nullable=False)
 
     dj = relationship("klap4.db_entities.dj.DJ", back_populates="playlists")
+    playlist_entries = relationship("klap4.db_entities.playlist.PlaylistEntry", back_populates="playlist", uselist=True,
+                                    cascade="all, delete-orphan",
+                                    primaryjoin="and_("
+                                        "     Playlist.dj_id == PlaylistEntry.dj_id,"
+                                        "     Playlist.name == PlaylistEntry.playlist_name"
+                                        ")")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
@@ -53,7 +59,7 @@ class PlaylistEntry(SQLBase):
                       primaryjoin="DJ.id == PlaylistEntry.dj_id")
     
     playlist = relationship("klap4.db_entities.playlist.Playlist",
-                            backref=backref("playlist_entries", uselist=True, cascade="all, delete-orphan"),
+                            back_populates="playlist_entries",
                             uselist=False,
                             primaryjoin="and_("
                                         "     Playlist.dj_id == PlaylistEntry.dj_id,"

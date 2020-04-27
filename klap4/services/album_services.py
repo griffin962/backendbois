@@ -16,8 +16,10 @@ def list_new_albums() -> list:
     from klap4.db import Session
     session = Session()
 
+    new_album_limit = datetime.now() - timedelta(days=30*6)
+
     album_list = session.query(Album) \
-        .filter(datetime.now() - Album.date_added < timedelta(days=30 * 6)).all()
+        .filter(Album.date_added > new_album_limit).all()
 
     return format_object_list(album_list)
 
