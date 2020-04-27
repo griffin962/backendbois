@@ -29,6 +29,30 @@ class ProgramFormat(SQLBase):
     @property
     def id(self):
         return str(self.type)
+
+    def serialize(self):
+        program_list = []
+        program_slots = []
+
+        for program in self.programs:
+            program_list.append({
+                                 "name": program.name,
+                                 "duration": program.duration,
+                                 "months": program.months
+                                })
+        for program_slot in self.program_slots:
+            program_slots.append({
+                                  "id": program_slot.id,
+                                  "day": program_slot.day,
+                                  "time": str(program_slot.time)
+                                })
+        serialized_program = {
+                              "type": self.type,
+                              "description": self.description,
+                              "programs": program_list,
+                              "program_slots": program_slots
+                             }
+        return serialized_program
     
     def __repr__(self):
         return f"<Program(type={self.type}, " \

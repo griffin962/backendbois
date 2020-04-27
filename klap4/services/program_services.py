@@ -4,7 +4,7 @@ from sqlalchemy.sql.expression import and_, or_
 
 
 from klap4.db_entities import SQLBase
-from klap4.db_entities.program import Program
+from klap4.db_entities.program import ProgramFormat, Program
 from klap4.db_entities.program import ProgramLogEntry
 from klap4.db_entities.program import ProgramSlot
 from klap4.utils.json_utils import format_object_list
@@ -24,24 +24,12 @@ def search_programming(p_type: str, name: str) -> SQLBase:
 def display_program(prog_typ: str) -> SQLBase:
     from klap4.db import Session
     session = Session()
-
-    info_list = []
     
     #query for program object from type and name
-    u_program_objs = session.query(Program) \
-        .filter(Program.type == prog_typ).all()
-    program_objs = format_object_list(u_program_objs)
-    
-    info_list.append(program_objs)
+    program = session.query(ProgramFormat) \
+        .filter_by(type = prog_typ).first()
 
-    #query for program log given type and name
-    u_program_slots = session.query(ProgramSlot) \
-        .filter(ProgramSlot.program_type == prog_typ).all()
-        
-    program_slots = format_object_list(u_program_slots)
-    info_list.append(program_slots)
-
-    return info_list
+    return program
 
 
 def get_program_slots():

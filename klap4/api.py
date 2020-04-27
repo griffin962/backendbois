@@ -185,12 +185,9 @@ def display(category, id):
 
         elif category == "programming":
             try:
-                programming = display_program(id)
-                obj = {
-                        "programs": programming[0],
-                        "program_slots": programming[1]
-                }
-                return jsonify(obj)
+                program = display_program(id)
+                serialized_program = program.serialize()
+                return jsonify(serialized_program)
             except:
                 return jsonify(error='Not Found'), 404
         
