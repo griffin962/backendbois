@@ -173,7 +173,7 @@ def display(category, id):
                 serialized_artist = artist.serialize()
                 return jsonify(serialized_artist)
             except:
-                return jsonify(error='Not Found'), 405
+                return jsonify(error='Not Found'), 404
 
         elif category == "album":
             try:
@@ -181,7 +181,7 @@ def display(category, id):
                 serialized_album = album.serialize()
                 return jsonify(serialized_album)
             except:
-                return jsonify(error='Not Found'), 405
+                return jsonify(error='Not Found'), 404
 
         elif category == "programming":
             try:
@@ -192,10 +192,10 @@ def display(category, id):
                 }
                 return jsonify(obj)
             except:
-                return jsonify(error='Not Found'), 405
+                return jsonify(error='Not Found'), 404
         
         else:
-            return jsonify(error='Not Found'), 405
+            return jsonify(error='Not Found'), 404
 
 
 @app.route('/album/review/<id>', methods=['POST'])
