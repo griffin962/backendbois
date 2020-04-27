@@ -1,0 +1,15 @@
+---
+- model: klap4.db_entities.program.ProgramFormat
+  fields:
+    type: 'Science of the Sea'
+    description: 'Science!'
+
+- model: klap4.db_entities.program.ProgramFormat
+  fields:
+    type: 'PSA'
+    description: 'Service'
+
+- model: klap4.db_entities.program.ProgramFormat
+  fields:
+    type: 'station-id'
+    description: 'Identify yourself'
