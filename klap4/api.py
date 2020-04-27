@@ -221,6 +221,8 @@ def report_album_problem(id):
 @app.route('/charts/<form>/<weeks>', methods=['GET'])
 def get_new_charts(form, weeks):
     if request.method == 'GET':
+        if int(weeks) > 104:
+            return jsonify(error='Bad Request'), 400
         charts = generate_chart(form, weeks)
         charts = charts_format(charts)
         return jsonify(charts)

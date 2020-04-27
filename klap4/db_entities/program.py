@@ -15,6 +15,12 @@ class ProgramFormat(SQLBase):
     type = Column(String, primary_key=True)
     description = Column(String, nullable=False)
 
+    programs = relationship("klap4.db_entities.program.Program", back_populates="program_format", uselist=True,
+                            primaryjoin="ProgramFormat.type == Program.type", cascade="all, delete-orphan")
+    
+    program_slots = relationship("klap4.db_entities.program.ProgramSlot", back_populates="program_format", uselist=True,
+                                 primaryjoin="ProgramFormat.type == ProgramSlot.program_type", cascade="all, delete-orphan")
+
     program_log_entries = relationship("ProgramLogEntry", back_populates="program_format")
 
     def __init__(self, **kwargs):
@@ -35,17 +41,14 @@ class ProgramFormat(SQLBase):
 class Program(SQLBase):
     __tablename__ = "program"
 
-    type = Column(String, primary_key=True)
+    type = Column(String, ForeignKey("program_format.type"), primary_key=True)
     name = Column(String, primary_key=True)
     duration = Column(Integer)
     months = Column(String)
 
     program_format = relationship("klap4.db_entities.program.ProgramFormat",
-                                  backref=backref("programs", uselist=True),
-                                  uselist=False,
-                                  primaryjoin="foreign(ProgramFormat.type) == Program.type")
-
-    program_log_entries = relationship("ProgramLogEntry", back_populates="program_desc")
+                                  back_populates="programs", uselist=False,
+                                  primaryjoin="ProgramFormat.type == Program.type")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -67,16 +70,20 @@ class ProgramSlot(SQLBase):
     __tablename__ = "program_slot"
 
     id = Column(Integer, primary_key=True)
-    program_type = Column(String, nullable=False)
+    program_type = Column(String, ForeignKey("program_format.type"), nullable=False)
     day = Column(Integer)
     time = Column(Time)
 
     program_format = relationship("klap4.db_entities.program.ProgramFormat",
-                                  backref=backref("program_slots", uselist=True),
+                                  back_populates="program_slots",
                                   uselist=False,
-                                  primaryjoin="foreign(ProgramFormat.type) == ProgramSlot.program_type")
+                                  primaryjoin="ProgramFormat.type == ProgramSlot.program_type")
 
-    program_log_entries = relationship("ProgramLogEntry", back_populates="program_slot")
+    program_log_entries = relationship("ProgramLogEntry", back_populates="program_slot", uselist=False,
+                                       cascade="all, delete-orphan",
+                                       primaryjoin="and_(ProgramLogEntry.program_type == ProgramSlot.program_type,"
+                                                    "ProgramLogEntry.slot_id == ProgramSlot.id"
+                                                    ")")
     
 
     def __init__(self, **kwargs):
@@ -95,14 +102,14 @@ class ProgramLogEntry(SQLBase):
     __tablename__ = "program_log_entry"
 
     program_type = Column(String, ForeignKey("program_format.type"), primary_key=True)
-    program_name = Column(String, ForeignKey("program.name"))
+    program_name = Column(String, nullable=False)
     slot_id = Column(Integer, ForeignKey("program_slot.id"), primary_key=True)
     timestamp = Column(DateTime, primary_key=True)
     dj_id = Column(String, ForeignKey("dj.id"), nullable=False)
 
     program_format = relationship("ProgramFormat", back_populates="program_log_entries")
-    program_desc = relationship("Program", back_populates="program_log_entries")
-    program_slot = relationship("ProgramSlot", back_populates="program_log_entries")
+    program_slot = relationship("ProgramSlot", back_populates="program_log_entries", uselist=True)
+
     dj = relationship("klap4.db_entities.dj.DJ", backref=backref("program_log_entries", uselist=True, cascade="all, delete-orphan"))
 
     def __init__(self, **kwargs):
