@@ -129,13 +129,13 @@ def add_program_log(program_type, program_name, slot_id, dj_id):
     session = Session()
 
     from datetime import datetime
-
+    print('here')
     new_log = ProgramLogEntry(
                                 program_type=program_type,
                                 program_name=program_name,
                                 slot_id=slot_id,
                                 timestamp=datetime.now(),
-                                dj = dj_id
+                                dj_id=dj_id
                             )
     session.add(new_log)
     session.commit()
