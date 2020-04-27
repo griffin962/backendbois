@@ -56,7 +56,7 @@ def get_program_slots():
 
     if datetime.today().weekday() == 6:
         tmrw = 0
-    elif datetime.today().weekday == 0:
+    elif datetime.today().weekday() == 0:
         ystr = 6 
 
     tdy_slots = session.query(ProgramSlot) \
@@ -93,18 +93,26 @@ def get_program_log():
 
     if datetime.today().weekday() == 6:
         tmrw = 0
-    elif datetime.today().weekday == 0:
-        ystr = 6 
+    elif datetime.today().weekday() == 0:
+        ystr = 6
 
     tdy_logs = session.query(ProgramLogEntry) \
-        .filter(extract('day', ProgramLogEntry.timestamp) == tdy).all()  
-
-    ystr_logs = session.query(ProgramLogEntry) \
-        .filter(extract('day', ProgramLogEntry.timestamp) == ystr).all()
-
-    tmrw_logs = session.query(ProgramLogEntry) \
-        .filter(extract('day', ProgramLogEntry.timestamp) == tmrw).all()
+        .join(
+            ProgramSlot, and_(ProgramSlot.id == ProgramLogEntry.slot_id, ProgramSlot.day == tdy)
+        ) \
+        .all()
     
+    ystr_logs = session.query(ProgramLogEntry) \
+        .join(
+            ProgramSlot, and_(ProgramSlot.id == ProgramLogEntry.slot_id, ProgramSlot.day == ystr)
+        ) \
+        .all()    
+        
+    tmrw_logs = session.query(ProgramLogEntry) \
+        .join(
+            ProgramSlot, and_(ProgramSlot.id == ProgramLogEntry.slot_id, ProgramSlot.day == tmrw)
+        ) \
+        .all()
 
     program_log_entries = {
                             "today": format_object_list(tdy_logs),
