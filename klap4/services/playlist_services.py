@@ -167,16 +167,21 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
         session.commit()
     
     elif new_index is not None and entry is None and new_entry is None:
+        old_index = index
         playlist_entries = session.query(PlaylistEntry) \
             .filter(
                 and_(PlaylistEntry.dj_id == dj_id, PlaylistEntry.playlist_name == p_name) \
-            ).all()
+            ) \
+            .order_by(PlaylistEntry.index) \
+            .all()
         
-        if new_index > index:
-            playlist_entries[index].index = new_index
-            for entry in playlist_entries[index+1:new_index+1]:
+        if new_index > old_index:
+            playlist_entries[old_index-1].index = -1
+            for entry in playlist_entries[old_index:new_index]:
                 entry.index = entry.index - 1
             
+            session.commit()
+            playlist_entries[old_index-1].index = new_index
             session.commit()
 
         elif new_index < index:
