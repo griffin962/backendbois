@@ -35,7 +35,6 @@ def charts_test():
     print("CHARTS DEMO")
     from datetime import datetime, timedelta
 
-    thing = generate_chart("all")
     print(thing)
     thing2 = charts_format(thing)
     print(thing2)
@@ -47,9 +46,8 @@ def main():
     script_path = Path(__file__).absolute().parent
     db.connect(script_path/".."/"test.db")
 
-    s = get_program_slots()
-    print(s)
-    q = get_entity_from_tag('EXQ1')
+    charts = charts_format(generate_chart("all", 10))
+    #print(charts)
 
 if __name__ == '__main__':
     main()

@@ -83,9 +83,6 @@ def display_album(album_id: str):
     info_list = []
 
     new_id = decompose_tag(album_id)
-
-    '''artist = session.query(Artist) \
-        .filter(and_(Artist.genre_abbr == new_id[0], Artist.number == new_id[1])).one()'''
     
     reviews = list_reviews(album_id)
     info_list.append(reviews)
@@ -135,7 +132,7 @@ def report_problem(album_id: str, dj_id: str, content: str) ->SQLBase:
     return newProblem
 
 
-def generate_chart(format: str) -> list:
+def generate_chart(format: str, weeks: int) -> list:
     from datetime import datetime, timedelta
 
     from klap4.db import Session
@@ -143,20 +140,21 @@ def generate_chart(format: str) -> list:
 
     chart_list = None
 
+    weeks_ago = datetime.now() - timedelta(weeks=int(weeks))
+    new_album_limit = datetime.now() - timedelta(days=30*6)
+
     if format == "all":
         chart_list = session.query(Song.genre_abbr, Song.artist_num, Song.album_letter, func.sum(Song.times_played)) \
-            .filter(datetime.now() - Song.last_played < timedelta(days=30*6)
+            .filter(Song.last_played > weeks_ago
             ) \
             .group_by(Song.genre_abbr, Song.artist_num, Song.album_letter) \
-            .limit(20) \
             .all()
         
     elif format == "new":
         chart_list = session.query(Song.genre_abbr, Song.artist_num, Song.album_letter, func.sum(Song.times_played)) \
-            .join(Album, and_(datetime.now() - Album.date_added < timedelta(days=30*6), Song.genre_abbr == Album.genre_abbr, Song.artist_num == Album.artist_num)) \
-            .filter(datetime.now() - Song.last_played < timedelta(days=30*6)) \
+            .join(Album, and_(Album.date_added > new_album_limit, Song.genre_abbr == Album.genre_abbr, Song.artist_num == Album.artist_num)) \
+            .filter(Song.last_played > weeks_ago) \
             .group_by(Song.genre_abbr, Song.artist_num, Song.album_letter) \
-            .limit(20) \
             .all()
     
     sorted_charts = sorted(chart_list, key=lambda x:(-x[3], x[0], x[1], x[2]))

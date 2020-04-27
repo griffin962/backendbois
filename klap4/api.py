@@ -218,10 +218,10 @@ def report_album_problem(id):
         return "Added"
 
 
-@app.route('/charts/<form>', methods=['GET'])
-def get_new_charts(form):
+@app.route('/charts/<form>/<weeks>', methods=['GET'])
+def get_new_charts(form, weeks):
     if request.method == 'GET':
-        charts = generate_chart(form)
+        charts = generate_chart(form, weeks)
         charts = charts_format(charts)
         return jsonify(charts)
 
