@@ -49,8 +49,8 @@ class PlaylistEntry(SQLBase):
     dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
     playlist_name = Column(String, ForeignKey("playlist.name"), primary_key=True)
     index = Column(Integer, primary_key=True)
-    reference_type = Column(Integer, nullable=True)
-    reference = Column(String, nullable=True)
+    reference_type = Column(Integer, nullable=False)
+    reference = Column(String, nullable=False)
     entry = Column(JSON, nullable=False)
 
     dj = relationship("klap4.db_entities.dj.DJ",

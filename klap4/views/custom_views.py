@@ -42,7 +42,7 @@ class PlaylistModelView(ModelView):
 
 class PlaylistEntryModelView(ModelView):
     column_display_pk = True
-    form_columns = ('dj_id', 'playlist_name', 'index', 'entry')
+    form_columns = ('dj_id', 'playlist_name', 'index', 'reference_type', 'reference', 'entry')
 
 class DJModelView(ModelView):
     column_display_pk = True
