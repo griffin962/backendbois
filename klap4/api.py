@@ -166,13 +166,12 @@ def search(category):
 # Display route will return different data based on resource type and ID
 @app.route('/display/<category>/<id>', methods=['GET'])
 def display(category, id):
-
-    entity_list = []
-
     if request.method == 'GET':
         if category == "artist":
-            artist = get_json(get_entity_from_tag(id))
-            album_list = list_albums(id)
+            artist = get_entity_from_tag(id)
+            serialized_artist = artist.serialize()
+            return jsonify(serialized_artist)
+            '''album_list = list_albums(id)
 
             formatted_list = []
             for item in album_list:
@@ -185,34 +184,20 @@ def display(category, id):
                             "albums": entity_list[0]
             }
 
-            return jsonify(artist_obj)
+            return jsonify(artist_obj)'''
 
         elif category == "album":
-            artist_id = decompose_tag(id)[0] + str(decompose_tag(id)[1])
-            artist = get_json(get_entity_from_tag(artist_id))
-            album = get_json(get_entity_from_tag(id))
-
-            album_info = display_album(id)
-
-            thingy = {
-                        "artist": artist,
-                        "album": album,
-                        "reviews": album_info[0],
-                        "problems": album_info[1],
-                        "songs": album_info[2],
-            }
-
-            return jsonify(thingy)
+            album = get_entity_from_tag(id)
+            serialized_album = album.serialize()
+            return jsonify(serialized_album)
+            
         elif category == "programming":
-            # Write stuff here, delete the `pass` when finished
-            # Make a function in programming_services.py to access the database and stuff
             programming = display_program(id)
             obj = {
                     "programs": programming[0],
                     "program_slots": programming[1]
             }
             return jsonify(obj)
-            #pass
 
 
 @app.route('/album/review/<id>', methods=['POST'])
@@ -333,8 +318,6 @@ def upload_playlist(dj, playlist_name):
 
 @app.route('/programming/log', methods=['GET', 'POST'])
 def programming_log():
-    from datetime import datetime
-    import time
     if request.method == 'GET':
         program_slots = get_program_slots()
         program_log_entries = get_program_log()
@@ -345,4 +328,6 @@ def programming_log():
             }
     
         return jsonify(thingy)
-    
+    elif request.method == 'POST':
+        program_type = request.get_json()['programType']
+        program_name = request.get_json()['programName']

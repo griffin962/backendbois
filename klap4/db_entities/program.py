@@ -88,7 +88,7 @@ class ProgramSlot(SQLBase):
                             f"time={self.time})>"
     
     def __str__(self):
-        return int(self.id)
+        return str(self.id)
 
 
 class ProgramLogEntry(SQLBase):

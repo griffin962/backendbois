@@ -42,9 +42,25 @@ class Album(SQLBase):
                                       "     Artist.number == Album.artist_num"
                                       ")")
     
-    reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="album", cascade="all, delete-orphan")
-    problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="album", cascade="all, delete-orphan")
-    songs = relationship("klap4.db_entities.song.Song", back_populates="album", cascade="all, delete-orphan")
+    reviews = relationship("klap4.db_entities.album.AlbumReview", back_populates="album", cascade="all, delete-orphan",
+                           primaryjoin="and_("
+                                     "     Album.genre_abbr == AlbumReview.genre_abbr,"
+                                     "     Album.artist_num == AlbumReview.artist_num,"
+                                     "     Album.letter == AlbumReview.album_letter"
+                                     ")")
+    problems = relationship("klap4.db_entities.album.AlbumProblem", back_populates="album", cascade="all, delete-orphan",
+                            primaryjoin="and_("
+                                     "     Album.genre_abbr == AlbumProblem.genre_abbr,"
+                                     "     Album.artist_num == AlbumProblem.artist_num,"
+                                     "     Album.letter == AlbumProblem.album_letter"
+                                     ")")
+    songs = relationship("klap4.db_entities.song.Song", back_populates="album", cascade="all, delete-orphan",
+                         primaryjoin="and_("
+                                     "      Album.genre_abbr == Song.genre_abbr,"
+                                     "      Album.artist_num == Song.artist_num,"
+                                     "      Album.letter == Song.album_letter"
+                                     ")")
+    
     label = relationship("klap4.db_entities.label_and_promoter.Label", back_populates="albums")
     promoter = relationship("klap4.db_entities.label_and_promoter.Promoter", back_populates="albums")
 
@@ -79,6 +95,52 @@ class Album(SQLBase):
     @property
     def id(self):
         return self.artist.id + self.letter
+    
+
+    def serialize(self):
+        review_list = []
+        problem_list = []
+        song_list = []
+        for review in self.reviews:
+            review_list.append({
+                                 "date_entered": review.date_entered,
+                                 "reviewer": review.dj_id,
+                                 "review": review.content
+                                })
+        for problem in self.problems:
+            problem_list.append({
+                                 "reporter": problem.dj_id,
+                                 "problem": problem.content
+                                })
+        for song in self.songs:
+            song_list.append({
+                              "id": song.id,
+                              "number": song.number,
+                              "song_name": song.name,
+                              "fcc_status": song.fcc_status,
+                              "times_played": song.times_played,
+                              "last_played": song.last_played,
+                              "recommended": song.recommended
+                            })
+
+        serialized_album = {
+                            "id": self.id,
+                            "name": self.name,
+                            "artist_id": self.artist.id,
+                            "artist": self.artist.name,
+                            "genre": self.genre.name,
+                            "label": None if self.label_id is None else self.label.name,
+                            "promoter": None if self.promoter_id is None else self.promoter.name,  
+                            "date_added": self.date_added,
+                            "format": self.format_bitfield,
+                            "missing": self.missing,
+                            "new_album": self.is_new,
+                            "reviews": review_list,
+                            "problems": problem_list,
+                            "songs": song_list
+                            }
+        return serialized_album
+
 
     def __repr__(self):
         return f"<Album(id={self.id}, " \
