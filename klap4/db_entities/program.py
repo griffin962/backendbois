@@ -19,7 +19,7 @@ class ProgramFormat(SQLBase):
                             primaryjoin="ProgramFormat.type == Program.type", cascade="all, delete-orphan")
     
     program_slots = relationship("klap4.db_entities.program.ProgramSlot", back_populates="program_format", uselist=True,
-                                 primaryjoin="ProgramFormat.type == ProgramSlot.program_type", cascade="all, delete-orphan")
+                                 cascade="all, delete-orphan")
 
     program_log_entries = relationship("ProgramLogEntry", back_populates="program_format")
 
@@ -76,8 +76,7 @@ class ProgramSlot(SQLBase):
 
     program_format = relationship("klap4.db_entities.program.ProgramFormat",
                                   back_populates="program_slots",
-                                  uselist=False,
-                                  primaryjoin="ProgramFormat.type == ProgramSlot.program_type")
+                                  uselist=False)
 
     program_log_entries = relationship("ProgramLogEntry", back_populates="program_slot", uselist=False,
                                        cascade="all, delete-orphan",

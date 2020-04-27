@@ -11,5 +11,5 @@
 
 - model: klap4.db_entities.program.ProgramFormat
   fields:
-    type: 'station-id'
+    type: 'station_id'
     description: 'Identify yourself'
