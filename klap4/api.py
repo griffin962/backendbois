@@ -347,7 +347,7 @@ def programming_log():
 
         update_program_log(program_type, program_name, slot_id, dj_id, new_name)
         return "Updated"
-    elif request.method == 'DELETE:
+    elif request.method == 'DELETE':
         program_type = request.get_json()['programType']
         timestamp = request.get_json()['timestamp']
         dj_id = request.get_json()['djId']
