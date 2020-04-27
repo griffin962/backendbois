@@ -32,7 +32,7 @@ def search_albums(genre: str, artist_name: str, name: str) -> list:
         .join(
             Genre, and_(Genre.name.like(genre+'%'), Genre.abbreviation == Album.genre_abbr)
         ) \
-        .join(Artist, and_(Artist.name.like(artist_name+'%'), Artist.number == Album.artist_num)
+        .join(Artist, and_(Artist.name.like(artist_name+'%'), Artist.genre_abbr == Album.genre_abbr, Artist.number == Album.artist_num)
         ) \
         .filter(
             Album.name.like(name+'%'),
@@ -154,7 +154,7 @@ def generate_chart(format: str, weeks: int) -> list:
         
     elif format == "new":
         chart_list = session.query(Song.genre_abbr, Song.artist_num, Song.album_letter, func.sum(Song.times_played)) \
-            .join(Album, and_(Album.date_added > new_album_limit, Song.genre_abbr == Album.genre_abbr, Song.artist_num == Album.artist_num)) \
+            .join(Album, and_(Album.date_added > new_album_limit, Song.genre_abbr == Album.genre_abbr, Song.artist_num == Album.artist_num, Song.album_letter == Album.letter)) \
             .filter(Song.last_played > weeks_ago) \
             .group_by(Song.genre_abbr, Song.artist_num, Song.album_letter) \
             .all()
