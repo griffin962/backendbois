@@ -312,7 +312,8 @@ def show_playlist(dj, playlist_name):
         elif 'newIndex' in request.get_json().keys():
             index = request.get_json()['index']
             new_index = request.get_json()['newIndex']
-            update_playlist_entry(dj, playlist_name, index, None, new_index, None)
+            x = update_playlist_entry(dj, playlist_name, index, None, new_index, None)
+            return str(x)
         else:
             return jsonify(error='Bad request'), 400
 

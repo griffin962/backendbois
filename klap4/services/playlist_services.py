@@ -181,17 +181,26 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
                 entry.index = entry.index - 1
             
             session.commit()
-            playlist_entries[old_index-1].index = new_index - 1
+            playlist_entries[old_index-1].index = new_index
             session.commit()
 
+
         elif new_index < old_index:
+            # Move the item currently in the new spot out of bounds
             playlist_entries[new_index-1].index = -1
-            for entry in playlist_entries[new_index:old_index]:
+
+            # Move the item that needs to be in the new spot into the new spot
+            playlist_entries[old_index-1].index = new_index
+            session.commit()
+            # For everything between the spot after the new spot and the old spot, increase the index
+            for entry in playlist_entries[new_index:(old_index-1)]:
                 entry.index = entry.index + 1
             
             session.commit()
-            playlist_entries[new_index-1].index = old_index - 1
+            # Move the out of bounds item next to the new spot
+            playlist_entries[new_index-1].index = new_index + 1
             session.commit()
+        
         else:
             pass
 
