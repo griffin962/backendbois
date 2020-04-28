@@ -219,8 +219,7 @@ def delete_playlist_entry(user: str, p_name: str, index: int) -> None:
     to_delete = session.query(PlaylistEntry).filter(and_(
         PlaylistEntry.dj_id == user,
         PlaylistEntry.playlist_name == p_name,
-        PlaylistEntry.index == index,
-        PlaylistEntry.entry == entry)).one()
+        PlaylistEntry.index == index)).one()
     
     to_delete.index = -1
 
