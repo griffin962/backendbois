@@ -189,12 +189,13 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
 
             playlist_entries[old_index-1].index = new_index
             session.commit()
-
-            for entry in playlist_entries[new_index:(old_index-1)]:
-                entry.index = entry.index + 1
+            
+            for num in range(old_index-1, new_index, -1):
+                playlist_entries[num-1].index = playlist_entries[num-1].index + 1
+                session.commit()
             
             session.commit()
-            playlist_entries[new_index-1].index = new_index + 1
+            playlist_entries[new_index-1].index = new_index+1
             session.commit()
         
         else:
