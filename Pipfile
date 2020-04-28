@@ -18,6 +18,7 @@ sqlalchemy-seed = "*"
 flask-admin = "*"
 natsort = "*"
 flask-jwt-extended = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.7"

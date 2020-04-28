@@ -12,7 +12,8 @@ from klap4.db_entities import SQLBase
 class ProgramFormat(SQLBase):
     __tablename__ = "program_format"
 
-    type = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    type = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=False)
 
     programs = relationship("klap4.db_entities.program.Program", back_populates="program_format", uselist=True,
@@ -26,10 +27,6 @@ class ProgramFormat(SQLBase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
-    @property
-    def id(self):
-        return str(self.type)
-
     def serialize(self):
         serialized_program = {
                               "type": self.type,

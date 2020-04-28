@@ -103,7 +103,8 @@ def connect(file_path: Union[Path, str], *, reset: bool = False, db_log_level: U
     if not file_path.exists():
         reset = True
 
-    db_engine = sqlalchemy.create_engine(f"sqlite:///{file_path}", connect_args={'check_same_thread': False}, echo=db_log_level.lower() == "sql")
+    #db_engine = sqlalchemy.create_engine(f"sqlite:///{file_path}", connect_args={'check_same_thread': False}, echo=db_log_level.lower() == "sql")
+    db_engine = sqlalchemy.create_engine("postgresql+psycopg2://klap4:password@localhost:5432/klap4", echo=db_log_level.lower() == "sql")
 
     if reset:
         db_logger.info("Creating database.")

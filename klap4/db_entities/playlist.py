@@ -11,17 +11,13 @@ from klap4.utils import *
 class Playlist(SQLBase):
     __tablename__ = "playlist"
 
-    dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
-    name = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    dj_id = Column(String, ForeignKey("dj.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    name = Column(String, nullable=False)
     show = Column(String, nullable=False)
 
     dj = relationship("klap4.db_entities.dj.DJ", back_populates="playlists")
-    playlist_entries = relationship("klap4.db_entities.playlist.PlaylistEntry", back_populates="playlist", uselist=True,
-                                    cascade="all, delete-orphan",
-                                    primaryjoin="and_("
-                                        "     Playlist.dj_id == PlaylistEntry.dj_id,"
-                                        "     Playlist.name == PlaylistEntry.playlist_name"
-                                        ")")
+    playlist_entries = relationship("klap4.db_entities.playlist.PlaylistEntry", back_populates="playlist", cascade="all, delete-orphan")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
@@ -35,42 +31,30 @@ class Playlist(SQLBase):
         super().__init__(**kwargs)
 
     @property
-    def id(self):
+    def ref(self):
         return f"{self.dj_id}+{self.name}"
 
     def __repr__(self):
-        return f"<Playlist(id={self.id}, " \
+        return f"<Playlist(ref={self.ref}, " \
                          f"show={self.show})>"
 
 
 class PlaylistEntry(SQLBase):
     __tablename__ = "playlist_entry"
 
-    dj_id = Column(String, ForeignKey("dj.id"), primary_key=True)
-    playlist_name = Column(String, ForeignKey("playlist.name"), primary_key=True)
-    index = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    playlist_id = Column(Integer, ForeignKey("playlist.id", onupdate="CASCADE", ondelete="CASCADE"), primary_key=True)
+    index = Column(Integer, nullable=False)
     reference_type = Column(Integer, nullable=False)
     reference = Column(String, nullable=False)
     entry = Column(JSON, nullable=False)
-
-    dj = relationship("klap4.db_entities.dj.DJ",
-                      backref=backref("playlist_entries", uselist=True, cascade="all, delete-orphan"),
-                      uselist=False,
-                      primaryjoin="DJ.id == PlaylistEntry.dj_id")
     
-    playlist = relationship("klap4.db_entities.playlist.Playlist",
-                            back_populates="playlist_entries",
-                            uselist=False,
-                            primaryjoin="and_("
-                                        "     Playlist.dj_id == PlaylistEntry.dj_id,"
-                                        "     Playlist.name == PlaylistEntry.playlist_name"
-                                        ")")
+    playlist = relationship("klap4.db_entities.playlist.Playlist", back_populates="playlist_entries")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
             decomposed_tag = decompose_tag(kwargs["id"], regex_hint="playlist")
 
-            kwargs["dj_id"] = decomposed_tag.dj_id
             kwargs["playlist_name"] = decomposed_tag.name
 
             if decomposed_tag.song_num is not None:
@@ -96,14 +80,14 @@ class PlaylistEntry(SQLBase):
             raise KeyError(f"No playlist reference type '{self.reference_type}'.") from e
 
     @property
-    def id(self):
-        return f"{self.playlist.id}+{self.index}"
+    def ref(self):
+        return f"{self.playlist.ref}+{self.index}"
 
     @property
     def in_library(self):
         return self.reference_type == REFERENCE_TYPE.IN_KLAP4
 
     def __repr__(self):
-        return f"<PlaylistEntry(id={self.id}, " \
+        return f"<PlaylistEntry(ref={self.ref}, " \
                               f"reference_type={self.reference_type}, " \
                               f"reference={self.reference[:20] + '...' if len(self.reference) > 20 else self.reference})>"
