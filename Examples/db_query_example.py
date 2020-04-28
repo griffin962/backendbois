@@ -49,7 +49,7 @@ def main():
 
     entry = {"song": "Thing1", "artist": "Thing2", "album": "Thing3"}
     new_entry = {"song": "Concret", "artist": "Poppy", "album": "Choke"}
-    update_playlist_entry("jam4x2", "My Playlist", 1, None, 2, None)
+    update_playlist_entry("jam4x2", "My Playlist", 3, None, 1, None)
     #print(charts)
 
 if __name__ == '__main__':

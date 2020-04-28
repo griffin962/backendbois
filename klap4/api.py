@@ -321,8 +321,7 @@ def show_playlist(dj, playlist_name):
 
     elif request.method == 'DELETE':
         index = request.get_json()['index']
-        entry = request.get_json()['entry']
-        delete_playlist_entry(dj, playlist_name, index, entry)
+        delete_playlist_entry(dj, playlist_name, index)
         return "Deleted"
 
 
