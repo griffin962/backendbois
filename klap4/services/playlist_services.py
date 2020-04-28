@@ -5,58 +5,62 @@ from sqlalchemy.sql.expression import and_
 from klap4.db_entities import SQLBase, decompose_tag
 from klap4.db_entities.album import Album
 from klap4.db_entities.artist import Artist
+from klap4.db_entities.dj import DJ
 from klap4.db_entities.playlist import Playlist, PlaylistEntry
 from klap4.db_entities.song import Song
 from klap4.utils import *
 
-def list_playlists(user: str) -> list:
+def list_playlists(dj_id: str) -> list:
     from klap4.db import Session
     session = Session()
 
     playlists = session.query(Playlist) \
-        .filter(Playlist.dj_id == user).all()
+        .filter(Playlist.dj_id == dj_id).all()
     
     return format_object_list(playlists)
 
 
-def add_playlist(user: str, name: str, show: str) -> SQLBase:
+def add_playlist(dj_id: str, name: str, show: str) -> SQLBase:
     from klap4.db import Session
     session = Session()
 
-    newPlaylist = Playlist(dj_id=user,
+    new_playlist = Playlist(dj_id=dj_id,
                                 name=name,
                                 show=show)
     
-    session.add(newPlaylist)
+    session.add(new_playlist)
     session.commit()
 
-    return newPlaylist
+    return new_playlist
 
-def update_playlist(user: str, name: str, show: str, new_name: str, new_show: str) -> SQLBase:
+def update_playlist(dj_id: str, name: str, show: str, new_name: str, new_show: str) -> SQLBase:
     from klap4.db import Session
     session = Session()
 
-    session.query(Playlist) \
+    playlist_update = session.query(Playlist) \
         .filter(
-            and_(Playlist.dj_id == user, Playlist.name == name)
+            and_(Playlist.dj_id == dj_id, Playlist.name == name)
         ) \
-        .update({Playlist.name: new_name, Playlist.show: new_show}, synchronize_session=False)
+        .one()
+    
+    playlist_update.name = new_name
+    playlist_update.show = new_show
 
     session.commit()
-    return
+    return playlist_update
 
 
-def delete_playlist(user: str, name: str) -> None:
+def delete_playlist(dj_id: str, name: str) -> None:
     from klap4.db import Session
     session = Session()
 
-    session.query(Playlist).filter(and_(Playlist.dj_id == user, Playlist.name == name)).delete()
+    session.query(Playlist).filter(and_(Playlist.dj_id == dj_id, Playlist.name == name)).delete()
     session.commit()
 
     return
 
 
-def display_playlist(dj_id: str, p_name: str) -> SQLBase:
+def display_playlist_entries(dj_id: str, p_name: str) -> SQLBase:
     from klap4.db import Session
     session = Session()
 
@@ -69,7 +73,9 @@ def display_playlist(dj_id: str, p_name: str) -> SQLBase:
     playlist = get_json(u_playlist)
     
     playlist_entries = session.query(PlaylistEntry) \
-        .filter(and_(PlaylistEntry.dj_id == dj_id, PlaylistEntry.playlist_name == p_name)).all()
+        .join(Playlist, and_(Playlist.id == PlaylistEntry.playlist_id, Playlist.name == p_name)) \
+        .join(DJ, and_(DJ.id == Playlist.dj_id, DJ.id == dj_id)) \
+        .all()
 
     info_list = format_object_list(playlist_entries)
 
@@ -81,20 +87,15 @@ def display_playlist(dj_id: str, p_name: str) -> SQLBase:
     return obj
 
 
-def add_playlist_entry(user: str, p_name: str, entry) -> SQLBase:
+def add_playlist_entry(dj_id: str, p_name: str, entry) -> SQLBase:
     from klap4.db import Session
     session = Session()
 
     from datetime import datetime
     try:
         song_entry = session.query(Song) \
-                        .join(Artist, and_(Artist.genre_abbr == Song.genre_abbr, 
-                            Artist.number == Song.artist_num, 
-                            Artist.name == entry["artist"])) \
-                        .join(Album, and_(Album.genre_abbr == Song.genre_abbr, 
-                            Album.artist_num == Song.artist_num, 
-                            Album.letter == Song.album_letter, 
-                            Album.name == entry["album"])) \
+                        .join(Album, and_(Album.id == Song.album_id, Album.name == entry["album"])) \
+                        .join(Artist, and_(Artist.id == Album.artist_id, Artist.name == entry["artist"])) \
                         .filter(Song.name == entry["song"]).one()
         
         old_times_played = song_entry.times_played
@@ -104,14 +105,14 @@ def add_playlist_entry(user: str, p_name: str, entry) -> SQLBase:
         session.commit()
 
         reference_type = REFERENCE_TYPE.IN_KLAP4
-        reference = song_entry.genre_abbr + str(song_entry.artist_num) + song_entry.album_letter
+        reference = song_entry.album.artist.genre.abbreviation + song_entry.album.artist.number + song_entry.album.letter
     except:
         reference_type = REFERENCE_TYPE.MANUAL
         reference = str(entry)
 
 
     newPlaylistEntry = PlaylistEntry(
-        dj_id=user, 
+        dj_id=dj_id, 
         playlist_name=p_name, 
         reference=reference,
         reference_type=reference_type,
@@ -120,7 +121,7 @@ def add_playlist_entry(user: str, p_name: str, entry) -> SQLBase:
     session.add(newPlaylistEntry)
     session.commit()
 
-    return newPlaylistEntry
+    return get_json(newPlaylistEntry)
 
 
 def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index: int, new_entry):
@@ -132,14 +133,9 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
     if new_index is None and entry is not None and new_entry is not None:
         try:
             song_entry = session.query(Song) \
-                            .join(Artist, and_(Artist.genre_abbr == Song.genre_abbr, 
-                                Artist.number == Song.artist_num, 
-                                Artist.name == new_entry["artist"])) \
-                            .join(Album, and_(Album.genre_abbr == Song.genre_abbr, 
-                                Album.artist_num == Song.artist_num, 
-                                Album.letter == Song.album_letter, 
-                                Album.name == new_entry["album"])) \
-                            .filter(Song.name == new_entry["song"]).one()
+                        .join(Album, and_(Album.id == Song.album_id, Album.name == entry["album"])) \
+                        .join(Artist, and_(Artist.id == Album.artist_id, Artist.name == entry["artist"])) \
+                        .filter(Song.name == entry["song"]).one()
             old_times_played = song_entry.times_played
 
             song_entry.last_played = datetime.now()
@@ -154,9 +150,10 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
             reference = str(new_entry)
         
         session.query(PlaylistEntry) \
+            .join(Playlist, and_(Playlist.id == PlaylistEntry.id, Playlist.name == p_name)) \
+            .join(DJ, and_(DJ.id == Playlist.dj_id, DJ.id == dj_id)) \
             .filter(
-                and_(PlaylistEntry.dj_id == dj_id, PlaylistEntry.playlist_name == p_name,
-                     PlaylistEntry.index == index,
+                and_(PlaylistEntry.index == index,
                      PlaylistEntry.entry == entry)
             ) \
             .update({PlaylistEntry.entry: new_entry,
@@ -168,9 +165,8 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
     elif new_index is not None and entry is None and new_entry is None:
         old_index = index
         playlist_entries = session.query(PlaylistEntry) \
-            .filter(
-                and_(PlaylistEntry.dj_id == dj_id, PlaylistEntry.playlist_name == p_name) \
-            ) \
+            .join(Playlist, and_(Playlist.id == PlaylistEntry.playlist_id, Playlist.name == p_name)) \
+            .join(DJ, and_(DJ.id == Playlist.dj_id, DJ.id == dj_id)) \
             .order_by(PlaylistEntry.index) \
             .all()
         
@@ -210,16 +206,16 @@ def delete_playlist_entry(dj_id: str, p_name: str, index: int) -> None:
     session = Session()
 
     playlist_entries = session.query(PlaylistEntry) \
-            .filter(
-                and_(PlaylistEntry.dj_id == dj_id, PlaylistEntry.playlist_name == p_name) \
-            ) \
+            .join(Playlist, and_(Playlist.id == PlaylistEntry.playlist_id, Playlist.name == p_name)) \
+            .join(DJ, and_(DJ.id == Playlist.dj_id, DJ.id == dj_id)) \
             .order_by(PlaylistEntry.index) \
             .all()
 
-    to_delete = session.query(PlaylistEntry).filter(and_(
-        PlaylistEntry.dj_id == dj_id,
-        PlaylistEntry.playlist_name == p_name,
-        PlaylistEntry.index == index)).one()
+    to_delete = session.query(PlaylistEntry) \
+        .join(Playlist, and_(Playlist.id == PlaylistEntry.playlist_id, Playlist.name == p_name)) \
+        .join(DJ, and_(DJ.id == Playlist.dj_id, DJ.id == dj_id)) \
+        .filter(PlaylistEntry.index == index) \
+        .one()
     
     to_delete.index = -1
 

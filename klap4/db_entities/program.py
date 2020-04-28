@@ -12,11 +12,11 @@ from klap4.db_entities import SQLBase
 class ProgramFormat(SQLBase):
     __tablename__ = "program_format"
 
-    type = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    type = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=False)
 
-    programs = relationship("klap4.db_entities.program.Program", back_populates="program_format", uselist=True,
-                            primaryjoin="ProgramFormat.type == Program.type", cascade="all, delete-orphan")
+    programs = relationship("klap4.db_entities.program.Program", back_populates="program_format", cascade="all, delete-orphan")
     
     program_slots = relationship("klap4.db_entities.program.ProgramSlot", back_populates="program_format", uselist=True,
                                  cascade="all, delete-orphan")
@@ -26,10 +26,6 @@ class ProgramFormat(SQLBase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
-    @property
-    def id(self):
-        return str(self.type)
-
     def serialize(self):
         serialized_program = {
                               "type": self.type,
@@ -48,21 +44,20 @@ class ProgramFormat(SQLBase):
 class Program(SQLBase):
     __tablename__ = "program"
 
-    type = Column(String, ForeignKey("program_format.type"), primary_key=True)
-    name = Column(String, primary_key=True)
-    duration = Column(Time)
-    months = Column(String)
+    id = Column(Integer, primary_key=True)
+    format_id = Column(Integer, ForeignKey("program_format.id", onupdate="CASCADE", ondelete="CASCADE"), primary_key=True)
+    name = Column(String, nullable=False, unique=True)
+    duration = Column(Time, nullable=True)
+    months = Column(String, nullable=True)
 
-    program_format = relationship("klap4.db_entities.program.ProgramFormat",
-                                  back_populates="programs", uselist=False,
-                                  primaryjoin="ProgramFormat.type == Program.type")
+    program_format = relationship("klap4.db_entities.program.ProgramFormat", back_populates="programs")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
     @property
-    def id(self):
-        return str(self.type)+'+'+str(self.name)
+    def ref(self):
+        return str(self.program_format.type)+'-'+str(self.name)
     
 
     def serialize(self):
@@ -75,7 +70,7 @@ class Program(SQLBase):
         return serialized_program
     
     def __repr__(self):
-        return f"<Program(type={self.type}, " \
+        return f"<Program(type={self.program_format.type}, " \
                         f"name={self.name}, " \
                         f"months={self.months})>"
     
@@ -91,9 +86,7 @@ class ProgramSlot(SQLBase):
     day = Column(Integer)
     time = Column(Time)
 
-    program_format = relationship("klap4.db_entities.program.ProgramFormat",
-                                  back_populates="program_slots",
-                                  uselist=False)
+    program_format = relationship("klap4.db_entities.program.ProgramFormat", back_populates="program_slots")
 
     program_log_entries = relationship("ProgramLogEntry", back_populates="program_slot", uselist=False,
                                        cascade="all, delete-orphan",

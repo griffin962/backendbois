@@ -4,9 +4,29 @@ from datetime import datetime, timedelta
 
 from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer
 from sqlalchemy.orm import backref, relationship
+from sqlalchemy.sql.expression import and_
 
 import klap4.db
+from klap4.db_entities.artist import Artist
+from klap4.db_entities.album import Album, find_artist_id
 from klap4.db_entities import decompose_tag, SQLBase
+
+
+def find_album_id(genre_abbr: str, artist_num: int, album_letter: str):
+    entity = None
+
+    try:
+        from klap4.db import Session
+        session = Session()
+
+        artist_id = find_artist_id(genre_abbr, artist_num)
+        entity = session.query(Album) \
+            .filter(Album.artist_id == artist_id, Album.letter == album_letter).one()
+        
+        return entity.id
+    except:
+        raise "error"
+
 
 
 class Song(SQLBase):
@@ -18,44 +38,22 @@ class Song(SQLBase):
         OBSCENE = 3
         UNRATED = 4
 
-    genre_abbr = Column(String(2), ForeignKey("genre.abbreviation"), primary_key=True)
-    artist_num = Column(Integer, ForeignKey("artist.number"), primary_key=True)
-    album_letter = Column(String(1), ForeignKey("album.letter"), primary_key=True)
-    number = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    album_id = Column(Integer, ForeignKey("album.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    number = Column(Integer, nullable=False)
     name = Column(String, nullable=False)
     fcc_status = Column(Integer, nullable=False)
     last_played = Column(DateTime, nullable=False)
     times_played = Column(Integer, nullable=False)
     recommended = Column(Boolean, nullable=False)
 
-    genre = relationship("klap4.db_entities.genre.Genre",
-                         back_populates="songs",
-                         primaryjoin="Genre.abbreviation == Song.genre_abbr")
-
-    artist = relationship("klap4.db_entities.artist.Artist",
-                          back_populates="songs",
-                          primaryjoin="and_("
-                                      "     Artist.genre_abbr == Song.genre_abbr,"
-                                      "     Artist.number == Song.artist_num"
-                                      ")")
-
-    album = relationship("klap4.db_entities.album.Album",
-                         back_populates="songs",
-                         primaryjoin="and_("
-                                     "      Album.genre_abbr == Song.genre_abbr,"
-                                     "      Album.artist_num == Song.artist_num,"
-                                     "      Album.letter == Song.album_letter"
-                                     ")")
-
-    id = None
+    album = relationship("klap4.db_entities.album.Album", back_populates="songs")
 
     def __init__(self, **kwargs):
         if "id" in kwargs:
             decomposed_tag = decompose_tag(kwargs["id"])
 
-            kwargs["genre_abbr"] = decomposed_tag.genre_abbr
-            kwargs["artist_num"] = decomposed_tag.artist_num
-            kwargs["album_letter"] = decomposed_tag.album_letter
+            kwargs["album_id"] = find_album_id(decomposed_tag.genre_abbr, decomposed_tag.artist_num, decomposed_tag.album_letter)
 
             if decomposed_tag.song_num is not None:
                 kwargs["number"] = decomposed_tag.song_num
@@ -82,11 +80,11 @@ class Song(SQLBase):
         super().__init__(**kwargs)
 
     @property
-    def id(self):
-        return self.album.id + str(self.number)
+    def ref(self):
+        return self.album.ref + str(self.number)
 
     def __repr__(self):
-        return f"<Song(id={self.id}, " \
+        return f"<Song(ref={self.ref}, " \
                      f"name={self.name}, " \
                      f"fcc_status={self.fcc_status}, " \
                      f"last_played={self.last_played}, " \
