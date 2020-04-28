@@ -296,10 +296,8 @@ def show_playlist(dj, playlist_name):
         return jsonify(playlist)
 
     elif request.method == 'POST':
-        index = request.get_json()['index']
         entry = request.get_json()['entry']
-        print(index, entry)
-        new_entry = add_playlist_entry(dj, playlist_name, index, entry)
+        new_entry = add_playlist_entry(dj, playlist_name, entry)
         return "Added"
 
     elif request.method == 'PUT':

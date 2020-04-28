@@ -81,7 +81,7 @@ def display_playlist(dj_id: str, p_name: str) -> SQLBase:
     return obj
 
 
-def add_playlist_entry(user: str, p_name: str, index: int, entry) -> SQLBase:
+def add_playlist_entry(user: str, p_name: str, entry) -> SQLBase:
     from klap4.db import Session
     session = Session()
 
@@ -113,7 +113,6 @@ def add_playlist_entry(user: str, p_name: str, index: int, entry) -> SQLBase:
     newPlaylistEntry = PlaylistEntry(
         dj_id=user, 
         playlist_name=p_name, 
-        index=index,
         reference=reference,
         reference_type=reference_type,
         entry=entry)
@@ -205,7 +204,7 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
     
 
 
-def delete_playlist_entry(user: str, p_name: str, index: int) -> None:
+def delete_playlist_entry(dj_id: str, p_name: str, index: int) -> None:
     from klap4.db import Session
     session = Session()
 
@@ -217,7 +216,7 @@ def delete_playlist_entry(user: str, p_name: str, index: int) -> None:
             .all()
 
     to_delete = session.query(PlaylistEntry).filter(and_(
-        PlaylistEntry.dj_id == user,
+        PlaylistEntry.dj_id == dj_id,
         PlaylistEntry.playlist_name == p_name,
         PlaylistEntry.index == index)).one()
     
