@@ -75,6 +75,7 @@ def display_playlist_entries(dj_id: str, p_name: str) -> SQLBase:
     playlist_entries = session.query(PlaylistEntry) \
         .join(Playlist, and_(Playlist.id == PlaylistEntry.playlist_id, Playlist.name == p_name)) \
         .join(DJ, and_(DJ.id == Playlist.dj_id, DJ.id == dj_id)) \
+        .order_by(PlaylistEntry.index) \
         .all()
 
     info_list = format_object_list(playlist_entries)
@@ -105,7 +106,7 @@ def add_playlist_entry(dj_id: str, p_name: str, entry) -> SQLBase:
         session.commit()
 
         reference_type = REFERENCE_TYPE.IN_KLAP4
-        reference = song_entry.album.artist.genre.abbreviation + song_entry.album.artist.number + song_entry.album.letter
+        reference = song_entry.album.artist.genre.abbreviation + str(song_entry.album.artist.number) + song_entry.album.letter
     except:
         reference_type = REFERENCE_TYPE.MANUAL
         reference = str(entry)
@@ -144,25 +145,26 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
             session.commit()
 
             reference_type = REFERENCE_TYPE.IN_KLAP4
-            reference = song_entry.genre_abbr + str(song_entry.artist_num) + song_entry.album_letter
+            reference = song_entry.album.artist.genre.abbreviation + str(song_entry.album.artist.number) + song_entry.album.letter
         except:
             reference_type = REFERENCE_TYPE.MANUAL
             reference = str(new_entry)
         
-        session.query(PlaylistEntry) \
+        update_entry = session.query(PlaylistEntry) \
             .join(Playlist, and_(Playlist.id == PlaylistEntry.id, Playlist.name == p_name)) \
             .join(DJ, and_(DJ.id == Playlist.dj_id, DJ.id == dj_id)) \
             .filter(
                 and_(PlaylistEntry.index == index,
                      PlaylistEntry.entry == entry)
             ) \
-            .update({PlaylistEntry.entry: new_entry,
-                     PlaylistEntry.reference: reference,
-                     PlaylistEntry.reference_type: reference_type},
-                     synchronize_session=False)
+            .one()
+        
+        update_entry.entry = new_entry
+        update_entry.reference = reference
+        update_entry.reference_type = reference_type
         session.commit()
     
-    elif new_index is not None and entry is None and new_entry is None:
+    else:
         old_index = index
         playlist_entries = session.query(PlaylistEntry) \
             .join(Playlist, and_(Playlist.id == PlaylistEntry.playlist_id, Playlist.name == p_name)) \

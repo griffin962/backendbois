@@ -48,8 +48,9 @@ def main():
     script_path = Path(__file__).absolute().parent
     db.connect(script_path/".."/"test.db")
 
-    thing = generate_chart('all', 4)
-    print(thing)
+    entry = {"song": "Concrete", "artist": "Poppy", "album": "Choke"}
+    thing = generate_chart("all", 5)
+    #print(thing)
 
 if __name__ == '__main__':
     main()
