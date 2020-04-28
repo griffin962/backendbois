@@ -152,7 +152,7 @@ def update_program_log(program_type, program_name, slot_id, dj_id, new_name):
     update_entry.program_name = new_name
     session.commit()
     
-    return
+    return update_entry
 
 
 def delete_program_log(program_type, timestamp, dj_id):
@@ -167,3 +167,4 @@ def delete_program_log(program_type, timestamp, dj_id):
 
     session.commit()
     return
+    

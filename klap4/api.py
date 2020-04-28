@@ -245,8 +245,8 @@ def programming_log():
         dj_id = request.get_json()['djId']
         new_name = request.get_json()['newName']
 
-        update_program_log(program_type, program_name, slot_id, dj_id, new_name)
-        return "Updated"
+        updated_log = update_program_log(program_type, program_name, slot_id, dj_id, new_name)
+        return jsonify(updated_log.serialize())
     elif request.method == 'DELETE':
         program_type = request.get_json()['programType']
         timestamp = request.get_json()['timestamp']
