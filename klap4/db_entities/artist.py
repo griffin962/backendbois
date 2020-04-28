@@ -4,8 +4,21 @@ from sqlalchemy import Column, ForeignKey, String, Integer
 from sqlalchemy.orm import backref, relationship
 
 import klap4.db
+from klap4.db_entities.genre import Genre
 from klap4.db_entities import decompose_tag, full_module_name, SQLBase
 #from klap4.utils.spotify_utils import getArtistImage, getRelatedArtists
+
+def find_genre_id(genre_abbr: str):
+    entity = None
+
+    try:
+        from klap4.db import Session
+        session = Session()
+        entity = session.query(Genre).filter(Genre.abbreviation == genre_abbr).one()
+
+        return entity.id
+    except:
+        raise "error"
 
 
 class Artist(SQLBase):
@@ -22,6 +35,7 @@ class Artist(SQLBase):
     def __init__(self, **kwargs):
         if "id" in kwargs:
             decomposed_tag = decompose_tag(kwargs["id"])
+            kwargs["genre_id"] = find_genre_id(decomposed_tag.genre_abbr)
 
             if decomposed_tag.artist_num is not None:
                 kwargs["number"] = decomposed_tag.artist_num
@@ -49,7 +63,7 @@ class Artist(SQLBase):
         album_list = []
         for album in self.albums:
             album_list.append({
-                                "ref": album.ref,
+                                "id": album.ref,
                                 "album_name": album.name,
                                 "album_format": album.format_bitfield,
                                 "new_album": album.is_new,
@@ -59,7 +73,7 @@ class Artist(SQLBase):
                             })
 
         serialized_artist = {
-                                "ref": self.ref,
+                                "id": self.ref,
                                 "name": self.name,
                                 "genre": self.genre.name,
                                 "albums": album_list,

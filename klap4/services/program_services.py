@@ -15,8 +15,8 @@ def search_programming(p_type: str, name: str) -> SQLBase:
 
     serialized_list = []
     program_list = session.query(Program) \
-        .filter(
-            and_(Program.type.like(p_type+'%'), Program.name.like(name+'%'))
+        .join(ProgramFormat, and_(ProgramFormat.id == Program.format_id, ProgramFormat.type.like(p_type+'%'))) \
+        .filter(Program.name.like(name+'%')
         ) \
         .all()
     
@@ -106,8 +106,6 @@ def get_program_log():
         ) \
         .all()
 
-    print(tdy_logs)
-
     program_log_entries = {
                             "today": format_object_list(tdy_logs),
                             "yesterday": format_object_list(ystr_logs),
@@ -143,13 +141,15 @@ def update_program_log(program_type, program_name, slot_id, dj_id, new_name):
 
     from datetime import datetime
 
-    session.query(ProgramLogEntry) \
+    update_entry = session.query(ProgramLogEntry) \
         .filter(
             and_(ProgramLogEntry.program_type == program_type, ProgramLogEntry.program_name == program_name,
                  ProgramLogEntry.slot_id == slot_id, ProgramLogEntry.dj_id == dj_id)
         ) \
-        .update({ProgramLogEntry.timestamp: datetime.now(), ProgramLogEntry.program_name: new_name}, synchronize_session=False)
+        .one()
     
+    update_entry.timestamp = datetime.now()
+    update_entry.program_name = new_name
     session.commit()
     
     return
@@ -160,6 +160,7 @@ def delete_program_log(program_type, timestamp, dj_id):
     session = Session()
 
     from datetime import datetime
+    #converted_timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
     delQuer = session.query(ProgramLogEntry) \
         .filter(and_(ProgramLogEntry.program_type == program_type, ProgramLogEntry.timestamp.contains(timestamp), ProgramLogEntry.dj_id == dj_id)) \
         .delete(synchronize_session='fetch')

@@ -4,9 +4,29 @@ from datetime import datetime, timedelta
 
 from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer
 from sqlalchemy.orm import backref, relationship
+from sqlalchemy.sql.expression import and_
 
 import klap4.db
+from klap4.db_entities.artist import Artist
+from klap4.db_entities.album import Album, find_artist_id
 from klap4.db_entities import decompose_tag, SQLBase
+
+
+def find_album_id(genre_abbr: str, artist_num: int, album_letter: str):
+    entity = None
+
+    try:
+        from klap4.db import Session
+        session = Session()
+
+        artist_id = find_artist_id(genre_abbr, artist_num)
+        entity = session.query(Album) \
+            .filter(Album.artist_id == artist_id, Album.letter == album_letter).one()
+        
+        return entity.id
+    except:
+        raise "error"
+
 
 
 class Song(SQLBase):
@@ -32,6 +52,8 @@ class Song(SQLBase):
     def __init__(self, **kwargs):
         if "id" in kwargs:
             decomposed_tag = decompose_tag(kwargs["id"])
+
+            kwargs["album_id"] = find_album_id(decomposed_tag.genre_abbr, decomposed_tag.artist_num, decomposed_tag.album_letter)
 
             if decomposed_tag.song_num is not None:
                 kwargs["number"] = decomposed_tag.song_num

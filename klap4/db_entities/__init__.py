@@ -130,22 +130,33 @@ def get_entity_from_tag(tag: Union[str, KLAP4_TAG, PLAYLIST_TAG]) -> SQLBase:
 
             if tag.artist_num is not None and entity is not None:
                 entity = session.query(Artist) \
-                    .filter(
-                        and_(
-                            Artist.genre_abbr == tag.genre_abbr,
-                            Artist.number == tag.artist_num
+                    .join(
+                        Genre, and_(
+                            Genre.id == Artist.genre_id,
+                            Genre.abbreviation == tag.genre_abbr
                         )
+                    ) \
+                    .filter(
+                            Artist.number == tag.artist_num
                     ) \
                     .one()
 
                 if entity is not None and tag.album_letter is not None:
                     entity = session.query(Album) \
-                        .filter(
-                            and_(
-                                Album.genre_abbr == tag.genre_abbr,
-                                Album.artist_num == tag.artist_num,
-                                Album.letter == tag.album_letter
+                        .join(
+                            Artist, and_(
+                                Artist.id == Album.artist_id,
+                                Artist.number == tag.artist_num
                             )
+                        ) \
+                        .join(
+                            Genre, and_(
+                                Genre.id == Artist.genre_id,
+                                Genre.abbreviation == tag.genre_abbr
+                            )
+                        ) \
+                        .filter(
+                                Album.letter == tag.album_letter
                         ) \
                         .one()
 

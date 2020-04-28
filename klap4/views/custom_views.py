@@ -6,13 +6,13 @@ class GenreModelView(ModelView):
 
 
 class ArtistModelView(ModelView):
-    column_list=['name', 'genre_abbr', 'number']
+    column_list=['name', 'genre', 'number']
     form_columns = ('genre', 'name', 'number')
 
 
 class AlbumModelView(ModelView):
-    column_list=['name', 'artist', 'genre_abbr', 'date_added', 'missing', 'format_bitfield']
-    form_columns = ('genre', 'artist', 'letter', 'name', 'date_added', 'missing', 'format_bitfield', 'label_id', 'promoter_id')
+    column_list=['name', 'artist', 'date_added', 'missing', 'format_bitfield']
+    form_columns = ('artist', 'letter', 'name', 'date_added', 'missing', 'format_bitfield', 'label_id', 'promoter_id')
 
 
 class AlbumReviewModelView(ModelView):
@@ -46,7 +46,7 @@ class PlaylistModelView(ModelView):
 
 class PlaylistEntryModelView(ModelView):
     column_display_pk = True
-    form_columns = ('dj_id', 'playlist_name', 'index', 'reference_type', 'reference', 'entry')
+    form_columns = ('playlist', 'index', 'reference_type', 'reference', 'entry')
 
 class DJModelView(ModelView):
     column_display_pk = True

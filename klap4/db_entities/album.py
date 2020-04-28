@@ -4,9 +4,27 @@ from datetime import datetime, timedelta
 
 from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer
 from sqlalchemy.orm import backref, relationship
+from sqlalchemy.sql.expression import and_
 
 import klap4.db
+from klap4.db_entities.genre import Genre
+from klap4.db_entities.artist import Artist
 from klap4.db_entities import decompose_tag, full_module_name, SQLBase
+
+
+def find_artist_id(genre_abbr: str, artist_num: int):
+    entity = None
+    try:
+        from klap4.db import Session
+        session = Session()
+
+        entity = session.query(Artist) \
+            .join(Genre, and_(Genre.id == Artist.genre_id, Genre.abbreviation == genre_abbr)) \
+            .filter(Artist.number == artist_num).one()
+        
+        return entity.id
+    except:
+        raise "error"
 
 
 class Album(SQLBase):
@@ -40,6 +58,7 @@ class Album(SQLBase):
     def __init__(self, **kwargs):
         if "id" in kwargs:
             decomposed_tag = decompose_tag(kwargs["id"])
+            kwargs["artist_id"] = find_artist_id(decomposed_tag.genre_abbr, decomposed_tag.artist_num)
 
             if decomposed_tag.album_letter is not None:
                 kwargs["letter"] = decomposed_tag.album_letter
@@ -90,19 +109,19 @@ class Album(SQLBase):
                               "song_name": song.name,
                               "fcc_status": song.fcc_status,
                               "times_played": song.times_played,
-                              "last_played": song.last_played,
+                              "last_played": str(song.last_played),
                               "recommended": song.recommended
                             })
 
         serialized_album = {
-                            "ref": self.ref,
+                            "id": self.ref,
                             "name": self.name,
-                            "artist_ref": self.artist.ref,
+                            "artist_id": self.artist.ref,
                             "artist": self.artist.name,
                             "genre": self.artist.genre.name,
                             "label": None if self.label_id is None else self.label.name,
                             "promoter": None if self.promoter_id is None else self.promoter.name,  
-                            "date_added": self.date_added,
+                            "date_added": str(self.date_added),
                             "format": self.format_bitfield,
                             "missing": self.missing,
                             "new_album": self.is_new,

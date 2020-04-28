@@ -15,6 +15,7 @@ from klap4.db_entities import *
 from klap4.services import *
 from klap4.utils import *
 from klap4.views import *
+from klap4.resources import *
 from klap4.config import config
 
 from time import strptime, strftime
@@ -45,11 +46,11 @@ admin = Admin(app, name='KLAP4', template_mode='bootstrap3')
 admin.add_view(GenreModelView(Genre, session))
 admin.add_view(ArtistModelView(Artist, session))
 admin.add_view(AlbumModelView(Album, session))
-admin.add_view(ModelView(Song, session))
-admin.add_view(AlbumReviewModelView(AlbumReview, session))
-admin.add_view(ModelView(AlbumProblem, session))
-admin.add_view(ProgramFormatModelView(ProgramFormat, session))
-admin.add_view(ProgramModelView(Program, session))
+#admin.add_view(ModelView(Song, session))
+#admin.add_view(AlbumReviewModelView(AlbumReview, session))
+#admin.add_view(ModelView(AlbumProblem, session))
+#admin.add_view(ProgramFormatModelView(ProgramFormat, session))
+#admin.add_view(ProgramModelView(Program, session))
 admin.add_view(ProgramSlotModelView(ProgramSlot, session))
 admin.add_view(ProgramLogEntryModelView(ProgramLogEntry, session))
 admin.add_view(PlaylistModelView(Playlist, session))
@@ -124,40 +125,27 @@ def display_user():
     else:
         return jsonify(logged_in_as='Anonymous'), 200
 
+
+api.add_resource(ArtistListAPI, '/search/artist')
+api.add_resource(ArtistAPI, '/display/artist/<string:ref>')
+api.add_resource(AlbumListAPI, '/search/album')
+api.add_resource(AlbumAPI, '/display/album/<string:ref>')
+api.add_resource(ChartsAPI, '/charts/<string:form>/<int:weeks>')
+api.add_resource(PlaylistAPI, '/playlist/<string:dj_id>')
+api.add_resource(PlaylistEntryAPI, '/playlist/display/<string:dj_id>/<string:p_name>')
+
 # Search route returns different lists based on what the user wants to search.
 @app.route('/search/<category>', methods=['GET', 'POST'])
 def search(category):
-    if request.method == 'GET':
-        if category == "artist":
-            artist_list = new_artist_list()
-            return jsonify(artist_list)
 
-        elif category == "album":
-            album_list = list_new_albums()
-            return jsonify(album_list)
-        
-        elif category == "program":
+    if request.method == 'GET':
+        if category == "program":
             program_list = search_programming("", "")
             return jsonify(program_list)
 
 
     elif request.method == 'POST':
-        if category == "artist":
-            genre = request.get_json()['genre']
-            name = request.get_json()['name']
-            artist_list = search_artists(genre, name)
-            return jsonify(artist_list)
-
-        elif category == "album":
-            genre = request.get_json()['genre']
-            artist_name = request.get_json()['artistName']
-            name = request.get_json()['name']
-
-            #TODO: make search fields for label, promoter, format, and is_new in future
-            album_list = search_albums(genre, artist_name, name)
-            return jsonify(album_list)
-        
-        elif category == "program":
+        if category == "program":
             p_type = request.get_json()['programType']
             name = request.get_json()['name']
             program_list = search_programming(p_type, name)
@@ -168,23 +156,7 @@ def search(category):
 @app.route('/display/<category>/<id>', methods=['GET'])
 def display(category, id):
     if request.method == 'GET':
-        if category == "artist":
-            try:
-                artist = get_entity_from_tag(id)
-                serialized_artist = artist.serialize()
-                return jsonify(serialized_artist)
-            except:
-                return jsonify(error='Not Found'), 404
-
-        elif category == "album":
-            try:
-                album = get_entity_from_tag(id)
-                serialized_album = album.serialize()
-                return jsonify(serialized_album)
-            except:
-                return jsonify(error='Not Found'), 404
-
-        elif category == "program":
+        if category == "program":
             try:
                 program = display_program(id)
                 serialized_program = program.serialize()
@@ -224,23 +196,11 @@ def report_album_problem(id):
         return "Added"
 
 
-@app.route('/charts/<form>/<weeks>', methods=['GET'])
-def get_new_charts(form, weeks):
-    if request.method == 'GET':
-        if int(weeks) > 104:
-            return jsonify(error='Bad Request'), 400
-        charts = generate_chart(form, weeks)
-        charts = charts_format(charts)
-        return jsonify(charts)
-    else:
-        return jsonify(error='Bad Request'), 400
-
-
 # Quickjump route for jumping straight to a resource based on ID
-@app.route('/quickjump/<id>', methods=['GET'])
-def quickjump(id):
+@app.route('/quickjump/<ref>', methods=['GET'])
+def quickjump(ref):
     try:
-        entity = get_entity_from_tag(id)
+        entity = get_entity_from_tag(ref)
         if type(entity) == Artist:
             typ = "artist"
         elif type(entity) == Album:
@@ -252,85 +212,9 @@ def quickjump(id):
     
     res = {
             "type": typ,
-            "id": id
+            "id": ref
     }
     return jsonify(res)
-
-
-@app.route('/playlist/<dj>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-#@jwt_protected
-def playlist(dj):
-    if request.method == 'GET':
-        playlists = list_playlists(dj)
-        return jsonify(playlists)
-    
-    elif request.method == 'POST':
-        dj_id = request.get_json()['username']
-        p_name = request.get_json()['playlistName']
-        show = request.get_json()['show']
-        playlist = add_playlist(dj_id, p_name, show)
-
-        return "Added"
-    
-    elif request.method == 'PUT':
-        dj_id = request.get_json()['username']
-        p_name = request.get_json()['playlistName']
-        show = request.get_json()['show']
-        new_name = request.get_json()['newName']
-        new_show = request.get_json()['newShow']
-        update_playlist(dj_id, p_name, show, new_name, new_show)
-
-        return "Updated"
-    
-    elif request.method == 'DELETE':
-        dj_id = request.get_json()['username']
-        p_name = request.get_json()['playlistName']
-        delete_playlist(dj_id, p_name)
-
-        return "Deleted"
-
-@app.route('/playlist/display/<dj>/<playlist_name>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def show_playlist(dj, playlist_name):
-    if request.method == 'GET':
-        playlist = display_playlist(dj, playlist_name)
-        return jsonify(playlist)
-
-    elif request.method == 'POST':
-        entry = request.get_json()['entry']
-        new_entry = add_playlist_entry(dj, playlist_name, entry)
-        return "Added"
-
-    elif request.method == 'PUT':
-        if 'entry' in request.get_json().keys() and 'newEntry' in request.get_json().keys():
-            entry = request.get_json()['entry']
-            new_entry = request.get_json()['newEntry']
-            index = request.get_json()['index']
-            update_playlist_entry(dj, playlist_name, index, entry, None, new_entry)
-
-        elif 'newIndex' in request.get_json().keys():
-            index = request.get_json()['index']
-            new_index = request.get_json()['newIndex']
-            x = update_playlist_entry(dj, playlist_name, index, None, new_index, None)
-            return str(x)
-        else:
-            return jsonify(error='Bad request'), 400
-
-        return "Updated"
-
-    elif request.method == 'DELETE':
-        index = request.get_json()['index']
-        delete_playlist_entry(dj, playlist_name, index)
-        return "Deleted"
-
-
-@app.route('/playlist/upload/<dj>/<playlist_name>', methods=['POST'])
-def upload_playlist(dj, playlist_name):
-    entry_list = request.get_json()['playlistEntries']
-    for item in entry_list:
-        index = item['index']
-        entry = item['entry']
-        new_entry = add_playlist_entry(dj, playlist_name, index, entry)
-    return "Uploaded"
 
 
 @app.route('/programming/log', methods=['GET', 'POST', 'PUT', 'DELETE'])
