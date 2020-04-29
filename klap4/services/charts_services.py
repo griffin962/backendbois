@@ -30,25 +30,25 @@ def generate_chart(format: str, weeks: int) -> list:
             ) \
             .all()
         
-        better_charts = []
-        ref_list = []
-        for item in chart_list:
-            genre_abbr = decompose_tag(item[0].ref).genre_abbr
-            artist_num = decompose_tag(item[0].ref).artist_num
-            album_letter = decompose_tag(item[0].ref).album_letter
-            ref = genre_abbr + str(artist_num) + album_letter
-            if ref in ref_list:
-                continue
-            else:
-                better_charts.append((genre_abbr, artist_num, album_letter, item[1]))
-                ref_list.append(ref)
-        
     elif format == "new":
         chart_list = session.query(Song, func.sum(Song.times_played)) \
             .join(Album, and_(Album.date_added > new_album_limit, Song.album_id == Album.id)) \
             .filter(Song.last_played > weeks_ago) \
             .group_by(Song.id) \
             .all()
+    
+    better_charts = []
+    ref_list = []
+    for item in chart_list:
+        genre_abbr = decompose_tag(item[0].ref).genre_abbr
+        artist_num = decompose_tag(item[0].ref).artist_num
+        album_letter = decompose_tag(item[0].ref).album_letter
+        ref = genre_abbr + str(artist_num) + album_letter
+        if ref in ref_list:
+            continue
+        else:
+            better_charts.append((genre_abbr, artist_num, album_letter, item[1]))
+            ref_list.append(ref)
     
     sorted_charts = sorted(better_charts, key=lambda x:(-x[3], x[0], x[1], x[2]))
     return sorted_charts
