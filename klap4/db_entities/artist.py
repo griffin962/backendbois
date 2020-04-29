@@ -77,7 +77,7 @@ class Artist(SQLBase):
                                 "name": self.name,
                                 "genre": self.genre.name,
                                 "albums": album_list,
-                                "image": getArtistImage(self.name)
+                                #"image": getArtistImage(self.name)
                             }
         return serialized_artist
 

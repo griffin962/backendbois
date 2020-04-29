@@ -36,6 +36,8 @@ app.config['JWT_COOKIE_SECURE'] = False         # Set to True in production (for
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_ACCESS_COOKIE_PATH'] = '/'
 app.config['JWT_REFRESH_COOKIE_PATH'] = '/token/refresh'
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = config.config()['accessExpiration']
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = config.config()['refreshExpiration']
 
 cors = CORS(app, resources={r"/*": {"origins": config.config()['clientOrigin']}}, supports_credentials=True)
 api = Api(app)
