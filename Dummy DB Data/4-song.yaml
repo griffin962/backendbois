@@ -428,15 +428,6 @@
     times_played: 0
     recommended: True
 
-- model: klap4.db_entities.song.Song
-  fields:
-    id: "EM1A15"
-    name: "Insecure"
-    fcc_status: 3
-    last_played: !!timestamp 2020-04-04
-    times_played: 0
-    recommended: True
-
 
 - model: klap4.db_entities.song.Song
   fields:
