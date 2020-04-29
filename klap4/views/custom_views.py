@@ -24,6 +24,10 @@ class AlbumProblemModelView(ModelView):
     column_list = ['id', 'album', 'dj_id', 'content']
 
 
+class SongModelView(ModelView):
+    column_list = ['name', 'album']
+
+
 class ProgramFormatModelView(ModelView):
     column_display_pk = True
     form_columns = ['type', 'description']

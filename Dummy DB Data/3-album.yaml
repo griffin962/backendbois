@@ -82,7 +82,7 @@
   fields:
     id: "RK1C"
     name: "First Impressions of Earth"
-    format_bitfield: 1
+    format_bitfield: 0b00100
 
 - model: klap4.db_entities.album.Album
   fields:
@@ -166,7 +166,7 @@
   fields:
     id: "RK3A"
     name: "Doom (Original Game Soundtrack)"
-    format_bitfield: 1
+    format_bitfield: 0b00100
 
 - model: klap4.db_entities.album.Album
   fields:
