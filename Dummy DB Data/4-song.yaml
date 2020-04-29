@@ -26,7 +26,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A3"
-    name: "I. Dogma"
+    name: "At Dooms Gate"
     fcc_status: 1
     last_played: !!timestamp 2020-04-04
     times_played: 1
@@ -62,7 +62,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A7"
-    name: "Flesh & Metal"
+    name: "Authorization; Olivia Pierce"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 0
@@ -71,7 +71,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A8"
-    name: "Impure Spectrum"
+    name: "Flesh & Metal"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 0
@@ -80,7 +80,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A9"
-    name: "Flesh & Metal"
+    name: "Impure Spectrum"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 0
@@ -179,7 +179,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A20"
-    name: "III. Dakhma"
+    name: "Incantation"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 0
@@ -188,7 +188,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A21"
-    name: "Damnation"
+    name: "III. Dakhma"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 0
@@ -197,7 +197,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A22"
-    name: "The Stench"
+    name: "Damnation"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 0
@@ -206,7 +206,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A23"
-    name: "Uac Report File; Shto36u3"
+    name: "The Stench"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 0
@@ -215,7 +215,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A24"
-    name: "Death & Exhale"
+    name: "Uac Report File; Shto36u3"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 0
@@ -224,7 +224,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A25"
-    name: "SkullHacker"
+    name: "Death & Exhale"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 0
@@ -233,7 +233,7 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A26"
-    name: "Lazarus Waves"
+    name: "SkullHacker"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
     times_played: 0
@@ -251,15 +251,6 @@
 - model: klap4.db_entities.song.Song
   fields:
     id: "RK3A28"
-    name: "Lazarus Waves"
-    fcc_status: 3
-    last_played: !!timestamp 2020-04-04
-    times_played: 0
-    recommended: True
-
-- model: klap4.db_entities.song.Song
-  fields:
-    id: "RK3A29"
     name: "Vega Core"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
@@ -268,7 +259,7 @@
 
 - model: klap4.db_entities.song.Song
   fields:
-    id: "RK3A30"
+    id: "RK3A29"
     name: "6_idkill.Vega.Cih"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
@@ -277,7 +268,7 @@
 
 - model: klap4.db_entities.song.Song
   fields:
-    id: "RK3A31"
+    id: "RK3A30"
     name: "Mastermind"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
@@ -286,7 +277,7 @@
 
 - model: klap4.db_entities.song.Song
   fields:
-    id: "RK3A32"
+    id: "RK3A31"
     name: "IV. Doom"
     fcc_status: 3
     last_played: !!timestamp 2020-04-04
