@@ -146,9 +146,9 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
     if new_index is None and entry is not None and new_entry is not None:
         try:
             song_entry = session.query(Song) \
-                        .join(Album, and_(Album.id == Song.album_id, Album.name == entry["album"])) \
-                        .join(Artist, and_(Artist.id == Album.artist_id, Artist.name == entry["artist"])) \
-                        .filter(Song.name == entry["song"]).one()
+                        .join(Album, and_(Album.id == Song.album_id, Album.name == new_entry["album"])) \
+                        .join(Artist, and_(Artist.id == Album.artist_id, Artist.name == new_entry["artist"])) \
+                        .filter(Song.name == new_entry["song"]).one()
             old_times_played = song_entry.times_played
 
             song_entry.last_played = datetime.now()
@@ -163,7 +163,7 @@ def update_playlist_entry(dj_id: str, p_name: str, index: int, entry, new_index:
             reference = str(new_entry)
         
         update_entry = session.query(PlaylistEntry) \
-            .join(Playlist, and_(Playlist.id == PlaylistEntry.id, Playlist.name == p_name)) \
+            .join(Playlist, and_(Playlist.id == PlaylistEntry.playlist_id, Playlist.name == p_name)) \
             .join(DJ, and_(DJ.id == Playlist.dj_id, DJ.id == dj_id)) \
             .filter(
                 and_(PlaylistEntry.index == index,
