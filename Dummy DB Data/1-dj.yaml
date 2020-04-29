@@ -1,0 +1,23 @@
+---
+- model: klap4.db_entities.dj.DJ
+  fields:
+    id: "jam4x2"
+    name: "Jonathan Miller"
+
+- model: klap4.db_entities.dj.DJ
+  fields:
+    id: "test"
+    name: "Test User"
+    is_admin: True
+  
+- model: klap4.db_entities.dj.DJ
+  fields:
+    id: "dumb"
+    name: "Stupid User"
+    is_admin: False
+  
+- model: klap4.db_entities.dj.DJ
+  fields:
+    id: "abc123"
+    name: "Bob Jones"
+    is_admin: False

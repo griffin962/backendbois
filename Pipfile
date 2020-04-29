@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+ldap3 = "*"
+sqlalchemy = "*"
+flask = "*"
+pylint = "*"
+flask-cors = "*"
+spotipy = "*"
+flask-restful = "*"
+klap-4 = {editable = true,path = "."}
+sqlalchemy-seed = "*"
+flask-admin = "*"
+natsort = "*"
+flask-jwt-extended = "*"
+psycopg2 = "*"
+
+[requires]
+python_version = "3.7"

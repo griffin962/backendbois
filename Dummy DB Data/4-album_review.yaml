@@ -1,0 +1,18 @@
+---
+- model: klap4.db_entities.album.AlbumReview
+  fields:
+    id: "AL1A"
+    dj_id: "jam4x2"
+    content: "Amazing album. I love it!"
+
+- model: klap4.db_entities.album.AlbumReview
+  fields:
+    id: "AL1A"
+    dj_id: "dumb"
+    content: "I hate this album"
+
+- model: klap4.db_entities.album.AlbumReview
+  fields:
+    id: "AL1A"
+    dj_id: "abc123"
+    content: "Too experimental for my taste. Has anyone ever heard of Taming Paula?"

@@ -2,12 +2,14 @@
 
 import logging
 import logging.handlers
+from pathlib import Path
 
 from klap4 import db
 
 
 def main():
-    db.connect("test.db")
+    script_path = Path(__file__).absolute().parent
+    db.connect(script_path/".."/"test.db", db_log_level="debug")
 
     logger = logging.getLogger("main")
     logger.addHandler(logging.StreamHandler())
