@@ -31,8 +31,7 @@ class AlbumReviewAPI(Resource):
         dj_id = json_data['dj_id']
         content = json_data['content']
         try:
-            add_review(ref, dj_id, content)
+            added_review = add_review(ref, dj_id, content)
+            return jsonify(added_review)
         except:
             return {"error": 'Bad Request'}, 400
-
-        return "Added"

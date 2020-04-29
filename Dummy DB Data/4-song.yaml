@@ -18,7 +18,7 @@
   fields:
     id: "RK3A2"
     name: "Rip & Tear"
-    fcc_status: 3
+    fcc_status: 2
     last_played: !!timestamp 2020-04-04
     times_played: 1
     recommended: True
@@ -27,7 +27,7 @@
   fields:
     id: "RK3A3"
     name: "I. Dogma"
-    fcc_status: 3
+    fcc_status: 1
     last_played: !!timestamp 2020-04-04
     times_played: 1
     recommended: True
@@ -36,7 +36,7 @@
   fields:
     id: "RK3A4"
     name: "Rust, Dust & Guts"
-    fcc_status: 3
+    fcc_status: 4
     last_played: !!timestamp 2020-04-04
     times_played: 1
     recommended: True

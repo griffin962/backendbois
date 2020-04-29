@@ -200,6 +200,18 @@ class AlbumReview(SQLBase):
     @property
     def ref(self):
         return self.album.ref + '-R' + str(self.id)
+    
+
+    @property
+    def serialize(self):
+        serialized_review = {
+                              "ref": self.ref,
+                              "album": self.album.name,
+                              "date_entered": str(self.date_entered),
+                              "reviewer": self.dj_id,
+                              "content": self.content
+                            }
+        return serialized_review
 
     def __repr__(self):
         return f"<AlbumReview(ref={self.ref}, " \

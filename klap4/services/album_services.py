@@ -82,7 +82,7 @@ def add_review(album_ref: str, dj_id: str, content: str) -> SQLBase:
     session.add(newReview)
     session.commit()
 
-    return
+    return newReview.serialize
 
 
 def report_problem(album_ref: str, dj_id: str, content: str) ->SQLBase:
