@@ -31,7 +31,13 @@ def add_playlist(dj_id: str, name: str, show: str) -> SQLBase:
     session.add(new_playlist)
     session.commit()
 
-    return new_playlist
+    serialized_playlist = {
+                            "dj_id": dj_id,
+                            "name": name,
+                            "show": show    
+                          }
+
+    return serialized_playlist
 
 def update_playlist(dj_id: str, name: str, show: str, new_name: str, new_show: str) -> SQLBase:
     from klap4.db import Session
@@ -47,7 +53,13 @@ def update_playlist(dj_id: str, name: str, show: str, new_name: str, new_show: s
     playlist_update.show = new_show
 
     session.commit()
-    return playlist_update
+
+    serialized_playlist = {
+                            "dj_id": dj_id,
+                            "name": new_name,
+                            "show": new_show    
+                          }
+    return serialized_playlist
 
 
 def delete_playlist(dj_id: str, name: str) -> None:

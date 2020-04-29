@@ -26,7 +26,7 @@ def generate_chart(format: str, weeks: int) -> list:
         chart_list = session.query(Song, func.sum(Song.times_played)) \
             .filter(Song.last_played > weeks_ago
             ) \
-            .group_by(Song.id
+            .group_by(Song.id, Song.album_id
             ) \
             .all()
         
