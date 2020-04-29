@@ -70,24 +70,19 @@ def search_albums(genre: str, artist_name: str, name: str) -> list:
     return serialized_list
 
 
-def add_review(album_id: str, dj_id: str, content: str) ->SQLBase:
+def add_review(album_ref: str, dj_id: str, content: str) -> SQLBase:
     from datetime import datetime
     from klap4.db import Session
     session = Session()
 
-    new_id = decompose_tag(album_id)
-
-    newReview = AlbumReview(genre_abbr=new_id[0],
-                                artist_num=new_id[1],
-                                album_letter=new_id[2],
+    newReview = AlbumReview(id=album_ref,
                                 dj_id=dj_id,
-                                date_entered=datetime.now(),
-                                content=content)
+                                content="Me")
     
     session.add(newReview)
     session.commit()
 
-    return newReview
+    return
 
 
 def report_problem(album_id: str, dj_id: str, content: str) ->SQLBase:

@@ -27,6 +27,21 @@ def find_artist_id(genre_abbr: str, artist_num: int):
         raise "error"
 
 
+def find_album_id(genre_abbr: str, artist_num: int, album_letter: str):
+    entity = None
+    try:
+        from klap4.db import Session
+        session = Session()
+
+        entity = session.query(Album) \
+            .join(Artist, and_(Artist.id == Album.artist_id, Artist.number == artist_num)) \
+            .join(Genre, and_(Genre.id == Artist.id, Genre.abbreviation == genre_abbr)) \
+            .filter(Album.letter == album_letter).one()
+        
+        return entity.id
+    except:
+        raise "error"
+
 class Album(SQLBase):
     __tablename__ = "album"
 
@@ -93,7 +108,7 @@ class Album(SQLBase):
         song_list = []
         for review in self.reviews:
             review_list.append({
-                                 "date_entered": review.date_entered,
+                                 "date_entered": str(review.date_entered),
                                  "reviewer": review.dj_id,
                                  "review": review.content
                                 })
@@ -159,7 +174,11 @@ class AlbumReview(SQLBase):
     dj = relationship("klap4.db_entities.dj.DJ", back_populates="reviews")
 
     def __init__(self, **kwargs):
-        if "date_entered" in kwargs:
+        if "id" in kwargs:
+            decomposed_tag = decompose_tag(kwargs["id"])
+            kwargs["album_id"] = find_album_id(decomposed_tag.genre_abbr, decomposed_tag.artist_num, decomposed_tag.album_letter)
+
+        if "date_entered" not in kwargs:
             kwargs["date_entered"] = datetime.now()
         super().__init__(**kwargs)
 

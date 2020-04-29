@@ -5,7 +5,7 @@ from pathlib import Path
 from klap4 import db
 from klap4.db_entities import *
 from klap4.utils import *
-from klap4.services.album_services import search_albums
+from klap4.services.album_services import search_albums, add_review
 from klap4.services.charts_services import generate_chart, charts_format 
 from klap4.services.program_services import get_program_slots
 from klap4.services.playlist_services import *
@@ -48,8 +48,7 @@ def main():
     script_path = Path(__file__).absolute().parent
     db.connect(script_path/".."/"test.db")
 
-    entry = {"song": "Concrete", "artist": "Poppy", "album": "Choke"}
-    thing = generate_chart("all", 5)
+    add_review("AL1B", "test", "Awesome!!!!")
     #print(thing)
 
 if __name__ == '__main__':

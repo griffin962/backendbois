@@ -47,7 +47,7 @@ admin.add_view(GenreModelView(Genre, session))
 admin.add_view(ArtistModelView(Artist, session))
 admin.add_view(AlbumModelView(Album, session))
 #admin.add_view(ModelView(Song, session))
-#admin.add_view(AlbumReviewModelView(AlbumReview, session))
+admin.add_view(AlbumReviewModelView(AlbumReview, session))
 #admin.add_view(ModelView(AlbumProblem, session))
 #admin.add_view(ProgramFormatModelView(ProgramFormat, session))
 #admin.add_view(ProgramModelView(Program, session))
@@ -120,8 +120,14 @@ def logout():
 @jwt_optional
 def display_user():
     current_user = get_jwt_identity()
+    claims = get_jwt_claims()
     if current_user:
-        return jsonify(logged_in_as=current_user), 200
+        user_obj = {
+                    "logged_in_as": current_user,
+                    "full_name": claims['name'],
+                    "role": claims['role']
+        }
+        return jsonify(user_obj), 200
     else:
         return jsonify(logged_in_as='Anonymous'), 200
 
@@ -130,6 +136,7 @@ api.add_resource(ArtistListAPI, '/search/artist')
 api.add_resource(ArtistAPI, '/display/artist/<string:ref>')
 api.add_resource(AlbumListAPI, '/search/album')
 api.add_resource(AlbumAPI, '/display/album/<string:ref>')
+api.add_resource(AlbumReviewAPI, '/album/review/<string:ref>')
 api.add_resource(ChartsAPI, '/charts/<string:form>/<int:weeks>')
 api.add_resource(PlaylistAPI, '/playlist/<string:dj_id>')
 api.add_resource(PlaylistEntryAPI, '/playlist/display/<string:dj_id>/<string:p_name>')
@@ -166,20 +173,6 @@ def display(category, id):
         
         else:
             return jsonify(error='Not Found'), 404
-
-
-@app.route('/album/review/<id>', methods=['POST'])
-#@jwt_required
-def review_album(id):
-    if request.method == 'POST':
-        dj_id = request.get_json()['dj_id']
-        content = request.get_json()['content']
-        try:
-            review = add_review(id, dj_id, content)
-        except:
-            return jsonify(error='Bad request'), 400
-
-        return "Added"
 
 
 @app.route('/album/problem/<id>', methods=['POST'])

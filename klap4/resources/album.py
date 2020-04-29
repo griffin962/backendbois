@@ -23,3 +23,16 @@ class AlbumAPI(Resource):
         album = get_entity_from_tag(ref)
         serialized_album = album.serialize()
         return serialized_album
+
+
+class AlbumReviewAPI(Resource):
+    def post(self, ref):
+        json_data = request.get_json(force=True)
+        dj_id = json_data['dj_id']
+        content = json_data['content']
+        try:
+            review = add_review(ref, dj_id, content)
+        except:
+            return jsonify(error='Bad request'), 400
+
+        return "Added"

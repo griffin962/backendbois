@@ -4,6 +4,7 @@
     id: "AL1A"
     name: "Poppy.Computer"
     format_bitfield: 1
+    missing: True
 
 - model: klap4.db_entities.album.Album
   fields:
