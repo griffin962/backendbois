@@ -16,7 +16,12 @@ class AlbumModelView(ModelView):
 
 
 class AlbumReviewModelView(ModelView):
-    column_list = ['album', 'dj_id', 'date_entered', 'content']
+    column_display_pk = True
+    column_list = ['id', 'album', 'dj_id', 'date_entered', 'content']
+
+
+class AlbumProblemModelView(ModelView):
+    column_list = ['id', 'album', 'dj_id', 'content']
 
 
 class ProgramFormatModelView(ModelView):

@@ -77,7 +77,7 @@ def add_review(album_ref: str, dj_id: str, content: str) -> SQLBase:
 
     newReview = AlbumReview(id=album_ref,
                                 dj_id=dj_id,
-                                content="Me")
+                                content=content)
     
     session.add(newReview)
     session.commit()
@@ -85,15 +85,12 @@ def add_review(album_ref: str, dj_id: str, content: str) -> SQLBase:
     return
 
 
-def report_problem(album_id: str, dj_id: str, content: str) ->SQLBase:
+def report_problem(album_ref: str, dj_id: str, content: str) ->SQLBase:
     from klap4.db import Session
     session = Session()
 
-    new_id = decompose_tag(album_id)
 
-    newProblem = AlbumProblem(genre_abbr=new_id[0],
-                                artist_num=new_id[1],
-                                album_letter=new_id[2],
+    newProblem = AlbumProblem(id=album_ref,
                                 dj_id=dj_id,
                                 content=content)
     

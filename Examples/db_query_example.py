@@ -48,7 +48,7 @@ def main():
     script_path = Path(__file__).absolute().parent
     db.connect(script_path/".."/"test.db")
 
-    add_review("AL1B", "test", "Awesome!!!!")
+    add_review("RK1B", "test", "Awesome!!!!")
     #print(thing)
 
 if __name__ == '__main__':

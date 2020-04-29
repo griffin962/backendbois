@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 
 from klap4.db_entities import get_entity_from_tag
-from klap4.services.album_services import new_album_list, search_albums
+from klap4.services.album_services import new_album_list, search_albums, add_review
 
 class AlbumListAPI(Resource):
     def get(self):
@@ -31,8 +31,8 @@ class AlbumReviewAPI(Resource):
         dj_id = json_data['dj_id']
         content = json_data['content']
         try:
-            review = add_review(ref, dj_id, content)
+            add_review(ref, dj_id, content)
         except:
-            return jsonify(error='Bad request'), 400
+            return {"error": 'Bad Request'}, 400
 
         return "Added"

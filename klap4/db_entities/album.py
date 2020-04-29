@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from sqlalchemy import Column, ForeignKey, Boolean, DateTime, String, Integer
+from sqlalchemy import Column, ForeignKey, UniqueConstraint, Boolean, DateTime, String, Integer
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.expression import and_
 
@@ -27,7 +27,7 @@ def find_artist_id(genre_abbr: str, artist_num: int):
         raise "error"
 
 
-def find_album_id(genre_abbr: str, artist_num: int, album_letter: str):
+def find_album(genre_abbr: str, artist_num: int, album_letter: str):
     entity = None
     try:
         from klap4.db import Session
@@ -35,10 +35,10 @@ def find_album_id(genre_abbr: str, artist_num: int, album_letter: str):
 
         entity = session.query(Album) \
             .join(Artist, and_(Artist.id == Album.artist_id, Artist.number == artist_num)) \
-            .join(Genre, and_(Genre.id == Artist.id, Genre.abbreviation == genre_abbr)) \
+            .join(Genre, and_(Genre.id == Artist.genre_id, Genre.abbreviation == genre_abbr)) \
             .filter(Album.letter == album_letter).one()
         
-        return entity.id
+        return entity
     except:
         raise "error"
 
@@ -96,6 +96,14 @@ class Album(SQLBase):
     @property
     def is_new(self):
         return datetime.now() - self.date_added < timedelta(days=30 * 6)
+    
+    @property
+    def next_review_id(self):
+        return len(self.reviews) + 1
+    
+    @property
+    def next_problem_id(self):
+        return len(self.problems) + 1
 
     @property
     def ref(self):
@@ -176,7 +184,10 @@ class AlbumReview(SQLBase):
     def __init__(self, **kwargs):
         if "id" in kwargs:
             decomposed_tag = decompose_tag(kwargs["id"])
-            kwargs["album_id"] = find_album_id(decomposed_tag.genre_abbr, decomposed_tag.artist_num, decomposed_tag.album_letter)
+            ref_album = find_album(decomposed_tag.genre_abbr, decomposed_tag.artist_num, decomposed_tag.album_letter)
+            kwargs["album_id"] = ref_album.id
+
+            kwargs["id"] = ref_album.next_review_id
 
         if "date_entered" not in kwargs:
             kwargs["date_entered"] = datetime.now()
@@ -208,12 +219,20 @@ class AlbumProblem(SQLBase):
     album = relationship("klap4.db_entities.album.Album", back_populates="problems")
     dj = relationship("klap4.db_entities.dj.DJ", back_populates="problems")
 
+    def __init__(self, **kwargs):
+        if "id" in kwargs:
+            decomposed_tag = decompose_tag(kwargs["id"])
+            ref_album = find_album(decomposed_tag.genre_abbr, decomposed_tag.artist_num, decomposed_tag.album_letter)
+            kwargs["album_id"] = ref_album.id
+
+            kwargs["id"] = ref_album.next_problem_id
+        super().__init__(**kwargs)
+
+
     @property
     def ref(self):
         return f"{self.album.ref}-P{self.id}"
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
     
     def __repr__(self):
         return f"<AlbumProblem(ref={self.ref}, " \
