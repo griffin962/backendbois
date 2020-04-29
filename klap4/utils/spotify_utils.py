@@ -8,6 +8,11 @@ spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 # Function for getting artist image URL
 def getArtistImage(artist_name):
+        
+    if len(artist_name) > 1:
+        name = ' '.join(sys.argv[1:])
+    else:
+        name = artist_name
     
     results = spotify.search(q='artist:' + artist_name, type='artist')
     items = results['artists']['items']
